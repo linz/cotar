@@ -1,0 +1,133 @@
+<html>
+
+<head>
+
+    <title>VectorGrid.Protobuf example</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+</head>
+
+<body>
+    <script type="text/javascript" src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/leaflet.vectorgrid@1.2.0"></script>
+    <div id="map" style="width: 100vw; height: 100vh; background: white"></div>
+
+    <script type="text/javascript">
+        const LayerCache = new Map();
+
+        const time = {
+            /** Console.time how long it takes to run a fetch */
+            fetch: true,
+            /** Console.time how long it takes to decode the pbf */
+            pbf: true
+        }
+
+        const SourceFile = `./2021-01-26-coatline-contours-tunnels-bridges-rivers-airports.mbtiles`
+        const EmptyLayer = {
+            layers: []
+        }
+        const VectorTTiles = L.VectorGrid.extend({
+            setIndex(indexData) {
+                this.indexData = indexData;
+            },
+            _isCurrentTile: function(coords, tileBounds) {
+                if (!this._map) return true;
+
+                var zoom = this._map._animatingZoom ? this._map._animateToZoom : this._map._zoom;
+                var currentZoom = zoom === coords.z;
+
+                var tileBounds = this._tileCoordsToBounds(coords);
+                var currentBounds = this._map.getBounds().overlaps(tileBounds);
+
+                return currentZoom && currentBounds;
+
+            },
+            _getVectorTilePromise(coords, bounds) {
+                let y = coords.y;
+                if (this._map && !this._map.options.crs.infinite) {
+                    y = this._globalTileRange.max.y - coords.y;
+                }
+
+                const pbfName = `tiles/${coords.z}/${coords.x}/${y}.pbf`;
+
+                const current = LayerCache.get(pbfName) || this.loadTileFromTar(pbfName)
+                LayerCache.set(pbfName, current);
+                return current;
+            },
+
+            async loadTileFromTar(pbfName) {
+                const tileRaw = this.indexData[pbfName];
+                if (tileRaw == null) return EmptyLayer
+
+                console.time(pbfName)
+
+                if (time.fetch) console.time(`${pbfName}:Fetch`);
+                const dataRes = await fetch(SourceFile + '.tar', {
+                    headers: {
+                        'Range': `bytes=${tileRaw.o}-${tileRaw.o + tileRaw.s}`
+                    }
+                });
+
+                if (!dataRes.ok) return EmptyLayer
+
+                const blob = await dataRes.blob();
+                if (time.fetch) console.timeEnd(`${pbfName}:Fetch`);
+
+
+                if (time.pbf) console.time(`${pbfName}:Pbf`);
+                const reader = new FileReader();
+                const json = await new Promise(function(resolve) {
+                    reader.addEventListener("loadend", function() {
+                        // reader.result contains the contents of blob as a typed array
+                        // blob.type === 'application/x-protobuf'
+                        var pbf = new Pbf(reader.result);
+                        return resolve(new VectorTile(pbf));
+
+                    });
+                    reader.readAsArrayBuffer(blob);
+                });
+
+                for (const layerName in json.layers) {
+                    let feats = [];
+
+                    for (var i = 0; i < json.layers[layerName].length; i++) {
+                        var feat = json.layers[layerName].feature(i);
+                        feat.geometry = feat.loadGeometry();
+                        feats.push(feat);
+                    }
+
+                    json.layers[layerName].features = feats;
+                }
+                if (time.pbf) console.timeEnd(`${pbfName}:Pbf`);
+                console.timeEnd(pbfName)
+
+                return json
+            }
+        })
+
+
+
+        async function main() {
+            const res = await fetch(`${SourceFile}.tari`);
+            if (!res.ok) throw new Error('Failed to fetch URL: ' + res.statusText);
+
+            const ttiles = await res.json();
+            const map = L.map('map');
+            const vt = new VectorTTiles()
+            vt.setIndex(ttiles);
+
+            vt.addTo(map);
+
+            map.setView({
+                lat: -41.65819789,
+                lon: 173.97008151,
+            }, 14)
+
+        }
+
+        main().catch(e => document.body.innerHTML = 'Failed to map a map: ' + e)
+    </script>
+</body>
+
+</html>
