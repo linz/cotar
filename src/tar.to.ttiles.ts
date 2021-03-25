@@ -45,6 +45,7 @@ export async function toTTilesIndex(filename: string, indexFileName: string, log
   let fileCount = 0;
   const headBuffer = Buffer.alloc(512);
 
+  let startTime = Date.now();
   while (ctx.offset < stat.size) {
     alignOffsetToBlock(ctx);
 
@@ -59,8 +60,11 @@ export async function toTTilesIndex(filename: string, indexFileName: string, log
     if (head.type == TarFileType.File) {
       Files[head.path] = { o: ctx.offset, s: head.size };
       fileCount++;
-      if (fileCount % 1000 == 0) {
-        logger.debug({ count: fileCount, percent: ((ctx.offset / stat.size) * 100).toFixed(2) + '%' }, 'WriteIndex');
+      if (fileCount % 25_000 == 0) {
+        const duration = Date.now() - startTime;
+        startTime = Date.now();
+        const percent = ((ctx.offset / stat.size) * 100).toFixed(2);
+        logger.debug({ count: fileCount, percent, duration }, 'TarIndex:Write');
       }
     }
 

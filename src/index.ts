@@ -14,6 +14,7 @@ export class CreateCovt extends Command {
       description: 'decompress gzip encoded tiles before storing in tar',
       default: false,
     }),
+    verbose: flags.boolean({ description: 'verbose logging' }),
   };
 
   static args = [
@@ -23,6 +24,7 @@ export class CreateCovt extends Command {
 
   async run(): Promise<void> {
     const { args, flags } = this.parse(CreateCovt);
+    if (flags.verbose) logger.level = 'debug';
 
     if (existsSync(args.outputFile) && !flags.force) {
       logger.error('Output file exists, aborting..');
