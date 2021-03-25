@@ -2,7 +2,7 @@ import { ChunkSource, LogType } from '@cogeotiff/chunk';
 import { TarIndex } from './tar.index';
 import { xyzToPath } from './tile.name';
 
-const utf8Decoder = new TextDecoder('utf-8'); 
+const utf8Decoder = new TextDecoder('utf-8');
 
 export class Covt {
   source: ChunkSource;
