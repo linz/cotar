@@ -33,7 +33,9 @@ interface TarIndexFile {
 1. Zip files
 
 ZIP store their metadata at the end of the file, and so the metadata can be read with a single range request for the last 1+MB of data.
-then individual files can be read directly from the ZIP
+then individual files can be read directly from the ZIP.
+
+See: https://github.com/tapalcatl/tapalcatl-2-spec
 
 2. Combine tar with tari into a single tar
 
