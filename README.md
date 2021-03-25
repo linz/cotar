@@ -1,4 +1,4 @@
-# MTTiles - Cloud optmized vector tiles
+# COVT - Cloud optmized vector tiles
 
 tar + Mapbox vector tiles + Tar index = :heart:
 
