@@ -1,23 +1,21 @@
 {
-    "name": "@covt/core",
-    "version": "1.0.1",
-    "main": "index.js",
-    "license": "MIT",
-    "bin": {
-      "covt": "./bin/covt"
-    },
-    "dependencies": {
-
-    },
-    "devDependencies": {
-    },
-    "publishConfig": {
-      "access": "public"
-    },
-    "files": [
-      "build/src",
-      "bin",
-      "*.png"
-    ]
-  }
-  
+  "name": "@covt/core",
+  "version": "1.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": {
+    "covt": "./bin/covt"
+  },
+  "dependencies": {
+    "@cogeotiff/chunk": "^4.2.0"
+  },
+  "devDependencies": {},
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "build/src",
+    "bin",
+    "*.png"
+  ]
+}
