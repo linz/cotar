@@ -15,7 +15,12 @@ export interface TileTable {
 const LimitCount = 0;
 const Limit = LimitCount > 0 ? `LIMIT ${LimitCount}` : '';
 
-export async function toTTiles(filename: string, tarFileName: string, logger: Logger): Promise<void> {
+export async function toTTiles(
+  filename: string,
+  tarFileName: string,
+  decompress: boolean,
+  logger: Logger,
+): Promise<void> {
   const packer = tar.pack();
   const db = bs3(filename);
 
@@ -29,7 +34,7 @@ export async function toTTiles(filename: string, tarFileName: string, logger: Lo
 
   for (const tile of query.iterate()) {
     const tileName = xyzToPath(tile.tile_column, tile.tile_row, tile.zoom_level);
-    const tileData = zlib.gunzipSync(tile.tile_data);
+    const tileData = decompress ? zlib.gunzipSync(tile.tile_data) : tile.tile_data;
     packer.entry({ name: tileName }, tileData);
     if (writeCount % 10000 == 0) logger.info({ count: writeCount }, 'WriteTar');
     writeCount++;

@@ -3,14 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "bin": {
+    "covt": "./bin/covt"
+  },
   "dependencies": {
+    "@oclif/command": "^1.8.0",
     "@types/better-sqlite3": "^5.4.1",
     "better-sqlite3": "^7.1.2",
-    "binparse": "^1.0.1",
+    "binparse": "^1.1.0",
     "pino": "^6.11.0",
     "pretty-json-log": "^0.3.2",
-    "sqlite": "^4.0.19",
-    "sqlite3": "^5.0.1",
     "tar-stream": "^2.2.0"
   },
   "devDependencies": {
@@ -22,5 +24,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["build", "*.png"]
+  "files": [
+    "build/src",
+    "bin",
+    "*.png"
+  ]
 }
