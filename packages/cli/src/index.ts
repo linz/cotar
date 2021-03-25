@@ -27,15 +27,21 @@ export class CreateCovt extends Command {
     if (flags.verbose) logger.level = 'debug';
 
     if (existsSync(args.outputFile) && !flags.force) {
-      logger.error('Output file exists, aborting..');
+      logger.error({ output: args.outputFile }, 'Output file exists, aborting..');
       return;
     }
 
     if (!args.inputFile.endsWith('.mbtiles')) {
-      logger.error('Input file must be a mbtiles file');
+      logger.error({ input: args.inputFile }, 'Input file must be a mbtiles file');
       return;
     }
+    logger.info({ output: args.outputFile }, 'Covt:Create');
+
+    const startTime = Date.now();
     await toTTiles(args.inputFile, args.outputFile, flags.decompress, logger);
     await toTTilesIndex(args.outputFile, args.outputFile + '.tari', logger);
+
+    const duration = Date.now() - startTime;
+    logger.info({ output: args.outputFile, duration }, 'Covt:Created');
   }
 }

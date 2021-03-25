@@ -1,0 +1,37 @@
+name: Main
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 14.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: Install
+      run: yarn install
+
+    - name: Lint
+      run: yarn run lint
+
+    - name: Check Formatting
+      run: git diff --exit-code
+
+    - name: Build
+      run: yarn run build
+
+    - name: Test
+      run: yarn run test
+
+    - name: Publish NPM
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: npx lerna publish from-git --yes
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

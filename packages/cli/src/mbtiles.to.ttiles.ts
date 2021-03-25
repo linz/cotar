@@ -39,7 +39,7 @@ export async function toTTiles(
     const tileName = xyzToPath(tile.tile_column, tile.tile_row, tile.zoom_level);
     const tileData = decompress ? zlib.gunzipSync(tile.tile_data) : tile.tile_data;
     packer.entry({ name: tileName }, tileData);
-    if (writeCount % 25_000 == 0) {
+    if (writeCount % 25_000 === 0) {
       const percent = ((writeCount / tileCount) * 100).toFixed(2);
       const duration = Date.now() - startTileTime;
       startTileTime = Date.now();

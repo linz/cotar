@@ -28,7 +28,7 @@ const tar = bp.object('TarHeader', {
 
 function alignOffsetToBlock(ctx: { offset: number }): void {
   let size = ctx.offset & 511;
-  while (size != 0) {
+  while (size !== 0) {
     ctx.offset += 512 - size;
     size = ctx.offset & 511;
   }
@@ -54,13 +54,13 @@ export async function toTTilesIndex(filename: string, indexFileName: string, log
     if (headData.bytesRead < 512) throw new Error('Failed to read header data');
     const head = tar.raw(headBuffer);
 
-    if (head.path == '') break;
+    if (head.path === '') break;
     if (TarFileType[head.type] == null) throw new Error('Unknown header');
 
-    if (head.type == TarFileType.File) {
+    if (head.type === TarFileType.File) {
       Files[head.path] = { o: ctx.offset, s: head.size };
       fileCount++;
-      if (fileCount % 25_000 == 0) {
+      if (fileCount % 25_000 === 0) {
         const duration = Date.now() - startTime;
         startTime = Date.now();
         const percent = ((ctx.offset / stat.size) * 100).toFixed(2);

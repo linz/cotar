@@ -1,0 +1,3 @@
+{
+    "extends": "@linzjs/style/tsconfig.base.json",
+}
