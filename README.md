@@ -3,6 +3,15 @@
 tar + Mapbox vector tiles + Tar index = :heart:
 
 
+## Usage
+Create a cloud optimized vector tile files
+
+```
+npm i -g @covt/cli
+
+covt outputFile.covt inputFile.mbtiles
+```
+
 
 ## Tar files
 
