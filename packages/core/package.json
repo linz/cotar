@@ -1,7 +1,8 @@
 {
   "name": "@covt/core",
   "version": "1.0.1",
-  "main": "index.js",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
   "license": "MIT",
   "bin": {
     "covt": "./bin/covt"

@@ -34,7 +34,7 @@ function alignOffsetToBlock(ctx: { offset: number }): void {
   }
 }
 
-export async function toTTilesIndex(filename: string, indexFileName: string, logger: Logger): Promise<void> {
+export async function toTarTilesIndex(filename: string, indexFileName: string, logger: Logger): Promise<void> {
   const fd = await fs.open(filename, 'r');
 
   const stat = await fd.stat();

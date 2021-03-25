@@ -109,7 +109,7 @@
 
 
         async function main() {
-            const res = await fetch(`${SourceFile}.tari`);
+            const res = await fetch(`${SourceFile}.index`);
             if (!res.ok) throw new Error('Failed to fetch URL: ' + res.statusText);
 
             const ttiles = await res.json();

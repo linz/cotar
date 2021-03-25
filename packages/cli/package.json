@@ -7,6 +7,7 @@
       "covt": "./bin/covt"
     },
     "dependencies": {
+      "@covt/core": "^1.0.0",
       "@oclif/command": "^1.8.0",
       "better-sqlite3": "^7.1.2",
       "binparse": "^1.1.0",

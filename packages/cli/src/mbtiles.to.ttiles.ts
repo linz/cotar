@@ -2,7 +2,7 @@ import bs3 from 'better-sqlite3';
 import { createWriteStream } from 'fs';
 import type { Logger } from 'pino';
 import * as tar from 'tar-stream';
-import { xyzToPath } from './util';
+import { xyzToPath } from '@covt/core';
 import * as zlib from 'zlib';
 
 export interface TileTable {
@@ -15,7 +15,7 @@ export interface TileTable {
 const LimitCount = 0;
 const Limit = LimitCount > 0 ? `LIMIT ${LimitCount}` : '';
 
-export async function toTTiles(
+export async function toTarTiles(
   filename: string,
   tarFileName: string,
   decompress: boolean,
