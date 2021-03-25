@@ -19,5 +19,8 @@
     "@types/pino": "^6.3.5",
     "@types/tar-stream": "^2.2.0"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": ["build", "*.png"]
 }
