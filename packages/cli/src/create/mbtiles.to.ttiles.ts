@@ -15,19 +15,26 @@ export interface TileTable {
 const LimitCount = 0;
 const Limit = LimitCount > 0 ? `LIMIT ${LimitCount}` : '';
 
+export async function* readMbTiles(
+  fileName: string,
+): AsyncGenerator<{ tile: TileTable; index: number; total: number }, null> {
+  const db = bs3(fileName);
+
+  const total = await db.prepare('SELECT count(*) from tiles;').pluck().get();
+  const query = db.prepare(`SELECT * from tiles order by zoom_level ${Limit}`);
+
+  let index = 0;
+  for (const tile of query.iterate()) yield { tile, index: index++, total };
+  return null;
+}
+
 export async function toTarTiles(
-  filename: string,
+  fileName: string,
   tarFileName: string,
   decompress: boolean,
   logger: Logger,
 ): Promise<void> {
   const packer = tar.pack();
-  const db = bs3(filename);
-
-  const tileCount = await db.prepare('SELECT count(*) from tiles;').pluck().get();
-
-  const query = db.prepare(`SELECT * from tiles ${Limit}`);
-
   const startTime = Date.now();
   let writeCount = 0;
   const writeProm = new Promise((resolve) => packer.on('end', resolve));
@@ -35,21 +42,23 @@ export async function toTarTiles(
   packer.pipe(createWriteStream(tarFileName));
 
   let startTileTime = Date.now();
-  for (const tile of query.iterate()) {
+  for await (const { tile, index, total } of readMbTiles(fileName)) {
+    if (index === 0) logger.info({ path: tarFileName, count: total }, 'Covt.Tar:Start');
+
     const tileName = xyzToPath(tile.tile_column, tile.tile_row, tile.zoom_level);
     const tileData = decompress ? zlib.gunzipSync(tile.tile_data) : tile.tile_data;
     packer.entry({ name: tileName }, tileData);
     if (writeCount % 25_000 === 0) {
-      const percent = ((writeCount / tileCount) * 100).toFixed(2);
+      const percent = ((writeCount / index) * 100).toFixed(2);
       const duration = Date.now() - startTileTime;
       startTileTime = Date.now();
-      logger.debug({ count: writeCount, total: tileCount, percent, duration }, 'Tar:WriteTile');
+      logger.debug({ current: writeCount, total: total, percent, duration }, 'Covt.Tar:WriteTile');
     }
     writeCount++;
   }
 
-  logger.debug('Tar:Finalize');
+  logger.debug('Covt.Tar:Finalize');
   packer.finalize();
   await writeProm;
-  logger.info({ path: tarFileName, count: writeCount, duration: Date.now() - startTime }, 'Tar:Done');
+  logger.info({ path: tarFileName, count: writeCount, duration: Date.now() - startTime }, 'Covt.Tar:Done');
 }

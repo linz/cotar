@@ -28,15 +28,20 @@ export class MemorySource extends ChunkSource {
 }
 
 o.spec('Covt', () => {
-  const tarIndex: TarIndex = { 'tiles/0/0/0.pbf': { o: 0, s: 1 }, 'tiles/1/1/1.pbf': { o: 4, s: 4 } };
-  const sourceIndex = new MemorySource('TarIndex', JSON.stringify(tarIndex));
+  const tarIndex: TarIndex = [
+    ['tiles/0/0/0.pbf', 0, 1],
+    ['tiles/1/1/1.pbf', 4, 4],
+  ];
   o('should load index', async () => {
-    const covt = await Covt.create(new MemorySource('Tar', '0123456789'), sourceIndex);
-    o(covt.index).deepEquals(tarIndex);
+    const covt = await Covt.create(new MemorySource('Tar', '0123456789'), tarIndex);
+
+    o(covt.index.get(tarIndex[0][0])).deepEquals(tarIndex[0]);
+    o(covt.index.get(tarIndex[1][0])).deepEquals(tarIndex[1]);
   });
   o('should load a tile', async () => {
-    const covt = await Covt.create(new MemorySource('Tar', '0123456789'), sourceIndex);
-    o(covt.index).deepEquals(tarIndex);
+    const covt = await Covt.create(new MemorySource('Tar', '0123456789'), tarIndex);
+    o(covt.index.get(tarIndex[0][0])).deepEquals(tarIndex[0]);
+    o(covt.index.get(tarIndex[1][0])).deepEquals(tarIndex[1]);
 
     const tile0 = await covt.getTile(0, 0, 0);
     o(tile0).notEquals(null);

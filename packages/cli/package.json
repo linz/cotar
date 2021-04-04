@@ -7,6 +7,7 @@
     "covt": "./bin/covt"
   },
   "dependencies": {
+    "@cogeotiff/source-file": "^4.2.0",
     "@covt/core": "^1.1.0",
     "@oclif/command": "^1.8.0",
     "better-sqlite3": "^7.1.2",
@@ -23,6 +24,10 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "oclif": {
+    "commands": "./build/src/commands",
+    "bin": "covt"
   },
   "files": [
     "build/src",

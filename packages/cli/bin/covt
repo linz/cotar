@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-
-require('../build/src/index.js').CreateCovt.run().catch(require('@oclif/errors/handle'))
+require('@oclif/command').run()
+.catch(require('@oclif/errors/handle'))

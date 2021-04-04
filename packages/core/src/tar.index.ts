@@ -1,8 +1,2 @@
-export interface TarIndexRecord {
-  /** Offset in bytes */
-  o: number;
-  /** Size in bytes */
-  s: number;
-}
-
-export type TarIndex = Record<string, TarIndexRecord>;
+export type TarIndexRecord = [string, number, number];
+export type TarIndex = TarIndexRecord[];

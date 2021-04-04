@@ -1,5 +1,5 @@
 import { bp } from 'binparse';
-import { promises as fs } from 'fs';
+import { createWriteStream, promises as fs } from 'fs';
 import type { Logger } from 'pino';
 
 export enum TarFileType {
@@ -44,8 +44,12 @@ export async function toTarTilesIndex(filename: string, indexFileName: string, l
   const Files: Record<string, { o: number; s: number }> = {};
   let fileCount = 0;
   const headBuffer = Buffer.alloc(512);
+  logger.info({ index: indexFileName }, 'Covt.Index:Start');
+  const outputBuffer = createWriteStream(indexFileName);
+  outputBuffer.write(`[\n`);
 
-  let startTime = Date.now();
+  const startTime = Date.now();
+  let currentTime = startTime;
   while (ctx.offset < stat.size) {
     alignOffsetToBlock(ctx);
 
@@ -58,19 +62,24 @@ export async function toTarTilesIndex(filename: string, indexFileName: string, l
     if (TarFileType[head.type] == null) throw new Error('Unknown header');
 
     if (head.type === TarFileType.File) {
+      if (fileCount > 0) outputBuffer.write(',\n');
+      outputBuffer.write(JSON.stringify([head.path, ctx.offset, head.size]));
       Files[head.path] = { o: ctx.offset, s: head.size };
       fileCount++;
       if (fileCount % 25_000 === 0) {
-        const duration = Date.now() - startTime;
-        startTime = Date.now();
+        const duration = Date.now() - currentTime;
+        currentTime = Date.now();
         const percent = ((ctx.offset / stat.size) * 100).toFixed(2);
-        logger.debug({ count: fileCount, percent, duration }, 'TarIndex:Write');
+        logger.debug({ current: fileCount, percent, duration }, 'Covt.Index:Write');
       }
     }
 
     ctx.offset += head.size;
   }
 
-  logger.info({ index: indexFileName, count: Object.keys(Files).length }, 'IndexCreated');
-  await fs.writeFile(indexFileName, JSON.stringify(Files, null, 2));
+  await new Promise<void>((r) => outputBuffer.write('\n]', () => r()));
+  logger.info(
+    { index: indexFileName, count: Object.keys(Files).length, duration: Date.now() - startTime },
+    'Covt.Index:Created',
+  );
 }
