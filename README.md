@@ -1,7 +1,13 @@
-# COVT - Cloud optmized vector tiles
+# COVT - Cloud optmized archive
 
-tar + Mapbox vector tiles + Tar index = :heart:
+tar + Mapbox vector tiles (MVT) + Tar index = :heart:
 
+## Requirements
+
+- Supports any tar file and any contents (Currently focused on MVT)
+- Should be able to handle large 100GB+ tar files with millions of internal files
+- Index should be small and/or compressed to save space
+- Should be able to fetch ideally any file inside a archive with a minimal amount of requests (Ideally 2)
 
 ## Usage
 Create a cloud optimized vector tile files
@@ -9,7 +15,7 @@ Create a cloud optimized vector tile files
 ```
 npm i -g @covt/cli
 
-covt outputFile.covt inputFile.mbtiles
+covt create --output outputFile.covt inputFile.mbtiles
 ```
 
 
@@ -28,12 +34,13 @@ TAR Index (.tar.index) is a JSON document containing the file location and size 
 
 ```typescript
 /** Mapping of path -> index records */
-type TarIndex = Record<string, TarIndexFile>;
+type TarIndex = TarIndexFile[];
 
-interface TarIndexFile {
-    p: string; // Name of the file @see header.path
-    o: number; // Offset to the start of the data
-    s: number; // Number of bytes inside the file 
+interface TarIndexFile [ 
+    string, // Name of the file @see header.path
+    number, //  Offset to the start of the data
+    number // Number of bytes inside the file 
+]
 }
 ```
 
@@ -45,7 +52,22 @@ ZIP store their metadata at the end of the file, and so the metadata can be read
 then individual files can be read directly from the ZIP.
 
 See: https://github.com/tapalcatl/tapalcatl-2-spec
+> 2021-04 comments
+> The internal zip header is quite large with a 600,000 file test zip, the header was 55MB vs a 5MB gziped header using JSON
+
 
 2. Combine tar with tar.index into a single tar
 
 Having a single tar file greatly simplifies the distribution of the files, It would be quite simple to tar both the index (.tar.index) and data tar into another tar to combine the files into a single distribution
+
+3. Use AWS S3's response-encoding to decompress internal gziped content on the fly
+
+4. Change index structure to a binary format, there could be multiple indexes
+
+5. Investigate a BTree index
+
+6. Investigate if MPQ could be a better format
+
+7. Store only the pointer to the header, as the file size is stored in the tar file header.
+
+8. Store only the offset difference from the last index to save space
