@@ -7,11 +7,6 @@ import { toTarTilesIndex } from '../create/tar.to.ttiles';
 export class CreateCovt extends Command {
   static flags = {
     force: flags.boolean({ description: 'force overwriting existing files' }),
-    decompress: flags.boolean({
-      description: 'decompress gzip encoded tiles before storing in tar',
-      default: false,
-    }),
-
     output: flags.string({ description: 'output file', required: true }),
     verbose: flags.boolean({ description: 'verbose logging' }),
     index: flags.boolean({ description: 'Only create the index', default: false }),
@@ -36,7 +31,7 @@ export class CreateCovt extends Command {
     logger.info({ output: flags.output }, 'Covt:Create');
 
     const startTime = Date.now();
-    if (flags.index === false) await toTarTiles(args.inputFile, flags.output, flags.decompress, flags.limit, logger);
+    if (flags.index === false) await toTarTiles(args.inputFile, flags.output, flags.limit, logger);
     await toTarTilesIndex(flags.output, flags.output + '.index', logger);
 
     const duration = Date.now() - startTime;

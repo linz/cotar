@@ -29,13 +29,7 @@ export async function* readMbTiles(
   return null;
 }
 
-export async function toTarTiles(
-  fileName: string,
-  tarFileName: string,
-  decompress: boolean,
-  limit = -1,
-  logger: Logger,
-): Promise<void> {
+export async function toTarTiles(fileName: string, tarFileName: string, limit = -1, logger: Logger): Promise<void> {
   const packer = tar.pack();
   const startTime = Date.now();
   let writeCount = 0;
@@ -52,7 +46,7 @@ export async function toTarTiles(
     const y = (1 << z) - 1 - tile.tile_row;
 
     const tileName = xyzToPath(x, y, z);
-    const tileData = decompress ? zlib.gunzipSync(tile.tile_data) : tile.tile_data;
+    const tileData = tile.tile_data;
     packer.entry({ name: tileName }, tileData);
     if (writeCount % 25_000 === 0) {
       const percent = ((writeCount / index) * 100).toFixed(2);
