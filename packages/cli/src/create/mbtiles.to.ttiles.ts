@@ -47,7 +47,11 @@ export async function toTarTiles(
   for await (const { tile, index, total } of readMbTiles(fileName, limit)) {
     if (index === 0) logger.info({ path: tarFileName, count: total }, 'Covt.Tar:Start');
 
-    const tileName = xyzToPath(tile.tile_column, tile.tile_row, tile.zoom_level);
+    const x = tile.tile_column;
+    const z = tile.zoom_level;
+    const y = (1 << z) - 1 - tile.tile_row;
+
+    const tileName = xyzToPath(x, y, z);
     const tileData = decompress ? zlib.gunzipSync(tile.tile_data) : tile.tile_data;
     packer.entry({ name: tileName }, tileData);
     if (writeCount % 25_000 === 0) {
