@@ -23,15 +23,8 @@ export class Covt {
     return new Covt(source).loadIndex(index);
   }
 
-  async getTile(
-    x: number,
-    y: number,
-    z: number,
-    l?: LogType,
-  ): Promise<null | { buffer: ArrayBuffer; contentType: 'application/gzip' }> {
-    const tileName = xyzToPath(x, y, z);
-
-    const index = this.index.get(tileName);
+  async getFile(fileName: string, l?: LogType): Promise<null | { buffer: ArrayBuffer; contentType: string }> {
+    const index = this.index.get(fileName);
     if (index == null) return null;
 
     const [, offset, size] = index;
@@ -39,5 +32,15 @@ export class Covt {
     const buffer = this.source.bytes(offset, size);
 
     return { buffer, contentType: 'application/gzip' };
+  }
+
+  async getTile(
+    x: number,
+    y: number,
+    z: number,
+    l?: LogType,
+  ): Promise<null | { buffer: ArrayBuffer; contentType: string }> {
+    const tileName = xyzToPath(x, y, z);
+    return this.getFile(tileName, l);
   }
 }
