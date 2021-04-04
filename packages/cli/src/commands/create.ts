@@ -15,6 +15,7 @@ export class CreateCovt extends Command {
     output: flags.string({ description: 'output file', required: true }),
     verbose: flags.boolean({ description: 'verbose logging' }),
     index: flags.boolean({ description: 'Only create the index', default: false }),
+    limit: flags.integer({ description: 'Only ingest this many files' }),
   };
 
   static args = [{ name: 'inputFile', required: true }];
@@ -35,7 +36,7 @@ export class CreateCovt extends Command {
     logger.info({ output: flags.output }, 'Covt:Create');
 
     const startTime = Date.now();
-    if (flags.index === false) await toTarTiles(args.inputFile, flags.output, flags.decompress, logger);
+    if (flags.index === false) await toTarTiles(args.inputFile, flags.output, flags.decompress, flags.limit, logger);
     await toTarTilesIndex(flags.output, flags.output + '.index', logger);
 
     const duration = Date.now() - startTime;

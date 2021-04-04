@@ -12,16 +12,17 @@ export interface TileTable {
   tile_data: Buffer;
 }
 
-const LimitCount = 0;
-const Limit = LimitCount > 0 ? `LIMIT ${LimitCount}` : '';
-
 export async function* readMbTiles(
   fileName: string,
+  limit = -1,
 ): AsyncGenerator<{ tile: TileTable; index: number; total: number }, null> {
   const db = bs3(fileName);
 
+  let limitQuery = '';
+  if (limit > 0) limitQuery = 'LIMIT ' + limit;
+
   const total = await db.prepare('SELECT count(*) from tiles;').pluck().get();
-  const query = db.prepare(`SELECT * from tiles order by zoom_level ${Limit}`);
+  const query = db.prepare(`SELECT * from tiles order by zoom_level ${limitQuery}`);
 
   let index = 0;
   for (const tile of query.iterate()) yield { tile, index: index++, total };
@@ -32,6 +33,7 @@ export async function toTarTiles(
   fileName: string,
   tarFileName: string,
   decompress: boolean,
+  limit = -1,
   logger: Logger,
 ): Promise<void> {
   const packer = tar.pack();
@@ -42,7 +44,7 @@ export async function toTarTiles(
   packer.pipe(createWriteStream(tarFileName));
 
   let startTileTime = Date.now();
-  for await (const { tile, index, total } of readMbTiles(fileName)) {
+  for await (const { tile, index, total } of readMbTiles(fileName, limit)) {
     if (index === 0) logger.info({ path: tarFileName, count: total }, 'Covt.Tar:Start');
 
     const tileName = xyzToPath(tile.tile_column, tile.tile_row, tile.zoom_level);
