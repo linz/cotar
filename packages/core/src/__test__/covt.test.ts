@@ -29,8 +29,8 @@ export class MemorySource extends ChunkSource {
 
 o.spec('Covt', () => {
   const tarIndex: TarIndex = [
-    ['tiles/0/0/0.pbf', 0, 1],
-    ['tiles/1/1/1.pbf', 4, 4],
+    ['tiles/0/0/0.pbf.gz', 0, 1],
+    ['tiles/1/1/1.pbf.gz', 4, 4],
   ];
   o('should load index', async () => {
     const covt = await Covt.create(new MemorySource('Tar', '0123456789'), tarIndex);
