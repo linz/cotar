@@ -41,7 +41,6 @@ interface TarIndexFile [
     number, //  Offset to the start of the data
     number // Number of bytes inside the file 
 ]
-}
 ```
 
 ## Future investigation
