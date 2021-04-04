@@ -1,9 +1,8 @@
+import { xyzToPath } from '@covt/core';
 import bs3 from 'better-sqlite3';
 import { createWriteStream } from 'fs';
 import type { Logger } from 'pino';
 import * as tar from 'tar-stream';
-import { xyzToPath } from '@covt/core';
-import * as zlib from 'zlib';
 
 export interface TileTable {
   zoom_level: number;
@@ -41,9 +40,9 @@ export async function toTarTiles(fileName: string, tarFileName: string, limit = 
   for await (const { tile, index, total } of readMbTiles(fileName, limit)) {
     if (index === 0) logger.info({ path: tarFileName, count: total }, 'Covt.Tar:Start');
 
-    const x = tile.tile_column;
     const z = tile.zoom_level;
-    const y = (1 << z) - 1 - tile.tile_row;
+    const x = tile.tile_column;
+    const y = tile.tile_row;
 
     const tileName = xyzToPath(x, y, z);
     const tileData = tile.tile_data;
