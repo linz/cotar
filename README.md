@@ -1,6 +1,6 @@
-# COVT - Cloud optmized archive
+# Cotar - Cloud optmized tar archive
 
-tar + Mapbox vector tiles (MVT) + Tar index = :heart:
+tar + Tar index + S3 = :heart:
 
 ## Requirements
 
@@ -10,12 +10,12 @@ tar + Mapbox vector tiles (MVT) + Tar index = :heart:
 - Should be able to fetch ideally any file inside a archive with a minimal amount of requests (Ideally 2)
 
 ## Usage
-Create a cloud optimized vector tile files
+Create a cloud tar file
 
 ```
-npm i -g @covt/cli
+npm i -g @cotar/cli
 
-covt create --output outputFile.covt inputFile.mbtiles
+cotar create inputFile.tar
 ```
 
 

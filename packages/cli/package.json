@@ -1,23 +1,21 @@
 {
-  "name": "@covt/cli",
+  "name": "@cotar/cli",
   "version": "1.1.0",
   "main": "index.js",
   "license": "MIT",
   "bin": {
-    "covt": "./bin/covt"
+    "cotar": "./bin/cotar"
   },
   "dependencies": {
     "@cogeotiff/source-file": "^4.2.0",
-    "@covt/core": "^1.1.0",
+    "@cotar/core": "^1.1.0",
     "@oclif/command": "^1.8.0",
-    "better-sqlite3": "^7.1.2",
     "binparse": "^1.1.0",
     "pino": "^6.11.0",
     "pretty-json-log": "^0.3.2",
     "tar-stream": "^2.2.0"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^5.4.1",
     "@types/node": "^14.14.22",
     "@types/pino": "^6.3.5",
     "@types/tar-stream": "^2.2.0"
@@ -27,7 +25,7 @@
   },
   "oclif": {
     "commands": "./build/src/commands",
-    "bin": "covt"
+    "bin": "cotar"
   },
   "files": [
     "build/src",

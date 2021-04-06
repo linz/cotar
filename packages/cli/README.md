@@ -1,12 +1,12 @@
-#  Cloud Optimized Vector Tiles (COVT) - CLI (@covt/cli)
+#  Cloud Optimized Tar (COTAR) - CLI (@cotar/cli)
 
 ## Create cloud optimized 
 
 ```bash
-covt create --output sample.covt sample.mbtiles --verbose
+cotar create sample.tar --verbose
 ```
 
 
 ```bash
-covt serve sample.covt
+cotar inf sample.tar
 ```

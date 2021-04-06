@@ -1,5 +1,5 @@
 {
-  "name": "@cogeotiff/base",
+  "name": "@cotar/base",
   "version": "0.1.0",
   "scripts": {
       "clean": "tsc -b --clean && rimraf 'packages/*/build'",

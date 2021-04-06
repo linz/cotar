@@ -1,10 +1,8 @@
 import { ChunkSource, LogType } from '@cogeotiff/chunk';
 import { TarIndexRecord } from './tar.index';
-import { xyzToPath } from './tile.name';
 
-export class Covt {
+export class Cotar {
   source: ChunkSource;
-  sourceIndex: ChunkSource;
 
   index: Map<string, TarIndexRecord> = new Map();
 
@@ -12,18 +10,18 @@ export class Covt {
     this.source = source;
   }
 
-  protected async loadIndex(index: TarIndexRecord[]): Promise<Covt> {
+  protected async loadIndex(index: TarIndexRecord[]): Promise<Cotar> {
     // console.time('LoadIndex:Map');
     for (const r of index) this.index.set(r[0], r);
     // console.timeEnd('LoadIndex:Map');
     return this;
   }
 
-  static async create(source: ChunkSource, index: TarIndexRecord[]): Promise<Covt> {
-    return new Covt(source).loadIndex(index);
+  static async create(source: ChunkSource, index: TarIndexRecord[]): Promise<Cotar> {
+    return new Cotar(source).loadIndex(index);
   }
 
-  async getFile(fileName: string, l?: LogType): Promise<null | { buffer: ArrayBuffer; contentType: string }> {
+  async get(fileName: string, l?: LogType): Promise<null | { buffer: ArrayBuffer; contentType: string }> {
     const index = this.index.get(fileName);
     if (index == null) return null;
 
@@ -32,15 +30,5 @@ export class Covt {
     const buffer = this.source.bytes(offset, size);
 
     return { buffer, contentType: 'application/gzip' };
-  }
-
-  async getTile(
-    x: number,
-    y: number,
-    z: number,
-    l?: LogType,
-  ): Promise<null | { buffer: ArrayBuffer; contentType: string }> {
-    const tileName = xyzToPath(x, y, z);
-    return this.getFile(tileName, l);
   }
 }

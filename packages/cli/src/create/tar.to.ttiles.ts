@@ -44,7 +44,7 @@ export async function toTarTilesIndex(filename: string, indexFileName: string, l
   const Files: Record<string, { o: number; s: number }> = {};
   let fileCount = 0;
   const headBuffer = Buffer.alloc(512);
-  logger.info({ index: indexFileName }, 'Covt.Index:Start');
+  logger.info({ index: indexFileName }, 'Cotar.Index:Start');
   const outputBuffer = createWriteStream(indexFileName);
   outputBuffer.write(`[\n`);
 
@@ -70,7 +70,7 @@ export async function toTarTilesIndex(filename: string, indexFileName: string, l
         const duration = Date.now() - currentTime;
         currentTime = Date.now();
         const percent = ((ctx.offset / stat.size) * 100).toFixed(2);
-        logger.debug({ current: fileCount, percent, duration }, 'Covt.Index:Write');
+        logger.debug({ current: fileCount, percent, duration }, 'Cotar.Index:Write');
       }
     }
 
@@ -80,6 +80,6 @@ export async function toTarTilesIndex(filename: string, indexFileName: string, l
   await new Promise<void>((r) => outputBuffer.write('\n]', () => r()));
   logger.info(
     { index: indexFileName, count: Object.keys(Files).length, duration: Date.now() - startTime },
-    'Covt.Index:Created',
+    'Cotar.Index:Created',
   );
 }
