@@ -29,7 +29,7 @@ export class CreateCotar extends Command {
     logger.info({ output: outputFile }, 'Cotar:Create');
 
     const startTime = Date.now();
-    await toTarTilesIndex(args.inputFile, outputFile + '.index', logger);
+    await toTarTilesIndex(args.inputFile, outputFile, logger);
 
     const duration = Date.now() - startTime;
     logger.info({ output: outputFile, duration }, 'Cotar:Created');
