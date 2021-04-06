@@ -25,7 +25,7 @@ TAR files contain a collection of files stored sequentially into the file. With 
 
 This makes it very easy to add new files to a archive as move files can just be appended to the end, however this makes random reads impossible, as every file header would have to be read until the specific file wanted would be found 
 
-![TarFileBackground](./statc/TarFileBackground.png)
+![TarFileBackground](./static/TarFileBackground.png)
 
 
 TAR Index (.tar.index) is a JSON document containing the file location and size inside of a tar file. with this index a tar file can be randomly read.
