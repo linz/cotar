@@ -1,3 +1,2 @@
-export { xyzToPath } from './tile.name';
-export { Covt } from './covt';
+export { Cotar } from './cotar';
 export { TarIndex, TarIndexRecord } from './tar.index';
