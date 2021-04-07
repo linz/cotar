@@ -1,6 +1,6 @@
 {
   "name": "@cotar/core",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "license": "MIT",

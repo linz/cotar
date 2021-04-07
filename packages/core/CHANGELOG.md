@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/linz/cotar/compare/v1.3.0...v1.4.0) (2021-04-07)
+
+
+### Features
+
+* **core:** index loading can now be synchronous ([752f57f](https://github.com/linz/cotar/commit/752f57f9301857d9987803d8bc44114e121a33b1))
+
+
+
+
+
 # [1.3.0](https://github.com/linz/cotar/compare/v1.2.0...v1.3.0) (2021-04-07)
 
 
