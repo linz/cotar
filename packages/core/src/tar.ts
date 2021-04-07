@@ -49,23 +49,23 @@ function alignOffsetToBlock(ctx: { offset: number }): void {
     size = ctx.offset & 511;
   }
 }
-async function* iterateTarFiles(getBytes: AsyncFileRead): AsyncGenerator<TarFileHeader> {
-  const ctx = { offset: 0, startOffset: 0 };
-
-  while (true) {
-    alignOffsetToBlock(ctx);
-    const headData = await getBytes(ctx.offset, 512);
-    if (headData == null) return;
-    const head = TarHeader.raw(headData);
-    if (isNaN(head.size)) return;
-    ctx.offset += head.size + 512;
-
-    if (TarType[head.type] == null) throw new Error('Unknown header @ ' + toHex(ctx.offset));
-    if (head.type === TarType.File) yield { header: head, offset: ctx.offset };
-  }
-}
 
 export const TarReader = {
   Type: TarType,
-  iterate: iterateTarFiles,
+  /** Iterate the tar file headers  */
+  async *iterate(getBytes: AsyncFileRead): AsyncGenerator<TarFileHeader> {
+    const ctx = { offset: 0, startOffset: 0 };
+
+    while (true) {
+      alignOffsetToBlock(ctx);
+      const headData = await getBytes(ctx.offset, 512);
+      if (headData == null) return;
+      const head = TarHeader.raw(headData);
+      if (isNaN(head.size)) return;
+      ctx.offset += head.size + 512;
+
+      if (TarType[head.type] == null) throw new Error('Unknown header @ ' + toHex(ctx.offset));
+      if (head.type === TarType.File) yield { header: head, offset: ctx.offset };
+    }
+  },
 };
