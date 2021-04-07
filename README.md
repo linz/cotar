@@ -1,6 +1,6 @@
-# Cotar - Cloud optmized tar archive
+# Cotar - Cloud optimized tar archive
 
-.tar + .tar.index + S3 = :heart:
+.tar + .tar.index + AWS S3 = :heart:
 
 ## Requirements
 

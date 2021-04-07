@@ -1,5 +1,8 @@
 #  Cloud Optimized Tar (COTAR) - CLI (@cotar/cli)
 
+.tar + .tar.index + AWS S3 = :heart:
+
+
 ## Create cloud optimized 
 
 ```bash
