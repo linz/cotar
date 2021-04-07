@@ -5,20 +5,23 @@ export class Cotar {
   source: ChunkSource;
 
   index: Map<string, TarIndexRecord> = new Map();
+  indexSource: TarIndexRecord[];
 
-  constructor(source: ChunkSource) {
+  constructor(source: ChunkSource, index: TarIndexRecord[]) {
     this.source = source;
+    this.indexSource = index;
   }
 
-  protected async loadIndex(index: TarIndexRecord[]): Promise<Cotar> {
-    // console.time('LoadIndex:Map');
-    for (const r of index) this.index.set(r[0], r);
-    // console.timeEnd('LoadIndex:Map');
-    return this;
+  /** Initialize the cache */
+  init(): void {
+    if (this.index.size > 0) return;
+    for (const r of this.indexSource) this.index.set(r[0], r);
   }
 
   static async create(source: ChunkSource, index: TarIndexRecord[]): Promise<Cotar> {
-    return new Cotar(source).loadIndex(index);
+    const cotar = new Cotar(source, index);
+    cotar.init();
+    return cotar;
   }
 
   async get(fileName: string, l?: LogType): Promise<null | { buffer: ArrayBuffer; contentType: string }> {
