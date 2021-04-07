@@ -10,6 +10,7 @@ cotar create sample.tar --verbose
 ```
 
 
+### Load a tar + index 
 ```bash
-cotar inf sample.tar
+cotar info sample.tar
 ```
