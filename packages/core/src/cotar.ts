@@ -24,14 +24,12 @@ export class Cotar {
     return cotar;
   }
 
-  async get(fileName: string, l?: LogType): Promise<null | { buffer: ArrayBuffer; contentType: string }> {
+  async get(fileName: string, l?: LogType): Promise<null | ArrayBuffer> {
     const index = this.index.get(fileName);
     if (index == null) return null;
 
     const [, offset, size] = index;
     await this.source.loadBytes(offset, size, l);
-    const buffer = this.source.bytes(offset, size);
-
-    return { buffer, contentType: 'application/gzip' };
+    return this.source.bytes(offset, size);
   }
 }

@@ -62,10 +62,12 @@ export const TarReader = {
       if (headData == null) return;
       const head = TarHeader.raw(headData);
       if (isNaN(head.size)) return;
-      ctx.offset += head.size + 512;
+      ctx.offset += 512;
 
       if (TarType[head.type] == null) throw new Error('Unknown header @ ' + toHex(ctx.offset));
       if (head.type === TarType.File) yield { header: head, offset: ctx.offset };
+
+      ctx.offset += head.size;
     }
   },
 };
