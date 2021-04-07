@@ -5,7 +5,8 @@
   "types": "build/src/index.d.ts",
   "license": "MIT",
   "dependencies": {
-    "@cogeotiff/chunk": "^4.2.0"
+    "@cogeotiff/chunk": "^4.2.0",
+    "binparse": "^1.1.0"
   },
   "publishConfig": {
     "access": "public"
