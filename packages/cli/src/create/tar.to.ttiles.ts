@@ -2,9 +2,15 @@ import { bp } from 'binparse';
 import { createWriteStream, promises as fs } from 'fs';
 import type { Logger } from 'pino';
 
-export enum TarFileType {
+export enum TarType {
   File = 0,
+  HardLink = 1,
+  SymLink = 2,
+  CharDeviceNode = 3,
+  BlockDeviceNode = 4,
   Directory = 5,
+  FifoNode = 6,
+  Reserved = 7,
 }
 const tar = bp.object('TarHeader', {
   path: bp.string(100),
@@ -59,9 +65,9 @@ export async function toTarTilesIndex(filename: string, indexFileName: string, l
     const head = tar.raw(headBuffer);
 
     if (head.path === '') break;
-    if (TarFileType[head.type] == null) throw new Error('Unknown header');
+    if (TarType[head.type] == null) throw new Error('Unknown header');
 
-    if (head.type === TarFileType.File) {
+    if (head.type === TarType.File) {
       if (fileCount > 0) outputBuffer.write(',\n');
       outputBuffer.write(JSON.stringify([head.path, ctx.offset, head.size]));
       Files[head.path] = { o: ctx.offset, s: head.size };
