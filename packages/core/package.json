@@ -14,5 +14,8 @@
     "build/src",
     "bin",
     "*.png"
-  ]
+  ],
+  "devDependencies": {
+    "@types/node": "^14.14.37"
+  }
 }
