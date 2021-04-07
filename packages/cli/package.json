@@ -12,13 +12,11 @@
     "@oclif/command": "^1.8.0",
     "binparse": "^1.1.0",
     "pino": "^6.11.0",
-    "pretty-json-log": "^0.3.2",
-    "tar-stream": "^2.2.0"
+    "pretty-json-log": "^0.3.2"
   },
   "devDependencies": {
     "@types/node": "^14.14.22",
-    "@types/pino": "^6.3.5",
-    "@types/tar-stream": "^2.2.0"
+    "@types/pino": "^6.3.5"
   },
   "publishConfig": {
     "access": "public"
