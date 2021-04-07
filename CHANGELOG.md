@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://github.com/linz/cotar/compare/v1.4.0...v1.4.1) (2021-04-07)
+
+
+### Bug Fixes
+
+* **core:** adding missing binparse dep ([01d8216](https://github.com/linz/cotar/commit/01d82169bcdfbb37cc468e23eccb04905557ad53))
+* **core:** store start of file offset not end ([b426d68](https://github.com/linz/cotar/commit/b426d6805858ffe4db18ae81c3f2526191ab473e))
+
+
+
+
+
 # [1.4.0](https://github.com/linz/cotar/compare/v1.3.0...v1.4.0) (2021-04-07)
 
 
