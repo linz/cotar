@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import { existsSync } from 'fs';
-import { toTarTilesIndex } from '../create/tar.to.ttiles';
+import { toTarIndex } from '../create/create.index';
 import { logger } from '../log';
 
 export class CreateCotar extends Command {
@@ -29,7 +29,7 @@ export class CreateCotar extends Command {
     logger.info({ output: outputFile }, 'Cotar:Create');
 
     const startTime = Date.now();
-    await toTarTilesIndex(args.inputFile, outputFile, logger);
+    await toTarIndex(args.inputFile, outputFile, logger);
 
     const duration = Date.now() - startTime;
     logger.info({ output: outputFile, duration }, 'Cotar:Created');

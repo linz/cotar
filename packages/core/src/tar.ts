@@ -1,3 +1,4 @@
+import { LogType } from '@cogeotiff/chunk';
 import { bp, StrutInfer, toHex } from 'binparse';
 
 export interface MinimalBuffer {
@@ -7,6 +8,17 @@ export interface MinimalBuffer {
 }
 
 export type AsyncFileRead = (readCount: number, byteCount: number) => Promise<MinimalBuffer | null>;
+export type AsyncFileOutput = { write: (data: string, cb?: () => void) => void };
+
+export type AsyncFileReader = (
+  buffer: Buffer,
+  off: number,
+  count: number,
+  offset: number,
+) => Promise<{ bytesRead: number }>;
+/** Simple interface that should be similar to the output of fs.open() */
+export type AsyncFileDescriptor = { read: AsyncFileReader };
+
 export interface TarFileHeader {
   offset: number;
   header: StrutInfer<typeof TarHeader>;
@@ -69,5 +81,51 @@ export const TarReader = {
 
       ctx.offset += head.size;
     }
+  },
+
+  /** Create a function to read into a shared buffer from a async file descriptor */
+  toFileReader(fd: AsyncFileDescriptor): AsyncFileRead {
+    const headBuffer = Buffer.alloc(512);
+
+    async function readBytes(offset: number, count: number): Promise<Buffer | null> {
+      const res = await fd.read(headBuffer, 0, count, offset);
+      if (res.bytesRead < count) return null;
+      return headBuffer;
+    }
+    return readBytes;
+  },
+
+  /**
+   * Create a tar index give a source tar file
+   * @param getBytes function to randomly read bytes from the tar
+   * @param output stream to output the tar index into
+   * @param logger optional logger for extra information
+   * @returns
+   */
+  async index(
+    getBytes: AsyncFileRead | AsyncFileDescriptor,
+    output: AsyncFileOutput,
+    logger?: LogType,
+  ): Promise<number> {
+    if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
+
+    const fileCount = 0;
+    let currentTime = Date.now();
+    output.write(`[\n`);
+
+    for await (const ctx of TarReader.iterate(getBytes)) {
+      if (ctx.header.type !== TarReader.Type.File) continue;
+      if (fileCount > 0) output.write(',\n');
+      output.write(JSON.stringify([ctx.header.path, ctx.offset, ctx.header.size]));
+
+      if (fileCount % 25_000 === 0 && logger != null) {
+        const duration = Date.now() - currentTime;
+        currentTime = Date.now();
+        logger.debug({ current: fileCount, duration }, 'Cotar.Index:Write');
+      }
+    }
+
+    await new Promise<void>((resolve) => output.write('\n]', () => resolve()));
+    return fileCount;
   },
 };
