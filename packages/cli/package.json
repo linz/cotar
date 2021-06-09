@@ -1,6 +1,6 @@
 {
   "name": "@cotar/cli",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "main": "index.js",
   "license": "MIT",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@cogeotiff/source-file": "^4.2.0",
-    "@cotar/core": "^1.4.1",
+    "@cotar/core": "^1.5.0",
     "@oclif/command": "^1.8.0",
     "binparse": "^1.1.0",
     "pino": "^6.11.0",
