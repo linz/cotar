@@ -109,13 +109,14 @@ export const TarReader = {
   ): Promise<number> {
     if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
 
-    const fileCount = 0;
+    let fileCount = 0;
     let currentTime = Date.now();
     output.write(`[\n`);
 
     for await (const ctx of TarReader.iterate(getBytes)) {
       if (ctx.header.type !== TarReader.Type.File) continue;
       if (fileCount > 0) output.write(',\n');
+      fileCount++;
       output.write(JSON.stringify([ctx.header.path, ctx.offset, ctx.header.size]));
 
       if (fileCount % 25_000 === 0 && logger != null) {

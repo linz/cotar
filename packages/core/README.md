@@ -32,4 +32,6 @@ import * as fs from 'fs';
 const fd = await fs.open('tarFile.tar', 'r');
 const outputStream = fs.createWriteStream('tarFile.tar.index');
 const fileCount = await TarReader.index(readBytes, outputStream);
+
+await fd.close();
 ```
