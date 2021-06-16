@@ -1,5 +1,5 @@
 import { TarReader } from '@cotar/core';
-import { createWriteStream, promises as fs } from 'fs';
+import { promises as fs } from 'fs';
 import type { Logger } from 'pino';
 
 export async function toTarIndex(filename: string, indexFileName: string, logger: Logger): Promise<void> {
