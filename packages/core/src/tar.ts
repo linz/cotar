@@ -98,26 +98,20 @@ export const TarReader = {
   /**
    * Create a tar index give a source tar file
    * @param getBytes function to randomly read bytes from the tar
-   * @param output stream to output the tar index into
    * @param logger optional logger for extra information
    * @returns
    */
-  async index(
-    getBytes: AsyncFileRead | AsyncFileDescriptor,
-    output: AsyncFileOutput,
-    logger?: LogType,
-  ): Promise<number> {
+  async index(getBytes: AsyncFileRead | AsyncFileDescriptor, logger?: LogType): Promise<string[]> {
     if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
 
     let fileCount = 0;
     let currentTime = Date.now();
-    output.write(`[\n`);
+    const lines = [];
 
     for await (const ctx of TarReader.iterate(getBytes)) {
       if (ctx.header.type !== TarReader.Type.File) continue;
-      if (fileCount > 0) output.write(',\n');
       fileCount++;
-      output.write(JSON.stringify([ctx.header.path, ctx.offset, ctx.header.size]));
+      lines.push(JSON.stringify([ctx.header.path, ctx.offset, ctx.header.size]));
 
       if (fileCount % 25_000 === 0 && logger != null) {
         const duration = Date.now() - currentTime;
@@ -125,8 +119,9 @@ export const TarReader = {
         logger.debug({ current: fileCount, duration }, 'Cotar.Index:Write');
       }
     }
+    // Make the index sorted so it can be searched easier
+    lines.sort();
 
-    await new Promise<void>((resolve) => output.write('\n]', () => resolve()));
-    return fileCount;
+    return lines;
   },
 };

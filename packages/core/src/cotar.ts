@@ -5,27 +5,44 @@ export class Cotar {
   source: ChunkSource;
 
   index: Map<string, TarIndexRecord> = new Map();
-  indexSource: TarIndexRecord[];
+  indexSource: string[];
 
-  constructor(source: ChunkSource, index: TarIndexRecord[]) {
+  /**
+   * @param source Chunked source of the tar files
+   * @param index Raw NDJSON lines of the index
+   */
+  constructor(source: ChunkSource, index: string[]) {
     this.source = source;
     this.indexSource = index;
   }
 
-  /** Initialize the cache */
-  init(): void {
-    if (this.index.size > 0) return;
-    for (const r of this.indexSource) this.index.set(r[0], r);
+  /**
+   * Search the index looking for the file
+   * @param fileName file to search for
+   * @returns the index if found, null otherwise
+   */
+  find(fileName: string, low = 0, high = this.indexSource.length - 1): TarIndexRecord | null {
+    const searchString = `["${fileName}"`;
+
+    if (low > high) return null;
+    const mid = Math.floor((low + high) / 2);
+    const midData = this.indexSource[mid];
+
+    const testString = midData.slice(0, searchString.length);
+
+    if (searchString === testString) return JSON.parse(midData);
+    if (searchString < testString) return this.find(fileName, low, mid - 1);
+    return this.find(fileName, mid + 1, high);
   }
 
-  static async create(source: ChunkSource, index: TarIndexRecord[]): Promise<Cotar> {
-    const cotar = new Cotar(source, index);
-    cotar.init();
-    return cotar;
-  }
-
+  /**
+   * Read a file from a cotar
+   * @param fileName File to read
+   * @param l optional logger for additional trace metrics
+   * @returns the file's contents or null if it cannot be found
+   */
   async get(fileName: string, l?: LogType): Promise<null | ArrayBuffer> {
-    const index = this.index.get(fileName);
+    const index = this.find(fileName);
     if (index == null) return null;
 
     const [, offset, size] = index;

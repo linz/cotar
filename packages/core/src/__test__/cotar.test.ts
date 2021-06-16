@@ -1,7 +1,6 @@
 import { ChunkSource } from '@cogeotiff/chunk';
 import o from 'ospec';
 import { Cotar } from '../cotar';
-import { TarIndex } from '../tar.index';
 
 export class MemorySource extends ChunkSource {
   chunkSize: number;
@@ -29,20 +28,16 @@ export class MemorySource extends ChunkSource {
 }
 
 o.spec('Cotar', () => {
-  const tarIndex: TarIndex = [
-    ['tiles/0/0/0.pbf.gz', 0, 1],
-    ['tiles/1/1/1.pbf.gz', 4, 4],
+  const tarIndex: string[] = [
+    JSON.stringify(['tiles/0/0/0.pbf.gz', 0, 1]),
+    JSON.stringify(['tiles/1/1/1.pbf.gz', 4, 4]),
   ];
-  o('should load index', async () => {
-    const cotar = await Cotar.create(new MemorySource('Tar', '0123456789'), tarIndex);
 
-    o(cotar.index.get(tarIndex[0][0])).deepEquals(tarIndex[0]);
-    o(cotar.index.get(tarIndex[1][0])).deepEquals(tarIndex[1]);
-  });
   o('should load a tile', async () => {
-    const cotar = await Cotar.create(new MemorySource('Tar', '0123456789'), tarIndex);
-    o(cotar.index.get(tarIndex[0][0])).deepEquals(tarIndex[0]);
-    o(cotar.index.get(tarIndex[1][0])).deepEquals(tarIndex[1]);
+    const cotar = new Cotar(new MemorySource('Tar', '0123456789'), tarIndex);
+
+    o(cotar.find('tiles/0/0/0.pbf.gz')).deepEquals(JSON.parse(tarIndex[0]));
+    o(cotar.find('tiles/1/1/1.pbf.gz')).deepEquals(JSON.parse(tarIndex[1]));
 
     const tile0 = await cotar.get('tiles/0/0/0.pbf.gz');
     o(tile0).notEquals(null);
