@@ -16,7 +16,11 @@ export class Cotar {
     this.indexSource = index;
   }
 
-  /** Search the raw input data looking for the line that  */
+  /**
+   * Search the index looking for the file
+   * @param fileName file to search for
+   * @returns the index if found, null otherwise
+   */
   find(fileName: string, low = 0, high = this.indexSource.length - 1): TarIndexRecord | null {
     const searchString = `["${fileName}"`;
 
@@ -31,6 +35,12 @@ export class Cotar {
     return this.find(fileName, mid + 1, high);
   }
 
+  /**
+   * Read a file from a cotar
+   * @param fileName File to read
+   * @param l optional logger for additional trace metrics
+   * @returns the file's contents or null if it cannot be found
+   */
   async get(fileName: string, l?: LogType): Promise<null | ArrayBuffer> {
     const index = this.find(fileName);
     if (index == null) return null;
