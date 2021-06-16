@@ -22,9 +22,9 @@ export class CreateCotar extends Command {
     logger.debug({ indexPath: args.inputFile + '.index' }, 'Index:Load');
     const sourceIndex = await fs.readFile(args.inputFile + '.index');
 
-    const index = JSON.parse(sourceIndex.toString());
+    const index = sourceIndex.toString().split('\n');
 
-    const cotar = await Cotar.create(source, index);
+    const cotar = new Cotar(source, index);
     logger.info({ fileName: args.inputFile, files: cotar.index.size }, 'Cotar.Loaded');
   }
 }

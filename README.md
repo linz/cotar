@@ -28,13 +28,12 @@ This makes it very easy to add new files to a archive as move files can just be 
 ![TarFileBackground](./static/TarFileBackground.png)
 
 ### Tar Index
-TAR Index (.tar.index) is a JSON document containing the file location and size inside of a tar file. with this index a tar file can be randomly read.
+TAR Index (.tar.index) is a NDJSON document containing the file location and size inside of a tar file. with this index a tar file can be randomly read.
 
 ![TarFileIndex](./static/TarFileIndex.png)
 
 ```typescript
 /** Mapping of path -> index records */
-type TarIndex = TarIndexFile[];
 
 interface TarIndexFile [ 
     string, // Name of the file @see header.path
@@ -46,13 +45,11 @@ interface TarIndexFile [
 #### Example Index
 
 ```json
-[
-  ["src/create/tar.to.ttiles.ts",1536,2610],
-  ["src/index.ts",5120,38],
-  ["src/log.ts",6144,163],
-  ["src/commands/info.ts",7680,1069],
-  ["src/commands/create.ts",9728,1280]
-]
+["src/create/tar.to.ttiles.ts",1536,2610]
+["src/index.ts",5120,38]
+["src/log.ts",6144,163]
+["src/commands/info.ts",7680,1069]
+["src/commands/create.ts",9728,1280]
 ```
 
 ## Future investigation

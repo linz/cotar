@@ -15,7 +15,7 @@ import { Cotar } from '@cotar/core';
 import { SourceAwsS3 } from '@cogeotiff/source-aws'
 
 const source = SourceAwsS3.fromUri('s3://linz-basemaps/topographic.tar');
-const tarIndex = JSON.parse(fs.readFileSync('./file.tar.index'));
+const tarIndex = fs.readFileSync('./file.tar.index').toString().split('\n');
 
 const cotar = new Cotar(source, index);
 
@@ -27,11 +27,11 @@ Creating indexes, indexes can be created using the `@cotar/cli` package or progr
 
 ```typescript
 import { TarReader } from '@cotar/core'
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
 
 const fd = await fs.open('tarFile.tar', 'r');
-const outputStream = fs.createWriteStream('tarFile.tar.index');
-const fileCount = await TarReader.index(readBytes, outputStream);
+const tarIndex = await TarReader.index(readBytes, outputStream);
+await fs.write('tarFile.tar.index', tarIndex.join('\n'))
 
 await fd.close();
 ```

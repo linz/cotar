@@ -1,10 +1,10 @@
 import o from 'ospec';
 import * as cp from 'child_process';
 import * as path from 'path';
-import { createWriteStream, promises as fs } from 'fs';
+import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import { TarFileHeader, TarReader } from '../tar';
-import { TarIndex, TarIndexRecord } from '../tar.index';
+import { TarIndexRecord } from '../tar.index';
 import { MemorySource } from './cotar.test';
 import { Cotar } from '../cotar';
 
@@ -36,14 +36,15 @@ o.spec('TarReader', () => {
   });
 
   o('should index files', async () => {
-    const index: TarIndex = [];
-    for await (const ctx of TarReader.iterate(readBytes)) index.push([ctx.header.path, ctx.offset, ctx.header.size]);
+    const index: string[] = [];
+    for await (const ctx of TarReader.iterate(readBytes)) {
+      index.push(JSON.stringify([ctx.header.path, ctx.offset, ctx.header.size]));
+    }
 
     const source = new MemorySource('Tar', await fs.readFile(tarFilePath));
 
     const tar = new Cotar(source, index);
 
-    tar.init();
     const buf = await tar.get('tar.test.js');
     o(buf).notEquals(null);
     const text = Buffer.from(buf!).toString();
@@ -53,16 +54,18 @@ o.spec('TarReader', () => {
   o('should create a index', async () => {
     const source = await fs.open(tarFilePath, 'r');
 
-    const output = createWriteStream(tarFileIndexPath);
-    const fileCount = await TarReader.index(source, output);
+    const files = await TarReader.index(source);
+    fs.writeFile(tarFileIndexPath, files.join('\n'));
 
     await source.close();
 
     const tarIndexRaw = await fs.readFile(tarFileIndexPath);
-    o(fileCount >= 3).equals(true);
+    o(files.length >= 3).equals(true);
 
-    const tarIndex = JSON.parse(tarIndexRaw.toString());
-    o(Array.isArray(tarIndex)).equals(true);
+    const tarIndex = tarIndexRaw
+      .toString()
+      .split('\n')
+      .map((c) => JSON.parse(c));
 
     const tarTest = tarIndex.find((f: TarIndexRecord) => f[0] === 'tar.test.js');
     o(tarTest).notEquals(undefined);
