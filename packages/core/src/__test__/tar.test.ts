@@ -5,8 +5,9 @@ import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import { TarFileHeader, TarReader } from '../tar';
 import { TarIndexRecord } from '../tar.index';
-import { MemorySource } from './cotar.test';
 import { Cotar } from '../cotar';
+import { MemorySource } from '../source.memory';
+import { CotarIndexNdjson } from '../cotar.index.ndjson';
 
 o.spec('TarReader', () => {
   // Create a Tar file of the built source
@@ -43,7 +44,7 @@ o.spec('TarReader', () => {
 
     const source = new MemorySource('Tar', await fs.readFile(tarFilePath));
 
-    const tar = new Cotar(source, index);
+    const tar = new Cotar(source, new CotarIndexNdjson(Buffer.from(index.join('\n'))));
 
     const buf = await tar.get('tar.test.js');
     o(buf).notEquals(null);

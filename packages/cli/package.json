@@ -11,8 +11,10 @@
     "@cotar/core": "^2.0.0",
     "@oclif/command": "^1.8.0",
     "binparse": "^1.1.0",
+    "farmhash": "^3.2.1",
     "pino": "^6.11.0",
-    "pretty-json-log": "^0.3.2"
+    "pretty-json-log": "^0.3.2",
+    "xxhash-addon": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^15.12.1",

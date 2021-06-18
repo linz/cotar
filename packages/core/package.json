@@ -6,7 +6,8 @@
   "license": "MIT",
   "dependencies": {
     "@cogeotiff/chunk": "^4.2.0",
-    "binparse": "^1.1.0"
+    "binparse": "^1.1.0",
+    "xxhashjs": "^0.2.2"
   },
   "publishConfig": {
     "access": "public"
@@ -17,6 +18,7 @@
     "*.png"
   ],
   "devDependencies": {
-    "@types/node": "^15.12.1"
+    "@types/node": "^15.12.1",
+    "@types/xxhashjs": "^0.2.2"
   }
 }

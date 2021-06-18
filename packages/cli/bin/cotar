@@ -1,4 +1,8 @@
 #!/usr/bin/env node
 
-require('@oclif/command').run()
-.catch(require('@oclif/errors/handle'))
+require('@oclif/command')
+  .run()
+  .catch((error) => {
+    console.log(error);
+    return require('@oclif/errors/handle')(error);
+  });

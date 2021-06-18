@@ -7,7 +7,7 @@ export async function toTarIndex(filename: string, indexFileName: string, logger
   logger.info({ index: indexFileName }, 'Cotar.Index:Start');
   const startTime = Date.now();
 
-  const lines = await TarReader.index(fd, logger);
-  await fs.writeFile(indexFileName, lines.join('\n'));
+  const lines = await TarReader.indexBinary(fd, logger);
+  await fs.writeFile(indexFileName, lines);
   logger.info({ index: indexFileName, count: lines.length, duration: Date.now() - startTime }, 'Cotar.Index:Created');
 }
