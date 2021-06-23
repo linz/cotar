@@ -30,17 +30,17 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@cogeotiff/chunk@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@cogeotiff/chunk/-/chunk-4.2.0.tgz#236edd611f713e55c6b1b87c28b0aeb231fcb00a"
-  integrity sha512-QN6a9SfgEk0dMjM1ZGQLtbVHkyzYQwwi3asgnuR0d75192zxFRUj0XgXjB5GCH1GnkpTRTpVgNS8hYj1abNr3A==
+"@cogeotiff/chunk@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@cogeotiff/chunk/-/chunk-4.3.0.tgz#3372ccec11a7f17afafd704d6a11e1068fb1c56e"
+  integrity sha512-duVgqb/Ed6RhWISCBVBibJggWRmL/HJ9Rqq/kdcdW+aj7toGSoo8xr2NGR8N07hjILcUw/Frxf0GTK2/m+xrBg==
 
-"@cogeotiff/source-file@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@cogeotiff/source-file/-/source-file-4.2.0.tgz#0906a9ee09857e1ea0323aedef05001ec24add06"
-  integrity sha512-D4UrvpwtFbDWUA8rMXbrif+g1GVZgc61v6mxnKpACtcR3yI1zd0GkrBddvwbqYwC2pqKZtuYJ+djE6VdiicKnQ==
+"@cogeotiff/source-file@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@cogeotiff/source-file/-/source-file-4.3.0.tgz#e112b669bca7210170ff0b097c225ede84e7ef89"
+  integrity sha512-Kqa5RF9uGYLgb3ULKCjMvkX7Z9XFiLpsZN6wwypvHyKFy6dfet7fO0vcmg7HjZup/ZGjkI1oQOBl72CKNj/kVQ==
   dependencies:
-    "@cogeotiff/chunk" "^4.2.0"
+    "@cogeotiff/chunk" "^4.3.0"
 
 "@eslint/eslintrc@^0.4.2":
   version "0.4.2"
@@ -1066,13 +1066,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/xxhashjs@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@types/xxhashjs/-/xxhashjs-0.2.2.tgz#f72d9398e94b3cb59f53b784186a70b472e61376"
-  integrity sha512-+hlk/W1kgnZn0vR22XNhxHk/qIRQYF54i0UTF2MwBAPd0e7xSy+jKOJwSwTdRQrNnOMRVv+vsh8ITV0uyhp2yg==
-  dependencies:
-    "@types/node" "*"
-
 "@typescript-eslint/eslint-plugin@^4.26.1":
   version "4.26.1"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-4.26.1.tgz#b9c7313321cb837e2bf8bebe7acc2220659e67d3"
@@ -1785,11 +1778,6 @@ cross-spawn@^7.0.2, cross-spawn@^7.0.3:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
-
-cuint@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/cuint/-/cuint-0.2.2.tgz#408086d409550c2631155619e9fa7bcadc3b991b"
-  integrity sha1-QICG1AlVDCYxFVYZ6fp7ytw7mRs=
 
 currently-unhandled@^0.4.1:
   version "0.4.1"
@@ -5480,13 +5468,6 @@ xxhash-addon@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/xxhash-addon/-/xxhash-addon-1.4.0.tgz#b96a69aab2be18735b25b6f256144bd70ffffed9"
   integrity sha512-n3Ml0Vgvy7jMYJBlQIoFLjYxXNZQ5CbzW8E2Ynq2QCUpWMqCouooW7j02+7Oud5FijBuSrjQNuN/fCiz1SHN+w==
-
-xxhashjs@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/xxhashjs/-/xxhashjs-0.2.2.tgz#8a6251567621a1c46a5ae204da0249c7f8caa9d8"
-  integrity sha512-AkTuIuVTET12tpsVIQo+ZU6f/qDmKuRUcjaqR+OIvm+aCBsZ95i7UVY5WJ9TMsSaZ0DA2WxoZ4acu0sPH+OKAw==
-  dependencies:
-    cuint "^0.2.2"
 
 y18n@^5.0.5:
   version "5.0.5"
