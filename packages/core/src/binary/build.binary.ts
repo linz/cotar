@@ -111,7 +111,7 @@ export const CotarIndexBinaryBuilder: TarIndexBuilder = {
       const hash = BigInt(fh.hash64(file.path));
 
       const index = await cotar.find(file.path);
-      if (index == null) console.log('Missing', file.path, hash);
+      if (index == null) throw new Error(`Missing File: ${file.path} hash: ${hash}`);
       if (index?.offset !== file.offset || index?.size !== file.size) {
         logger?.fatal({ index, file }, 'Cotar.Index:Validate:Failed');
         throw new Error('Failed to validate file:' + file.path);

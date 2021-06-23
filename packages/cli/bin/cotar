@@ -3,6 +3,6 @@
 require('@oclif/command')
   .run()
   .catch((error) => {
+    if (error.oclif) return require('@oclif/errors/handle')(error);
     console.log(error);
-    return require('@oclif/errors/handle')(error);
   });
