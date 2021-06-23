@@ -1,4 +1,6 @@
 export { Cotar } from './cotar';
-export { TarIndexRecord } from './tar.index';
 export { TarHeader, TarReader } from './tar';
-export { CotarIndexNdjson } from './cotar.index.ndjson';
+export { CotarIndexBinaryBuilder } from './binary/build.binary';
+export { CotarIndexBinary } from './binary';
+export { CotarIndexNdjsonBuilder } from './ndjson/build.ndjson';
+export { CotarIndexNdjson } from './ndjson';

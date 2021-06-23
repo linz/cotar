@@ -1,13 +1,14 @@
-import o from 'ospec';
+import { SourceMemory } from '@cogeotiff/chunk';
 import * as cp from 'child_process';
-import * as path from 'path';
 import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
-import { TarFileHeader, TarReader } from '../tar';
-import { TarIndexRecord } from '../tar.index';
+import o from 'ospec';
+import * as path from 'path';
+import { toArrayBuffer } from '../binary/build.binary';
 import { Cotar } from '../cotar';
-import { MemorySource } from '../source.memory';
-import { CotarIndexNdjson } from '../cotar.index.ndjson';
+import { CotarIndexNdjson } from '../ndjson';
+import { CotarIndexNdjsonBuilder } from '../ndjson/build.ndjson';
+import { TarFileHeader, TarReader } from '../tar';
 
 o.spec('TarReader', () => {
   // Create a Tar file of the built source
@@ -42,9 +43,9 @@ o.spec('TarReader', () => {
       index.push(JSON.stringify([ctx.header.path, ctx.offset, ctx.header.size]));
     }
 
-    const source = new MemorySource('Tar', await fs.readFile(tarFilePath));
+    const source = new SourceMemory('Tar', toArrayBuffer(await fs.readFile(tarFilePath)));
 
-    const tar = new Cotar(source, new CotarIndexNdjson(Buffer.from(index.join('\n'))));
+    const tar = new Cotar(source, new CotarIndexNdjson(index.join('\n')));
 
     const buf = await tar.get('tar.test.js');
     o(buf).notEquals(null);
@@ -55,20 +56,20 @@ o.spec('TarReader', () => {
   o('should create a index', async () => {
     const source = await fs.open(tarFilePath, 'r');
 
-    const files = await TarReader.index(source);
-    fs.writeFile(tarFileIndexPath, files.join('\n'));
+    const res = await CotarIndexNdjsonBuilder.create(source);
+    fs.writeFile(tarFileIndexPath, res.buffer);
 
     await source.close();
 
     const tarIndexRaw = await fs.readFile(tarFileIndexPath);
-    o(files.length >= 3).equals(true);
+    o(res.count >= 3).equals(true);
 
     const tarIndex = tarIndexRaw
       .toString()
       .split('\n')
       .map((c) => JSON.parse(c));
 
-    const tarTest = tarIndex.find((f: TarIndexRecord) => f[0] === 'tar.test.js');
+    const tarTest = tarIndex.find((f) => f[0] === 'tar.test.js');
     o(tarTest).notEquals(undefined);
     o(tarTest.length).equals(3);
   });

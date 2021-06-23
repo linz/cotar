@@ -1,9 +1,10 @@
 import o from 'ospec';
-import { Cotar } from '../cotar';
-import { CotarIndexNdjson } from '../cotar.index.ndjson';
-import { MemorySource } from '../source.memory';
+import { Cotar } from '../../cotar';
+import { CotarIndexNdjson } from '..';
+import { SourceMemory } from '@cogeotiff/chunk';
+import { toArrayBuffer } from '../../binary/build.binary';
 
-o.spec('Cotar', () => {
+o.spec('CotarNdjson', () => {
   const tarIndex: string[] = [
     JSON.stringify(['tiles/0/0/0.pbf.gz', 0, 1]),
     JSON.stringify(['tiles/1/1/1.pbf.gz', 4, 4]),
@@ -11,8 +12,8 @@ o.spec('Cotar', () => {
 
   o('should load a tile', async () => {
     const cotar = new Cotar(
-      new MemorySource('Tar', '0123456789'),
-      new CotarIndexNdjson(Buffer.from(tarIndex.join('\n'))),
+      new SourceMemory('Tar', toArrayBuffer(Buffer.from('0123456789'))),
+      new CotarIndexNdjson(tarIndex.join('\n')),
     );
 
     o(await cotar.index.find('tiles/0/0/0.pbf.gz')).deepEquals({ offset: 0, size: 1 });

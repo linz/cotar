@@ -1,9 +1,10 @@
-import { CotarIndex } from './cotar';
+import { LogType } from '@cogeotiff/chunk';
+import { CotarIndex, CotarIndexRecord } from '../cotar';
 
 export class CotarIndexNdjson implements CotarIndex {
   source: string[];
-  constructor(source: Buffer) {
-    this.source = source.toString().split('\n');
+  constructor(source: string) {
+    this.source = source.split('\n');
   }
 
   get size(): number {
@@ -14,7 +15,7 @@ export class CotarIndexNdjson implements CotarIndex {
    * @param fileName file to search for
    * @returns the index if found, null otherwise
    */
-  find(fileName: string, low = 0, high = this.source.length - 1): Promise<{ offset: number; size: number } | null> {
+  find(fileName: string, logger?: LogType, low = 0, high = this.source.length - 1): Promise<CotarIndexRecord | null> {
     const searchString = `["${fileName}"`;
 
     if (low > high) return Promise.resolve(null);
@@ -27,7 +28,7 @@ export class CotarIndexNdjson implements CotarIndex {
       const index = JSON.parse(midData);
       return Promise.resolve({ offset: index[1], size: index[2] });
     }
-    if (searchString < testString) return this.find(fileName, low, mid - 1);
-    return this.find(fileName, mid + 1, high);
+    if (searchString < testString) return this.find(fileName, logger, low, mid - 1);
+    return this.find(fileName, logger, mid + 1, high);
   }
 }
