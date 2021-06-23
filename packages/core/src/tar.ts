@@ -1,23 +1,5 @@
-import { LogType } from '@cogeotiff/chunk';
 import { bp, StrutInfer, toHex } from 'binparse';
-
-export interface MinimalBuffer {
-  readonly [n: number]: number;
-  length: number;
-  slice(start: number, end: number): MinimalBuffer;
-}
-
-export type AsyncFileRead = (readCount: number, byteCount: number) => Promise<MinimalBuffer | null>;
-export type AsyncFileOutput = { write: (data: string, cb?: () => void) => void };
-
-export type AsyncFileReader = (
-  buffer: Buffer,
-  off: number,
-  count: number,
-  offset: number,
-) => Promise<{ bytesRead: number }>;
-/** Simple interface that should be similar to the output of fs.open() */
-export type AsyncFileDescriptor = { read: AsyncFileReader };
+import { AsyncFileDescriptor, AsyncFileRead } from './tar.index';
 
 export interface TarFileHeader {
   offset: number;
@@ -34,6 +16,7 @@ export enum TarType {
   FifoNode = 6,
   Reserved = 7,
 }
+
 export const TarHeader = bp.object('TarHeader', {
   path: bp.string(100),
   mode: bp.string(8),
@@ -54,6 +37,7 @@ export const TarHeader = bp.object('TarHeader', {
   padding: bp.bytes(12),
 });
 
+/** Tar files are aligned to 512 byte blocks, loop to the closest block */
 function alignOffsetToBlock(ctx: { offset: number }): void {
   let size = ctx.offset & 511;
   while (size !== 0) {
@@ -63,6 +47,9 @@ function alignOffsetToBlock(ctx: { offset: number }): void {
 }
 
 export const TarReader = {
+  /** When packing indexes into a binary file allow upto this amount extra space so there are less index collisions */
+  PackingFactor: 1.15,
+
   Type: TarType,
   /** Iterate the tar file headers  */
   async *iterate(getBytes: AsyncFileRead): AsyncGenerator<TarFileHeader> {
@@ -93,35 +80,5 @@ export const TarReader = {
       return headBuffer;
     }
     return readBytes;
-  },
-
-  /**
-   * Create a tar index give a source tar file
-   * @param getBytes function to randomly read bytes from the tar
-   * @param logger optional logger for extra information
-   * @returns
-   */
-  async index(getBytes: AsyncFileRead | AsyncFileDescriptor, logger?: LogType): Promise<string[]> {
-    if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
-
-    let fileCount = 0;
-    let currentTime = Date.now();
-    const lines = [];
-
-    for await (const ctx of TarReader.iterate(getBytes)) {
-      if (ctx.header.type !== TarReader.Type.File) continue;
-      fileCount++;
-      lines.push(JSON.stringify([ctx.header.path, ctx.offset, ctx.header.size]));
-
-      if (fileCount % 25_000 === 0 && logger != null) {
-        const duration = Date.now() - currentTime;
-        currentTime = Date.now();
-        logger.debug({ current: fileCount, duration }, 'Cotar.Index:Write');
-      }
-    }
-    // Make the index sorted so it can be searched easier
-    lines.sort();
-
-    return lines;
   },
 };

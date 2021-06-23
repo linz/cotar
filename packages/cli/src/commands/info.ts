@@ -1,5 +1,5 @@
 import { SourceFile } from '@cogeotiff/source-file';
-import { Cotar } from '@cotar/core';
+import { Cotar, CotarIndexNdjson } from '@cotar/core';
 import Command, { flags } from '@oclif/command';
 import { promises as fs } from 'fs';
 import { logger } from '../log';
@@ -22,9 +22,7 @@ export class CreateCotar extends Command {
     logger.debug({ indexPath: args.inputFile + '.index' }, 'Index:Load');
     const sourceIndex = await fs.readFile(args.inputFile + '.index');
 
-    const index = sourceIndex.toString().split('\n');
-
-    const cotar = new Cotar(source, index);
+    const cotar = new Cotar(source, new CotarIndexNdjson(sourceIndex.toString()));
     logger.info({ fileName: args.inputFile, files: cotar.index.size }, 'Cotar.Loaded');
   }
 }

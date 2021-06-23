@@ -7,10 +7,11 @@
     "cotar": "./bin/cotar"
   },
   "dependencies": {
-    "@cogeotiff/source-file": "^4.2.0",
+    "@cogeotiff/source-file": "^4.3.0",
     "@cotar/core": "^2.0.0",
     "@oclif/command": "^1.8.0",
     "binparse": "^1.1.0",
+    "farmhash": "^3.2.1",
     "pino": "^6.11.0",
     "pretty-json-log": "^0.3.2"
   },
