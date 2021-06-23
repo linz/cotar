@@ -6,7 +6,7 @@
 ## Create cloud optimized 
 
 ```bash
-cotar create sample.tar --verbose
+cotar create sample.tar --verbose --binary
 ```
 
 

@@ -6,8 +6,8 @@ import o from 'ospec';
 import * as path from 'path';
 import { toArrayBuffer } from '../binary/build.binary';
 import { Cotar } from '../cotar';
+import { CotarIndexBuilder } from '../cotar.index';
 import { CotarIndexNdjson } from '../ndjson';
-import { CotarIndexNdjsonBuilder } from '../ndjson/build.ndjson';
 import { TarFileHeader, TarReader } from '../tar';
 
 o.spec('TarReader', () => {
@@ -56,7 +56,7 @@ o.spec('TarReader', () => {
   o('should create a index', async () => {
     const source = await fs.open(tarFilePath, 'r');
 
-    const res = await CotarIndexNdjsonBuilder.create(source);
+    const res = await CotarIndexBuilder.create(source, CotarIndexBuilder.NdJson);
     fs.writeFile(tarFileIndexPath, res.buffer);
 
     await source.close();
