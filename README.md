@@ -2,22 +2,21 @@
 
 .tar + .tar.index + AWS S3 = :heart:
 
+## Why
+
+Storing 100,000,000's of small file in cloud providers (S3, GCP) is expensive as each individual file update counts as a put request and for each 1M files costs around $5 USD to add to Amazon S3. This often limits how often files can be updated.
+
+To work around this issue files can be packed into a archive so there is only one put/get request to receive all the files. However generally to extract a single file from most archives generally requires a full copy of the archive to find the file and extract it. This forces the user to download GBs of data when they only want a single file of a few KB.
+
+Cotar works by creating a index of any `.tar` file whereby any individual file inside the archive can be extracted by using a single HTTP range request to the `.tar` archive.
+
+
 ## Requirements
 
-- Supports any tar file and any contents (Currently focused on MVT)
+- Supports any tar file and any contents - Currently focused on Mapbox vector tiles (MVT)
 - Should be able to handle large 100GB+ tar files with millions of internal files
 - Index should be small and/or compressed to save space
-- Should be able to fetch ideally any file inside a archive with a minimal amount of requests (Ideally 2)
-
-## Usage
-Create a cloud tar file
-
-```
-npm i -g @cotar/cli
-
-cotar create inputFile.tar
-```
-
+- Should be able to fetch ideally any file inside a archive with a minimal amount of requests (Ideally 1-2)
 
 ## Tar files
 
@@ -42,7 +41,7 @@ interface TarIndexFile [
 ]
 ```
 
-#### Example Index
+#### Example NDJson Index
 
 ```json
 ["src/create/tar.to.ttiles.ts",1536,2610]
@@ -69,13 +68,3 @@ See: https://github.com/tapalcatl/tapalcatl-2-spec
 Having a single tar file greatly simplifies the distribution of the files, It would be quite simple to tar both the index (.tar.index) and data tar into another tar to combine the files into a single distribution
 
 3. Use AWS S3's response-encoding to decompress internal gziped content on the fly
-
-4. Change index structure to a binary format, there could be multiple indexes
-
-5. Investigate a BTree index
-
-6. Investigate if MPQ could be a better format
-
-7. Store only the pointer to the header, as the file size is stored in the tar file header.
-
-8. Store only the offset difference from the last index to save space
