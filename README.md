@@ -23,7 +23,7 @@ cotar create inputFile.tar
 
 TAR files contain a collection of files stored sequentially into the file. With every file containing a 512 byte header just before the file data is stored.
 
-This makes it very easy to add new files to a archive as move files can just be appended to the end, however this makes random reads impossible, as every file header would have to be read until the specific file wanted would be found 
+This makes it very easy to add new files to a archive as more files can just be appended to the end, however this makes random reads impossible, as every file header would have to be read until the specific file wanted would be found 
 
 ![TarFileBackground](./static/TarFileBackground.png)
 
