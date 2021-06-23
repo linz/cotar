@@ -13,8 +13,7 @@
     "binparse": "^1.1.0",
     "farmhash": "^3.2.1",
     "pino": "^6.11.0",
-    "pretty-json-log": "^0.3.2",
-    "xxhash-addon": "^1.4.0"
+    "pretty-json-log": "^0.3.2"
   },
   "devDependencies": {
     "@types/node": "^15.12.1",
