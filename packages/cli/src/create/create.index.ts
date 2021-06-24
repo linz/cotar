@@ -1,4 +1,4 @@
-import { CotarIndexBinaryBuilder, CotarIndexNdjsonBuilder } from '@cotar/core';
+import { CotarIndexBuilder } from '@cotar/core';
 import { promises as fs } from 'fs';
 import type { LogType } from '@cogeotiff/chunk';
 
@@ -12,8 +12,8 @@ export async function toTarIndex(
   logger.info({ index: indexFileName }, 'Cotar.Index:Start');
   const startTime = Date.now();
 
-  const writer = binary ? CotarIndexBinaryBuilder : CotarIndexNdjsonBuilder;
-  const { buffer, count } = await writer.create(fd, logger);
+  const indexType = binary ? CotarIndexBuilder.Binary : CotarIndexBuilder.NdJson;
+  const { buffer, count } = await CotarIndexBuilder.create(fd, indexType, logger);
 
   await fs.writeFile(indexFileName, buffer);
 

@@ -27,7 +27,7 @@ This makes it very easy to add new files to a archive as more files can just be 
 ![TarFileBackground](./static/TarFileBackground.png)
 
 ### Tar Index
-TAR Index (.tar.index) is a NDJSON document containing the file location and size inside of a tar file. with this index a tar file can be randomly read.
+TAR Index (.tar.index) is a NDJSON document or binary file containing the file location and size inside of a tar file. with this index a tar file can be randomly read.
 
 ![TarFileIndex](./static/TarFileIndex.png)
 
