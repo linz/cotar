@@ -1,7 +1,9 @@
 import { LogType } from '@cogeotiff/chunk';
 import { CotarIndex, CotarIndexRecord } from '../cotar';
+import { CotarIndexType } from '../tar.index';
 
 export class CotarIndexNdjson implements CotarIndex {
+  type = CotarIndexType.Ndjson;
   source: string[];
   constructor(source: string) {
     this.source = source.split('\n');

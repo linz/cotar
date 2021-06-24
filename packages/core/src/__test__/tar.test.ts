@@ -57,7 +57,7 @@ o.spec('TarReader', () => {
     const source = await fs.open(tarFilePath, 'r');
 
     const res = await CotarIndexBuilder.create(source, CotarIndexBuilder.NdJson);
-    fs.writeFile(tarFileIndexPath, res.buffer);
+    await fs.writeFile(tarFileIndexPath, res.buffer);
 
     await source.close();
 
@@ -66,6 +66,7 @@ o.spec('TarReader', () => {
 
     const tarIndex = tarIndexRaw
       .toString()
+      .trim()
       .split('\n')
       .map((c) => JSON.parse(c));
 

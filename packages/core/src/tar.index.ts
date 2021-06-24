@@ -18,9 +18,14 @@ export type AsyncFileReader = (
 /** Simple interface that should be similar to the output of fs.open() */
 export type AsyncFileDescriptor = { read: AsyncFileReader };
 
+export type AsyncReader = AsyncFileRead | AsyncFileDescriptor;
+
 export interface TarIndexBuilder {
   /** Create a index from a file  */
   create(f: AsyncFileRead | AsyncFileDescriptor, logger?: LogType): Promise<TarIndexResult>;
+
+  /** Validate that a index matches the file */
+  validate(f: AsyncFileRead | AsyncFileDescriptor, index: Buffer, logger?: LogType): Promise<void>;
 }
 
 export interface TarIndexResult {
@@ -28,4 +33,9 @@ export interface TarIndexResult {
   count: number;
   /** Output buffer */
   buffer: Buffer;
+}
+
+export enum CotarIndexType {
+  Binary = 'binary',
+  Ndjson = 'ndjson',
 }

@@ -1,5 +1,6 @@
-import { SourceFile } from '@cogeotiff/source-file';
-import { Cotar, CotarIndexNdjson } from '@cotar/core';
+import { SourceMemory } from '@cogeotiff/chunk';
+import { CotarIndexBinary, CotarIndexNdjson, TarReader } from '@cotar/core';
+import { toArrayBuffer } from '@cotar/core/build/src/binary/build.binary';
 import Command, { flags } from '@oclif/command';
 import { promises as fs } from 'fs';
 import { logger } from '../log';
@@ -18,11 +19,27 @@ export class CreateCotar extends Command {
 
     logger.info({ fileName: args.inputFile }, 'Cotar.Load');
 
-    const source = new SourceFile(args.inputFile);
     logger.debug({ indexPath: args.inputFile + '.index' }, 'Index:Load');
     const sourceIndex = await fs.readFile(args.inputFile + '.index');
 
-    const cotar = new Cotar(source, new CotarIndexNdjson(sourceIndex.toString()));
-    logger.info({ fileName: args.inputFile, files: cotar.index.size }, 'Cotar.Loaded');
+    const isNdjson = '['.charCodeAt(0) === sourceIndex[0];
+
+    logger.info({ isNdjson }, 'Cotar.Index');
+
+    const index = isNdjson
+      ? new CotarIndexNdjson(sourceIndex.toString())
+      : new CotarIndexBinary(new SourceMemory('index', toArrayBuffer(sourceIndex)));
+
+    logger.info({ fileName: args.inputFile, files: index.size }, 'Cotar.Loaded');
+
+    const fd = await fs.open(args.inputFile, 'r');
+    await TarReader.validate(fd, index, logger);
+    await fd.close();
+
+    for (let i = 0; i < 32; i++) {
+      const fakeFile = Math.random().toString(32) + Math.random().toString(32);
+      const res = await index.find(fakeFile);
+      if (res != null) throw new Error('Found fake file: ' + fakeFile);
+    }
   }
 }
