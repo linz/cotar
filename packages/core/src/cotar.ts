@@ -1,10 +1,13 @@
 import { ChunkSource, LogType } from '@cogeotiff/chunk';
+import { CotarIndexType } from './tar.index';
 
 export interface CotarIndexRecord {
   offset: number;
   size: number;
 }
 export interface CotarIndex {
+  /** Type of index */
+  type: CotarIndexType;
   /** Number of records */
   size: number;
   /** Find the offset/size of a record */

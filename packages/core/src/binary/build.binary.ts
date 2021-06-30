@@ -1,9 +1,9 @@
 import { LogType, SourceMemory } from '@cogeotiff/chunk';
 import { bp } from 'binparse';
-import { TarReader } from '../tar';
-import { AsyncFileDescriptor, AsyncFileRead, TarIndexBuilder, TarIndexResult } from '../tar.index';
-import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from './index';
 import * as fh from 'farmhash';
+import { TarReader } from '../tar';
+import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexBuilder, TarIndexResult } from '../tar.index';
+import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from './index';
 
 export const BinaryIndexRecord = bp.object('TarIndexRecord', {
   hash: bp.bytes(8),
@@ -16,10 +16,12 @@ export const BinaryIndex = bp.object('TarIndex', {
   hashTable: bp.array('table', BinaryIndexRecord, 'count'),
 });
 
-export function toArrayBuffer(buf: Buffer): ArrayBuffer {
+export function toArrayBuffer(buf: Buffer | Uint8Array): ArrayBuffer {
   if (buf.byteLength === buf.buffer.byteLength) return buf.buffer;
   return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
 }
+
+const Big0 = BigInt(0);
 
 export const CotarIndexBinaryBuilder: TarIndexBuilder = {
   async create(getBytes: AsyncFileRead | AsyncFileDescriptor, logger?: LogType): Promise<TarIndexResult> {
@@ -50,7 +52,7 @@ export const CotarIndexBinaryBuilder: TarIndexBuilder = {
     hashSeen.clear();
 
     const slotCount = Math.ceil(fileCount * TarReader.PackingFactor);
-    const outputBuffer = Buffer.allocUnsafe(IndexHeaderSize + IndexRecordSize * slotCount);
+    const outputBuffer = Buffer.alloc(IndexHeaderSize + IndexRecordSize * slotCount);
     logger?.debug({ slotCount, fileCount }, 'Cotar.index:Allocate');
 
     // Allocate the hash slots for the files
@@ -59,7 +61,7 @@ export const CotarIndexBinaryBuilder: TarIndexBuilder = {
     files.sort((a, b) => a.index - b.index);
     logger?.debug({ duration: Date.now() - currentTime }, 'Cotar.index:Hash');
 
-    const writtenAt = new Set<number>();
+    // const writtenAt = new Set<number>();
     currentTime = Date.now();
 
     // Find the first hash index slot for the file to go into
@@ -72,8 +74,8 @@ export const CotarIndexBinaryBuilder: TarIndexBuilder = {
 
       let searchCount = 0;
       while (true) {
-        if (index >= slotCount - 1) index = 0;
-        if (!writtenAt.has(index)) break;
+        if (index >= slotCount) index = 0;
+        if (outputBuffer.readBigUInt64LE(index * IndexRecordSize + IndexHeaderSize) === Big0) break;
         searchCount++;
         index++;
 
@@ -86,8 +88,6 @@ export const CotarIndexBinaryBuilder: TarIndexBuilder = {
         }
       }
       biggestSearch = Math.max(biggestSearch, searchCount);
-
-      writtenAt.add(index);
 
       const offset = index * IndexRecordSize + IndexHeaderSize;
       outputBuffer.writeBigUInt64LE(BigInt(file.hash), offset);
@@ -103,26 +103,12 @@ export const CotarIndexBinaryBuilder: TarIndexBuilder = {
     // Store the slot count at the start of the file, this is used to find the position later
     outputBuffer.writeUInt32LE(slotCount, 0);
 
-    // Validate that every file was added correctly
-    currentTime = Date.now();
-    const cotar = new CotarIndexBinary(new SourceMemory('cotar', toArrayBuffer(outputBuffer)));
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const hash = BigInt(fh.hash64(file.path));
-
-      const index = await cotar.find(file.path);
-      if (index == null) throw new Error(`Missing File: ${file.path} hash: ${hash}`);
-      if (index?.offset !== file.offset || index?.size !== file.size) {
-        logger?.fatal({ index, file }, 'Cotar.Index:Validate:Failed');
-        throw new Error('Failed to validate file:' + file.path);
-      }
-      if (i % 25_000 === 0 && logger != null) {
-        const duration = Date.now() - currentTime;
-        currentTime = Date.now();
-        logger.debug({ current: i, duration }, 'Cotar.Index:Validate');
-      }
-    }
-
     return { buffer: outputBuffer, count: files.length };
+  },
+
+  /** Validate that the index matches the input file */
+  async validate(getBytes: AsyncReader, index: Buffer, logger?: LogType): Promise<void> {
+    const binIndex = new CotarIndexBinary(new SourceMemory('cotar', toArrayBuffer(index)));
+    return TarReader.validate(getBytes, binIndex, logger);
   },
 };

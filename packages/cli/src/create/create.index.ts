@@ -1,6 +1,7 @@
-import { CotarIndexBuilder } from '@cotar/core';
+import { LogType, SourceMemory } from '@cogeotiff/chunk';
+import { CotarIndexBinary, CotarIndexBuilder, CotarIndexNdjson, TarReader } from '@cotar/core';
+import { toArrayBuffer } from '@cotar/core/build/src/binary/build.binary';
 import { promises as fs } from 'fs';
-import type { LogType } from '@cogeotiff/chunk';
 
 export async function toTarIndex(
   filename: string,
@@ -21,4 +22,11 @@ export async function toTarIndex(
     { index: indexFileName, count, size: buffer.length, duration: Date.now() - startTime },
     'Cotar.Index:Created',
   );
+
+  const index = binary
+    ? new CotarIndexBinary(new SourceMemory('', toArrayBuffer(buffer)))
+    : new CotarIndexNdjson(buffer.toString());
+
+  await TarReader.validate(fd, index, logger);
+  await fd.close();
 }

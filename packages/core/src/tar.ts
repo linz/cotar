@@ -1,5 +1,7 @@
+import { LogType } from '@cogeotiff/chunk';
 import { bp, StrutInfer, toHex } from 'binparse';
-import { AsyncFileDescriptor, AsyncFileRead } from './tar.index';
+import { CotarIndex } from './cotar';
+import { AsyncFileDescriptor, AsyncFileRead, AsyncReader } from './tar.index';
 
 export interface TarFileHeader {
   offset: number;
@@ -80,5 +82,28 @@ export const TarReader = {
       return headBuffer;
     }
     return readBytes;
+  },
+
+  /** Validate a index matches */
+  async validate(getBytes: AsyncReader, cotar: CotarIndex, logger?: LogType): Promise<void> {
+    if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
+    let currentTime = Date.now();
+
+    let i = 0;
+    for await (const ctx of TarReader.iterate(getBytes)) {
+      if (ctx.header.type !== TarReader.Type.File) continue;
+      const index = await cotar.find(ctx.header.path);
+      if (index == null) throw new Error(`Missing File: ${ctx.header.path}`);
+      if (index?.offset !== ctx.offset || index?.size !== ctx.header.size) {
+        logger?.fatal({ index, size: ctx.header.size, offset: ctx.offset }, 'Cotar.Index:Validate:Failed');
+        throw new Error('Failed to validate file:' + ctx.header.path);
+      }
+      if (i % 25_000 === 0 && logger != null) {
+        const duration = Date.now() - currentTime;
+        currentTime = Date.now();
+        logger.debug({ current: i, duration }, 'Cotar.Index:Validate');
+      }
+      i++;
+    }
   },
 };

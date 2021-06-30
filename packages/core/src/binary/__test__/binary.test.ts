@@ -1,13 +1,14 @@
 import { SourceMemory } from '@cogeotiff/chunk';
+import { SourceFile } from '@cogeotiff/source-file';
+import * as cp from 'child_process';
 import * as fh from 'farmhash';
+import { promises as fs } from 'fs';
+import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import path from 'path';
 import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from '..';
 import { Cotar } from '../../cotar';
-import * as cp from 'child_process';
-import { promises as fs } from 'fs';
-import { FileHandle } from 'fs/promises';
-import { SourceFile } from '@cogeotiff/source-file';
+import { TarReader } from '../../tar';
 import { CotarIndexBinaryBuilder, toArrayBuffer } from '../build.binary';
 
 function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
@@ -79,6 +80,7 @@ o.spec('CotarBinary', () => {
     const source = new SourceFile(tarFilePath);
     const sourceIndex = new SourceFile(tarFileIndexPath);
 
+    const index = new CotarIndexBinary(sourceIndex);
     const cotar = new Cotar(source, new CotarIndexBinary(sourceIndex));
 
     const fileData = await cotar.get('binary.test.js');
@@ -87,5 +89,8 @@ o.spec('CotarBinary', () => {
 
     const fakeFile = await cotar.get('fake.file.md');
     o(fakeFile).equals(null);
+
+    // Should validate
+    await TarReader.validate(fd, index);
   });
 });

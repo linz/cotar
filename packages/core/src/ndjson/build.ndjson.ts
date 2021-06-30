@@ -1,6 +1,7 @@
 import { LogType } from '@cogeotiff/chunk';
+import { CotarIndexNdjson } from '.';
 import { TarReader } from '../tar';
-import { AsyncFileRead, AsyncFileDescriptor, TarIndexResult } from '../tar.index';
+import { AsyncReader, TarIndexResult } from '../tar.index';
 
 export const CotarIndexNdjsonBuilder = {
   /**
@@ -9,7 +10,7 @@ export const CotarIndexNdjsonBuilder = {
    * @param logger optional logger for extra information
    * @returns
    */
-  async create(getBytes: AsyncFileRead | AsyncFileDescriptor, logger?: LogType): Promise<TarIndexResult> {
+  async create(getBytes: AsyncReader, logger?: LogType): Promise<TarIndexResult> {
     if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
 
     let fileCount = 0;
@@ -32,5 +33,10 @@ export const CotarIndexNdjsonBuilder = {
     lines.sort();
 
     return { buffer: Buffer.from(lines.join('\n')), count: lines.length };
+  },
+  /** Validate that the index matches the input file */
+  async validate(getBytes: AsyncReader, index: Buffer, logger?: LogType): Promise<void> {
+    const binIndex = new CotarIndexNdjson(index.toString());
+    return TarReader.validate(getBytes, binIndex, logger);
   },
 };
