@@ -19,6 +19,6 @@
   ],
   "devDependencies": {
     "@cogeotiff/source-file": "^4.3.0",
-    "@types/node": "^15.12.1"
+    "@types/node": "^16.3.1"
   }
 }
