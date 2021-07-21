@@ -6,7 +6,6 @@ import { logger } from '../log';
 export class CreateCotar extends Command {
   static flags = {
     force: flags.boolean({ description: 'force overwriting existing files' }),
-    binary: flags.boolean({ description: 'Create a binary index' }),
     verbose: flags.boolean({ description: 'verbose logging' }),
     limit: flags.integer({ description: 'Only ingest this many files' }),
   };
@@ -25,7 +24,7 @@ export class CreateCotar extends Command {
     logger.info({ output: outputFile }, 'Cotar:Create');
 
     const startTime = Date.now();
-    await toTarIndex(args.inputFile, outputFile, flags.binary, logger);
+    await toTarIndex(args.inputFile, outputFile, logger);
 
     const duration = Date.now() - startTime;
     logger.info({ output: outputFile, duration }, 'Cotar:Created');

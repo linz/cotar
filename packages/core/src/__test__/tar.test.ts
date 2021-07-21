@@ -1,13 +1,11 @@
-import { SourceMemory } from '@cogeotiff/chunk';
 import * as cp from 'child_process';
 import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import * as path from 'path';
-import { toArrayBuffer } from '../binary/build.binary';
-import { Cotar } from '../cotar';
-import { CotarIndexBuilder } from '../cotar.index';
-import { CotarIndexNdjson } from '../ndjson';
+import { SourceFile } from '@cogeotiff/source-file';
+import { CotarIndexBinary } from '../binary/binary.index';
+import { CotarIndexBuilder } from '../binary/binary.index.builder';
 import { TarFileHeader, TarReader } from '../tar';
 
 o.spec('TarReader', () => {
@@ -37,41 +35,20 @@ o.spec('TarReader', () => {
     o(files.map((c) => c.header.path)).deepEquals(['tar.test.d.ts', 'tar.test.d.ts.map', 'tar.test.js']);
   });
 
-  o('should index files', async () => {
-    const index: string[] = [];
-    for await (const ctx of TarReader.iterate(readBytes)) {
-      index.push(JSON.stringify([ctx.header.path, ctx.offset, ctx.header.size]));
-    }
-
-    const source = new SourceMemory('Tar', toArrayBuffer(await fs.readFile(tarFilePath)));
-
-    const tar = new Cotar(source, new CotarIndexNdjson(index.join('\n')));
-
-    const buf = await tar.get('tar.test.js');
-    o(buf).notEquals(null);
-    const text = Buffer.from(buf!).toString();
-    o(text.slice(0, 12)).deepEquals('"use strict"');
-  });
-
   o('should create a index', async () => {
+    const tarTestStat = await fs.stat(path.join(__dirname, 'tar.test.js'));
     const source = await fs.open(tarFilePath, 'r');
 
-    const res = await CotarIndexBuilder.create(source, CotarIndexBuilder.NdJson);
+    const res = await CotarIndexBuilder.create(source);
     await fs.writeFile(tarFileIndexPath, res.buffer);
 
     await source.close();
 
-    const tarIndexRaw = await fs.readFile(tarFileIndexPath);
+    const index = new CotarIndexBinary(new SourceFile(tarFileIndexPath));
     o(res.count >= 3).equals(true);
 
-    const tarIndex = tarIndexRaw
-      .toString()
-      .trim()
-      .split('\n')
-      .map((c) => JSON.parse(c));
-
-    const tarTest = tarIndex.find((f) => f[0] === 'tar.test.js');
-    o(tarTest).notEquals(undefined);
-    o(tarTest.length).equals(3);
+    const tarTest = await index.find('tar.test.js');
+    o(tarTest).notEquals(null);
+    o(tarTest?.size).equals(tarTestStat.size);
   });
 });

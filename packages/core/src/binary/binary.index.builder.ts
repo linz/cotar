@@ -3,7 +3,7 @@ import { bp } from 'binparse';
 import * as fh from 'farmhash';
 import { TarReader } from '../tar';
 import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexBuilder, TarIndexResult } from '../tar.index';
-import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from './index';
+import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from './binary.index';
 
 export const BinaryIndexRecord = bp.object('TarIndexRecord', {
   hash: bp.bytes(8),
@@ -23,7 +23,7 @@ export function toArrayBuffer(buf: Buffer | Uint8Array): ArrayBuffer {
 
 const Big0 = BigInt(0);
 
-export const CotarIndexBinaryBuilder: TarIndexBuilder = {
+export const CotarIndexBuilder: TarIndexBuilder = {
   async create(getBytes: AsyncFileRead | AsyncFileDescriptor, logger?: LogType): Promise<TarIndexResult> {
     if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
     let fileCount = 0;
