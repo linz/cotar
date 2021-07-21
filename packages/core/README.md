@@ -12,12 +12,10 @@ For example `@cotar/core` can fetch a 1KB file from a 100GB tar file with only 1
 To fetch a single tile, the index has to be loaded into memory then the cotar object provides a `get(fileName)` interface to access any file inside the tar
 ```typescript
 import { Cotar, CotarIndexBinary } from '@cotar/core';
-import { SourceAwsS3 } from '@cogeotiff/source-aws'
+import { SourceAwsS3 } from '@chunkd/source-aws'
 
 const source = SourceAwsS3.fromUri('s3://linz-basemaps/topographic.tar');
-const index = SourceAwsS3.fromUri('s3://linz-basemaps/topographic.tar.index');;
-
-const cotar = new Cotar(source, new CotarIndexBinary(index));
+const cotar = Cotar.fromTar(source);
 
 // Fetch a gzipped PBF file from  a tar
 const bytes  = await cotar.get(`tiles/z10/5/5.pbf.gz`);

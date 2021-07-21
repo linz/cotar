@@ -1,4 +1,4 @@
-import { LogType } from '@cogeotiff/chunk';
+import { LogType } from '@chunkd/core';
 import { bp, StrutInfer, toHex } from 'binparse';
 import { CotarIndex } from './cotar';
 import { AsyncFileDescriptor, AsyncFileRead, AsyncReader } from './tar.index';
@@ -40,7 +40,7 @@ export const TarHeader = bp.object('TarHeader', {
 });
 
 /** Tar files are aligned to 512 byte blocks, loop to the closest block */
-function alignOffsetToBlock(ctx: { offset: number }): void {
+export function alignOffsetToBlock(ctx: { offset: number }): void {
   let size = ctx.offset & 511;
   while (size !== 0) {
     ctx.offset += 512 - size;
@@ -92,6 +92,7 @@ export const TarReader = {
     let i = 0;
     for await (const ctx of TarReader.iterate(getBytes)) {
       if (ctx.header.type !== TarReader.Type.File) continue;
+
       const index = await cotar.find(ctx.header.path);
       if (index == null) throw new Error(`Missing File: ${ctx.header.path}`);
       if (index?.offset !== ctx.offset || index?.size !== ctx.header.size) {

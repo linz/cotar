@@ -1,4 +1,6 @@
-import { ChunkSource, LogType } from '@cogeotiff/chunk';
+import { ChunkSource, LogType } from '@chunkd/core';
+import { CotarIndexBinary } from './binary/binary.index';
+import { IndexRecordSize, IndexSize } from './binary/format';
 import { CotarIndexType } from './tar.index';
 
 export interface CotarIndexRecord {
@@ -16,16 +18,25 @@ export interface CotarIndex {
 
 export class Cotar {
   source: ChunkSource;
-
   index: CotarIndex;
 
   /**
    * @param source Chunked source of the tar files
-   * @param index Raw NDJSON lines of the index
+   * @param index
    */
   constructor(source: ChunkSource, index: CotarIndex) {
     this.source = source;
     this.index = index;
+  }
+
+  static async fromTar(source: ChunkSource): Promise<Cotar> {
+    // Load the last file in the tar archive
+    const metadata = await CotarIndexBinary.getMetadata(source, 0, false);
+    const size = await source.size;
+    const startOffset = size - (metadata.count * IndexRecordSize + IndexSize);
+    const index = new CotarIndexBinary(source, metadata.count, startOffset);
+
+    return new Cotar(source, index);
   }
 
   /**

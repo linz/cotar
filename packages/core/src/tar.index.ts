@@ -1,4 +1,4 @@
-import { LogType } from '@cogeotiff/chunk';
+import { LogType } from '@chunkd/core';
 
 export interface MinimalBuffer {
   readonly [n: number]: number;

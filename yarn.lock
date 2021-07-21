@@ -30,17 +30,17 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@cogeotiff/chunk@^4.3.0":
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/@cogeotiff/chunk/-/chunk-4.3.0.tgz#3372ccec11a7f17afafd704d6a11e1068fb1c56e"
-  integrity sha512-duVgqb/Ed6RhWISCBVBibJggWRmL/HJ9Rqq/kdcdW+aj7toGSoo8xr2NGR8N07hjILcUw/Frxf0GTK2/m+xrBg==
+"@chunkd/core@^4.3.0", "@chunkd/core@^4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-4.4.0.tgz#0c1f489a395ed2e752ca13985f472ed5905f7b08"
+  integrity sha512-Qa6Cbpl7qvCVfbBkuHKFkLLcT7EKsmohve50/FSYPLq7XCEyWo+F2ImZgPo19yeb1GEgfBCV81VOtkEQ3McKlw==
 
-"@cogeotiff/source-file@^4.3.0":
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/@cogeotiff/source-file/-/source-file-4.3.0.tgz#e112b669bca7210170ff0b097c225ede84e7ef89"
-  integrity sha512-Kqa5RF9uGYLgb3ULKCjMvkX7Z9XFiLpsZN6wwypvHyKFy6dfet7fO0vcmg7HjZup/ZGjkI1oQOBl72CKNj/kVQ==
+"@chunkd/source-file@^4.3.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-4.4.0.tgz#a6167aa6c9246bec6fb93fcb7a6dedfa6ebc1bdd"
+  integrity sha512-QrFUOhlr1+rl1RaL4dX5w3ekSZgARmN8kEZVr1u1GDG27MR9H0UCBfrsFU4CDhdBd5J6/PLkfUa2p3vCzXIFwA==
   dependencies:
-    "@cogeotiff/chunk" "^4.3.0"
+    "@chunkd/core" "^4.4.0"
 
 "@eslint/eslintrc@^0.4.2":
   version "0.4.2"
