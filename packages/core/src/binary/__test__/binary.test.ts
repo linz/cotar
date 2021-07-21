@@ -6,10 +6,10 @@ import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import path from 'path';
-import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from '..';
+import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from '../binary.index';
 import { Cotar } from '../../cotar';
 import { TarReader } from '../../tar';
-import { CotarIndexBinaryBuilder, toArrayBuffer } from '../build.binary';
+import { CotarIndexBuilder, toArrayBuffer } from '../binary.index.builder';
 
 function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
   if (buf == null) return null;
@@ -73,7 +73,7 @@ o.spec('CotarBinary', () => {
 
   o('should create a binary index from a tar file', async () => {
     const fd = await fs.open(tarFilePath, 'r');
-    const res = await CotarIndexBinaryBuilder.create(fd);
+    const res = await CotarIndexBuilder.create(fd);
     o(res.count).equals(3);
     await fs.writeFile(tarFileIndexPath, res.buffer);
 
