@@ -27,28 +27,35 @@ This makes it very easy to add new files to a archive as more files can just be 
 ![TarFileBackground](./static/TarFileBackground.png)
 
 ### Tar Index
-TAR Index (.tar.index) is a NDJSON document or binary file containing the file location and size inside of a tar file. with this index a tar file can be randomly read.
+TAR Index (.cotar.index) is a binary file containing the location and size of a file inside of a tar. with this index a tar file can be randomly read.
 
 ![TarFileIndex](./static/TarFileIndex.png)
 
-```typescript
-/** Mapping of path -> index records */
+#### Questions:
+**Offset size `uint32` vs `uint64`**
+Large files will need large offsets 64 bit offsets give huge file support but need quite a few more bytes per record to store than `uint32`, for smaller files a `uint32` or `uint16` may be enough
 
-interface TarIndexFile [ 
-    string, // Name of the file @see header.path
-    number, // Offset to the start of the data
-    number // Number of bytes inside the file 
-]
+**Hash size**
+The type of the hash could be changed as well as the number of bits of the hash used based on how unique the file hashes are, a uint64 hash is mostly completely wasted on a tar file containing 100 files. 
+conversely a tar file containing 2,000,000 files needs a hash much larger than 16bits
+
+**Hash type**
+`FNV-1a` was chosen as it is implementation simplicity and provides a pretty good [distribution](https://softwareengineering.stackexchange.com/questions/49550/which-hashing-algorithm-is-best-for-uniqueness-and-speed) of hash values for a 64bit hash. 
+Any hash type could be used `farmhash` or even `sha256` and then the bits sliced down to the number needed for the hash index.
+
+
+**Configuring the record size**
+Based on Offset size, hash size and type, these could be configured in the index's header/footer by putting the number of bytes needed for offset/hash/size as variables into the header. 
+This will slightly add to the index size but the main issue it adds to the complexity of reading the file.
+
+for example the next generation header could look like
 ```
-
-#### Example NDJson Index
-
-```json
-["src/create/tar.to.ttiles.ts",1536,2610]
-["src/index.ts",5120,38]
-["src/log.ts",6144,163]
-["src/commands/info.ts",7680,1069]
-["src/commands/create.ts",9728,1280]
+Magic: "COT"
+version: 0x02
+count: 0x72365123 // uint32 for record count (Limited to ~4 billion files)
+offset: 0x04 // 4 bytes for offset (uint32)
+size: 0x02 // 2 byte for size (uint16)
+hash: 0x08 // 8 bytes for hash (uint64)
 ```
 
 ## Future investigation
