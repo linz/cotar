@@ -1,5 +1,5 @@
 import { ChunkSource, LogType } from '@cogeotiff/chunk';
-import * as fh from 'farmhash';
+import fnv1a from '@sindresorhus/fnv1a';
 import { CotarIndex, CotarIndexRecord } from '../cotar';
 import { CotarIndexType } from '../tar.index';
 
@@ -21,13 +21,17 @@ export class CotarIndexBinary implements CotarIndex {
   get size(): number {
     return this.source.uint32(0);
   }
+
+  static hash(path: string): bigint {
+    return fnv1a.bigInt(path);
+  }
   /**
    * Search the index looking for the file
    * @param fileName file to search for
    * @returns the index if found, null otherwise
    */
   async find(fileName: string, logger?: LogType): Promise<CotarIndexRecord | null> {
-    const hash = BigInt(fh.hash64(fileName));
+    const hash = CotarIndexBinary.hash(fileName);
 
     await this.source.loadBytes(0, IndexHeaderSize);
     const slotCount = this.size;

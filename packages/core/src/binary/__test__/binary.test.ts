@@ -1,7 +1,7 @@
 import { SourceMemory } from '@cogeotiff/chunk';
 import { SourceFile } from '@cogeotiff/source-file';
 import * as cp from 'child_process';
-import * as fh from 'farmhash';
+import fnv1a from '@sindresorhus/fnv1a';
 import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import o from 'ospec';
@@ -28,7 +28,7 @@ o.spec('CotarBinary.fake', () => {
     const tarIndex: Buffer = Buffer.alloc(indexSize * IndexRecordSize + IndexHeaderSize);
 
     for (const record of files) {
-      const hash = BigInt(fh.hash64(record.path));
+      const hash = fnv1a.bigInt(record.path);
       const index = Number(hash % BigInt(indexSize));
       const offset = index * IndexRecordSize + IndexHeaderSize;
       tarIndex.writeBigUInt64LE(hash, offset);
