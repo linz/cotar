@@ -1,42 +1,84 @@
 import { ChunkSource, LogType } from '@cogeotiff/chunk';
+import { bp, StrutInfer, StrutType } from 'binparse';
 import * as fh from 'farmhash';
 import { CotarIndex, CotarIndexRecord } from '../cotar';
 import { CotarIndexType } from '../tar.index';
-
-// 8 bytes hash, 4 bytes file offset, 4 bytes file size
-export const IndexRecordSize = 16;
-// 4 bytes of total files indexed
-export const IndexHeaderSize = 4;
+import { IndexHeaderSize, IndexMagic, IndexRecordSize, IndexVersion } from './format';
 
 const Big0 = BigInt(0);
 const Big32 = BigInt(32);
 
+export const CotarMetadataParser = bp.object('CotarMetadata', {
+  magic: bp.string(IndexMagic.length),
+  version: bp.u8,
+  count: bp.lu32,
+});
+
+export type CotarMetadata = StrutInfer<typeof CotarMetadataParser>;
+
 export class CotarIndexBinary implements CotarIndex {
   type = CotarIndexType.Binary;
   source: ChunkSource;
-  constructor(source: ChunkSource) {
+  sourceOffset: number;
+
+  /** Should the metadata be read from the header or the footer */
+  isHeader = true;
+  size: number;
+
+  constructor(source: ChunkSource, size: number, sourceOffset = 0) {
     this.source = source;
+    this.sourceOffset = sourceOffset;
+    this.size = size;
   }
 
-  get size(): number {
-    return this.source.uint32(0);
+  static hash(path: string): bigint {
+    return BigInt(fh.hash64(path));
   }
+
+  hash = CotarIndexBinary.hash;
+
+  static async loadMetadata(source: ChunkSource, sourceOffset: number, isHeader: boolean): Promise<CotarMetadata> {
+    if (isHeader) {
+      await source.loadBytes(sourceOffset, source.chunkSize);
+      const bytes = source.bytes(sourceOffset, IndexHeaderSize);
+      return CotarMetadataParser.read(bytes).value;
+    }
+
+    const bytes = await source.fetchBytes(-IndexHeaderSize);
+    return CotarMetadataParser.read(new Uint8Array(bytes)).value;
+  }
+
+  static async getMetadata(source: ChunkSource, sourceOffset: number, isHeader: boolean): Promise<CotarMetadata> {
+    const metadata = await this.loadMetadata(source, sourceOffset, isHeader);
+    if (metadata.magic !== IndexMagic) {
+      throw new Error(`Invalid source: ${source.uri} invalid magic found: ${metadata.magic}`);
+    }
+    if (metadata.version !== IndexVersion) {
+      throw new Error(`Invalid source: ${source.uri} invalid version found: ${metadata.version}`);
+    }
+    return metadata;
+  }
+
+  static async create(source: ChunkSource, sourceOffset = 0, isHeader = true): Promise<CotarIndexBinary> {
+    const metadata = await this.getMetadata(source, sourceOffset, isHeader);
+    return new CotarIndexBinary(source, metadata.count, sourceOffset);
+  }
+
   /**
    * Search the index looking for the file
    * @param fileName file to search for
    * @returns the index if found, null otherwise
    */
   async find(fileName: string, logger?: LogType): Promise<CotarIndexRecord | null> {
-    const hash = BigInt(fh.hash64(fileName));
+    const hash = BigInt(this.hash(fileName));
 
-    await this.source.loadBytes(0, IndexHeaderSize);
     const slotCount = this.size;
     const startIndex = Number(hash % BigInt(slotCount));
     let startHash: BigInt | null = null;
 
     let index = startIndex;
     while (true) {
-      const offset = index * IndexRecordSize + IndexHeaderSize;
+      const offset = this.sourceOffset + index * IndexRecordSize + IndexHeaderSize;
       await this.source.loadBytes(offset, IndexRecordSize, logger);
       const hashA = BigInt(this.source.uint32(offset));
       const hashB = BigInt(this.source.uint32(offset + 4)) << Big32;

@@ -6,8 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "@cogeotiff/chunk": "^4.3.0",
-    "binparse": "^1.1.0",
-    "farmhash": "^3.2.1"
+    "binparse": "^1.1.0"
   },
   "publishConfig": {
     "access": "public"

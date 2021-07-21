@@ -1,6 +1,5 @@
 import { SourceMemory } from '@cogeotiff/chunk';
 import { CotarIndexBinary, CotarIndexNdjson, TarReader } from '@cotar/core';
-import { toArrayBuffer } from '@cotar/core/build/src/binary/build.binary';
 import Command, { flags } from '@oclif/command';
 import { promises as fs } from 'fs';
 import { logger } from '../log';
@@ -28,7 +27,7 @@ export class CreateCotar extends Command {
 
     const index = isNdjson
       ? new CotarIndexNdjson(sourceIndex.toString())
-      : new CotarIndexBinary(new SourceMemory('index', toArrayBuffer(sourceIndex)));
+      : await CotarIndexBinary.create(new SourceMemory('index', SourceMemory.toArrayBuffer(sourceIndex)));
 
     logger.info({ fileName: args.inputFile, files: index.size }, 'Cotar.Loaded');
 

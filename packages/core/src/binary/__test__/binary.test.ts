@@ -6,10 +6,11 @@ import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import path from 'path';
-import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from '..';
+import { CotarIndexBinary } from '..';
 import { Cotar } from '../../cotar';
 import { TarReader } from '../../tar';
-import { CotarIndexBinaryBuilder, toArrayBuffer } from '../build.binary';
+import { CotarIndexBinaryBuilder, toArrayBuffer, writeHeaderFooter } from '../build.binary';
+import { IndexHeaderSize, IndexRecordSize } from '../format';
 
 function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
   if (buf == null) return null;
@@ -25,7 +26,7 @@ o.spec('CotarBinary.fake', () => {
     ];
 
     const indexSize = 4;
-    const tarIndex: Buffer = Buffer.alloc(indexSize * IndexRecordSize + IndexHeaderSize);
+    const tarIndex: Buffer = Buffer.alloc(indexSize * IndexRecordSize + IndexHeaderSize * 2);
 
     for (const record of files) {
       const hash = BigInt(fh.hash64(record.path));
@@ -37,9 +38,11 @@ o.spec('CotarBinary.fake', () => {
     }
     tarIndex.writeUInt32LE(indexSize);
 
+    writeHeaderFooter(tarIndex, indexSize);
+
     const cotar = new Cotar(
       new SourceMemory('Tar', toArrayBuffer(Buffer.from('0123456789'))),
-      new CotarIndexBinary(new SourceMemory('index', toArrayBuffer(tarIndex))),
+      await CotarIndexBinary.create(new SourceMemory('index', SourceMemory.toArrayBuffer(tarIndex))),
     );
 
     o(await cotar.index.find('tiles/0/0/0.pbf.gz')).deepEquals({ offset: 0, size: 1 });
@@ -74,14 +77,14 @@ o.spec('CotarBinary', () => {
   o('should create a binary index from a tar file', async () => {
     const fd = await fs.open(tarFilePath, 'r');
     const res = await CotarIndexBinaryBuilder.create(fd);
-    o(res.count).equals(3);
+    o(res.count > 3).equals(true);
     await fs.writeFile(tarFileIndexPath, res.buffer);
 
     const source = new SourceFile(tarFilePath);
     const sourceIndex = new SourceFile(tarFileIndexPath);
 
-    const index = new CotarIndexBinary(sourceIndex);
-    const cotar = new Cotar(source, new CotarIndexBinary(sourceIndex));
+    const index = await CotarIndexBinary.create(sourceIndex);
+    const cotar = new Cotar(source, index);
 
     const fileData = await cotar.get('binary.test.js');
     o(fileData).notEquals(null);
