@@ -1,6 +1,5 @@
 import { LogType, SourceMemory } from '@cogeotiff/chunk';
 import { bp } from 'binparse';
-import * as fh from 'farmhash';
 import { TarReader } from '../tar';
 import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexBuilder, TarIndexResult } from '../tar.index';
 import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from './binary.index';
@@ -35,7 +34,7 @@ export const CotarIndexBuilder: TarIndexBuilder = {
     for await (const ctx of TarReader.iterate(getBytes)) {
       if (ctx.header.type !== TarReader.Type.File) continue;
       fileCount++;
-      const hash = fh.hash64(ctx.header.path);
+      const hash = CotarIndexBinary.hash(ctx.header.path);
       if (hashSeen.has(hash)) {
         throw new Error('HashCollision:' + hashSeen.get(hash) + ' and ' + ctx.header.path);
       } else {
