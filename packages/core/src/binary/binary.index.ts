@@ -1,8 +1,7 @@
 import { ChunkSource, LogType } from '@chunkd/core';
 import fnv1a from '@sindresorhus/fnv1a';
 import { bp, StrutInfer } from 'binparse';
-import { CotarIndex, CotarIndexRecord } from '../cotar';
-import { CotarIndexType } from '../tar.index';
+import { CotarIndexRecord } from '../cotar';
 import { IndexHeaderSize, IndexMagic, IndexRecordSize, IndexVersion } from './format';
 
 const Big0 = BigInt(0);
@@ -15,8 +14,7 @@ export const CotarMetadataParser = bp.object('CotarMetadata', {
 
 export type CotarMetadata = StrutInfer<typeof CotarMetadataParser>;
 
-export class CotarIndexBinary implements CotarIndex {
-  type = CotarIndexType.Binary;
+export class CotarIndex {
   source: ChunkSource;
   sourceOffset: number;
 
@@ -58,9 +56,9 @@ export class CotarIndexBinary implements CotarIndex {
     return metadata;
   }
 
-  static async create(source: ChunkSource, sourceOffset = 0, isHeader = true): Promise<CotarIndexBinary> {
+  static async create(source: ChunkSource, sourceOffset = 0, isHeader = true): Promise<CotarIndex> {
     const metadata = await this.getMetadata(source, sourceOffset, isHeader);
-    return new CotarIndexBinary(source, metadata.count, sourceOffset);
+    return new CotarIndex(source, metadata.count, sourceOffset);
   }
 
   /**
@@ -69,7 +67,7 @@ export class CotarIndexBinary implements CotarIndex {
    * @returns the index if found, null otherwise
    */
   async find(fileName: string, logger?: LogType): Promise<CotarIndexRecord | null> {
-    const hash = CotarIndexBinary.hash(fileName);
+    const hash = CotarIndex.hash(fileName);
 
     const slotCount = this.size;
     const startIndex = Number(hash % BigInt(slotCount));
@@ -80,10 +78,15 @@ export class CotarIndexBinary implements CotarIndex {
       const offset = this.sourceOffset + index * IndexRecordSize + IndexHeaderSize;
       await this.source.loadBytes(offset, IndexRecordSize, logger);
       startHash = this.source.bigUint64(offset);
+      // const bytes = new DataView(this.source.bytes(offset, 8).buffer).getBigUint64(0);
+
+      // console.log('LookAt', index, offset, { startHash, hash }, bytes);
 
       if (startHash === hash) {
         const fileOffset = this.source.bigUint64(offset + 8);
         const fileSize = this.source.bigUint64(offset + 16);
+
+        // console.log(fileOffset, fileSize, bytes.getBigUint64(0, true));
         return { offset: toNumber(fileOffset), size: toNumber(fileSize) };
       }
       if (startHash === Big0) return null;

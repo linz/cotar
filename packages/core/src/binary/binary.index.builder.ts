@@ -1,7 +1,7 @@
 import { LogType, SourceMemory } from '@chunkd/core';
 import { TarReader } from '../tar';
-import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexBuilder, TarIndexResult } from '../tar.index';
-import { CotarIndexBinary } from './binary.index';
+import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexResult } from '../tar.index';
+import { CotarIndex } from './binary.index';
 import { IndexHeaderSize, IndexMagic, IndexRecordSize, IndexSize, IndexVersion } from './format';
 
 /** Write the header/footer into the buffer */
@@ -22,7 +22,7 @@ export function writeHeaderFooter(output: Buffer, count: number): void {
 
 const Big0 = BigInt(0);
 
-export const CotarIndexBuilder: TarIndexBuilder = {
+export const CotarIndexBuilder = {
   async create(getBytes: AsyncFileRead | AsyncFileDescriptor, logger?: LogType): Promise<TarIndexResult> {
     if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
     let fileCount = 0;
@@ -34,7 +34,7 @@ export const CotarIndexBuilder: TarIndexBuilder = {
     for await (const ctx of TarReader.iterate(getBytes)) {
       if (ctx.header.type !== TarReader.Type.File) continue;
       fileCount++;
-      const hash = CotarIndexBinary.hash(ctx.header.path);
+      const hash = CotarIndex.hash(ctx.header.path);
       if (hashSeen.has(hash)) {
         throw new Error('HashCollision:' + hashSeen.get(hash) + ' and ' + ctx.header.path);
       } else {
@@ -98,7 +98,6 @@ export const CotarIndexBuilder: TarIndexBuilder = {
         logger.debug({ current: i, duration, biggestSearch }, 'Cotar.Index:Write');
       }
     }
-
     // Store the slot count at the start and end of the file
     writeHeaderFooter(outputBuffer, slotCount);
 
@@ -106,8 +105,8 @@ export const CotarIndexBuilder: TarIndexBuilder = {
   },
 
   /** Validate that the index matches the input file */
-  async validate(getBytes: AsyncReader, index: Buffer, logger?: LogType): Promise<void> {
-    const binIndex = await CotarIndexBinary.create(new SourceMemory('cotar', index));
+  async validate(getBytes: AsyncReader, index: Buffer, logger?: LogType): Promise<number> {
+    const binIndex = await CotarIndex.create(new SourceMemory('cotar', index));
     return TarReader.validate(getBytes, binIndex, logger);
   },
 };

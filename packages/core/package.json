@@ -5,7 +5,7 @@
   "types": "build/src/index.d.ts",
   "license": "MIT",
   "dependencies": {
-    "@chunkd/core": "^4.3.0",
+    "@chunkd/core": "^4.5.1",
     "@sindresorhus/fnv1a": "^2.0.1",
     "binparse": "^1.1.0"
   },
@@ -18,7 +18,7 @@
     "*.png"
   ],
   "devDependencies": {
-    "@chunkd/source-file": "^4.3.0",
+    "@chunkd/source-file": "^4.5.1",
     "@types/node": "^15.12.1"
   }
 }

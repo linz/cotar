@@ -20,22 +20,9 @@ export type AsyncFileDescriptor = { read: AsyncFileReader };
 
 export type AsyncReader = AsyncFileRead | AsyncFileDescriptor;
 
-export interface TarIndexBuilder {
-  /** Create a index from a file  */
-  create(f: AsyncFileRead | AsyncFileDescriptor, logger?: LogType): Promise<TarIndexResult>;
-
-  /** Validate that a index matches the file */
-  validate(f: AsyncFileRead | AsyncFileDescriptor, index: Buffer, logger?: LogType): Promise<void>;
-}
-
 export interface TarIndexResult {
   /** Number of files indexed */
   count: number;
   /** Output buffer */
   buffer: Buffer;
-}
-
-export enum CotarIndexType {
-  Binary = 'binary',
-  Ndjson = 'ndjson',
 }

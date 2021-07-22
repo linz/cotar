@@ -5,7 +5,7 @@ import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import * as path from 'path';
 import { SourceMemory } from '@chunkd/core';
-import { CotarIndexBinary } from '../binary/binary.index';
+import { CotarIndex } from '../binary/binary.index';
 import { CotarIndexBuilder } from '../binary/binary.index.builder';
 import { Cotar } from '../cotar';
 import { TarFileHeader, TarReader } from '../tar';
@@ -45,7 +45,7 @@ o.spec('TarReader', () => {
 
     await source.close();
 
-    const index = await CotarIndexBinary.create(new SourceMemory('index', res.buffer));
+    const index = await CotarIndex.create(new SourceMemory('index', res.buffer));
     o(res.count >= 3).equals(true);
 
     const tarTest = await index.find('tar.test.js');
@@ -65,7 +65,7 @@ o.spec('TarReader', () => {
     await fs.copyFile(tarFilePath, coTarFilePath);
     await fs.appendFile(coTarFilePath, res.buffer);
 
-    const cotar = await Cotar.fromTar(new SourceFile(coTarFilePath));
+    const cotar = await Cotar.fromTar(new SourceFile(coTarFilePath) as any);
     const tarTest = await cotar.index.find('tar.test.js');
     o(tarTest).notEquals(null);
     o(tarTest?.size).equals(tarTestStat.size);

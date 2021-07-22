@@ -1,6 +1,6 @@
 import { LogType } from '@chunkd/core';
 import { bp, StrutInfer, toHex } from 'binparse';
-import { CotarIndex } from './cotar';
+import { CotarIndex } from './binary/binary.index';
 import { AsyncFileDescriptor, AsyncFileRead, AsyncReader } from './tar.index';
 
 export interface TarFileHeader {
@@ -85,7 +85,7 @@ export const TarReader = {
   },
 
   /** Validate a index matches */
-  async validate(getBytes: AsyncReader, cotar: CotarIndex, logger?: LogType): Promise<void> {
+  async validate(getBytes: AsyncReader, cotar: CotarIndex, logger?: LogType): Promise<number> {
     if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
     let currentTime = Date.now();
 
@@ -94,7 +94,13 @@ export const TarReader = {
       if (ctx.header.type !== TarReader.Type.File) continue;
 
       const index = await cotar.find(ctx.header.path);
-      if (index == null) throw new Error(`Missing File: ${ctx.header.path}`);
+      if (index == null) {
+        logger?.fatal(
+          { index, size: ctx.header.size, offset: ctx.offset, path: ctx.header.path },
+          'Cotar.Index:Validate:Failed',
+        );
+        continue;
+      }
       if (index?.offset !== ctx.offset || index?.size !== ctx.header.size) {
         logger?.fatal({ index, size: ctx.header.size, offset: ctx.offset }, 'Cotar.Index:Validate:Failed');
         throw new Error('Failed to validate file:' + ctx.header.path);
@@ -106,5 +112,6 @@ export const TarReader = {
       }
       i++;
     }
+    return i;
   },
 };

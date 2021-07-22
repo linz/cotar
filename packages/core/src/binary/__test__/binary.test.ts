@@ -6,7 +6,7 @@ import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import path from 'path';
-import { CotarIndexBinary } from '../binary.index';
+import { CotarIndex } from '../binary.index';
 import { Cotar } from '../../cotar';
 import { TarReader } from '../../tar';
 import { CotarIndexBuilder, writeHeaderFooter } from '../binary.index.builder';
@@ -47,7 +47,7 @@ o.spec('CotarBinary.fake', () => {
 
     const cotar = new Cotar(
       new SourceMemory('Tar', Buffer.from('0123456789')),
-      await CotarIndexBinary.create(new SourceMemory('index', tarIndex)),
+      await CotarIndex.create(new SourceMemory('index', tarIndex)),
     );
 
     o(await cotar.index.find('tiles/0/0/0.pbf.gz')).deepEquals({ offset: 0, size: 1 });
@@ -88,8 +88,8 @@ o.spec('CotarBinary', () => {
     const source = new SourceFile(tarFilePath);
     const sourceIndex = new SourceFile(tarFileIndexPath);
 
-    const index = await CotarIndexBinary.create(sourceIndex);
-    const cotar = new Cotar(source, index);
+    const index = await CotarIndex.create(sourceIndex as any);
+    const cotar = new Cotar(source as any, index);
 
     const fileData = await cotar.get('binary.test.js');
     o(fileData).notEquals(null);
