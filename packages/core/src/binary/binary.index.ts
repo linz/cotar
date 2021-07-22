@@ -78,20 +78,18 @@ export class CotarIndex {
       const offset = this.sourceOffset + index * IndexRecordSize + IndexHeaderSize;
       await this.source.loadBytes(offset, IndexRecordSize, logger);
       startHash = this.source.bigUint64(offset);
-      // const bytes = new DataView(this.source.bytes(offset, 8).buffer).getBigUint64(0);
 
-      // console.log('LookAt', index, offset, { startHash, hash }, bytes);
-
+      // Found the file
       if (startHash === hash) {
         const fileOffset = this.source.bigUint64(offset + 8);
         const fileSize = this.source.bigUint64(offset + 16);
-
-        // console.log(fileOffset, fileSize, bytes.getBigUint64(0, true));
         return { offset: toNumber(fileOffset), size: toNumber(fileSize) };
       }
+      // Found a gap in the hash table (file doesnt exist)
       if (startHash === Big0) return null;
 
       index++;
+      // Loop around if we hit the end of the hash table
       if (index >= slotCount) index = 0;
       if (index === startIndex) return null;
     }
