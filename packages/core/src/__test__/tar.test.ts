@@ -1,10 +1,10 @@
+import { SourceMemory } from '@chunkd/core';
 import { SourceFile } from '@chunkd/source-file';
 import * as cp from 'child_process';
 import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import * as path from 'path';
-import { SourceMemory } from '@chunkd/core';
 import { CotarIndex } from '../binary/binary.index';
 import { CotarIndexBuilder } from '../binary/binary.index.builder';
 import { Cotar } from '../cotar';
@@ -16,7 +16,6 @@ o.spec('TarReader', () => {
     cp.execSync(`tar cf ${tarFilePath} tar.test.*`, { cwd: __dirname });
   });
   const tarFilePath = path.join(__dirname, 'test.tar');
-  const tarFileIndexPath = path.join(__dirname, 'test.tar.index');
 
   let fd: FileHandle | null;
   const headBuffer = Buffer.alloc(512);

@@ -1,5 +1,3 @@
-import { LogType } from '@chunkd/core';
-
 export interface MinimalBuffer {
   readonly [n: number]: number;
   length: number;
