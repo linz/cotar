@@ -6,7 +6,7 @@ import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import path from 'path';
-import { CotarIndex } from '../binary.index';
+import { CotarIndex, toNumber } from '../binary.index';
 import { Cotar } from '../../cotar';
 import { TarReader } from '../../tar';
 import { CotarIndexBuilder, writeHeaderFooter } from '../binary.index.builder';
@@ -100,5 +100,23 @@ o.spec('CotarBinary', () => {
 
     // Should validate
     await TarReader.validate(fd, index);
+  });
+});
+
+o.spec('toNumber', () => {
+  o('should fail for large numbers', () => {
+    // Closest real "number" is 450359962737049530000
+    o(() => toNumber(BigInt('450359962737049530001'))).throws(Error);
+    o(() => toNumber(BigInt('450359962737049530002'))).throws(Error);
+  });
+
+  o('should not throw for large safe numbers', () => {
+    o(toNumber(BigInt('450359962737049530000'))).equals(450359962737049530000);
+  });
+
+  o('should work for small bigints', () => {
+    for (let i = 0; i < 1_000; i++) {
+      o(toNumber(BigInt(i))).equals(i);
+    }
   });
 });

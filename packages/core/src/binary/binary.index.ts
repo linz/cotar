@@ -102,7 +102,7 @@ export class CotarIndex {
  */
 export function toNumber(input: bigint): number {
   const output = Number(input);
-  const num = BigInt(output);
+  const num = BigInt(output.toString());
   if (num !== input) throw new Error('Failed to convert bigint:' + output + ' to a number');
   return output;
 }
