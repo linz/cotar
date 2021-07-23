@@ -1,28 +1,28 @@
-import { LogType, SourceMemory } from '@cogeotiff/chunk';
-import { bp } from 'binparse';
+import { LogType, SourceMemory } from '@chunkd/core';
 import { TarReader } from '../tar';
-import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexBuilder, TarIndexResult } from '../tar.index';
-import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from './binary.index';
+import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexResult } from '../tar.index';
+import { CotarIndex } from './binary.index';
+import { IndexHeaderSize, IndexMagic, IndexRecordSize, IndexSize, IndexVersion } from './format';
 
-export const BinaryIndexRecord = bp.object('TarIndexRecord', {
-  hash: bp.bytes(8),
-  offset: bp.lu32,
-  size: bp.lu32,
-});
+/** Write the header/footer into the buffer */
+export function writeHeaderFooter(output: Buffer, count: number): void {
+  if (output.length < IndexSize * 2) {
+    throw new Error('Buffer is too small for CotarHeader, minimum size: ' + IndexSize * 2);
+  }
+  // Write the header at the start of the buffer
+  output.write(IndexMagic, 0);
+  output.writeUInt8(IndexVersion, 3);
+  output.writeUInt32LE(count, 4);
 
-export const BinaryIndex = bp.object('TarIndex', {
-  count: bp.variable('count', bp.lu32),
-  hashTable: bp.array('table', BinaryIndexRecord, 'count'),
-});
-
-export function toArrayBuffer(buf: Buffer | Uint8Array): ArrayBuffer {
-  if (buf.byteLength === buf.buffer.byteLength) return buf.buffer;
-  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+  // Write the header at the end of the buffer
+  output.write(IndexMagic, output.length - 8);
+  output.writeUInt8(IndexVersion, output.length - 5);
+  output.writeUInt32LE(count, output.length - 4);
 }
 
 const Big0 = BigInt(0);
 
-export const CotarIndexBuilder: TarIndexBuilder = {
+export const CotarIndexBuilder = {
   async create(getBytes: AsyncFileRead | AsyncFileDescriptor, logger?: LogType): Promise<TarIndexResult> {
     if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
     let fileCount = 0;
@@ -34,7 +34,7 @@ export const CotarIndexBuilder: TarIndexBuilder = {
     for await (const ctx of TarReader.iterate(getBytes)) {
       if (ctx.header.type !== TarReader.Type.File) continue;
       fileCount++;
-      const hash = CotarIndexBinary.hash(ctx.header.path);
+      const hash = CotarIndex.hash(ctx.header.path);
       if (hashSeen.has(hash)) {
         throw new Error('HashCollision:' + hashSeen.get(hash) + ' and ' + ctx.header.path);
       } else {
@@ -51,7 +51,7 @@ export const CotarIndexBuilder: TarIndexBuilder = {
     hashSeen.clear();
 
     const slotCount = Math.ceil(fileCount * TarReader.PackingFactor);
-    const outputBuffer = Buffer.alloc(IndexHeaderSize + IndexRecordSize * slotCount);
+    const outputBuffer = Buffer.alloc(IndexSize + IndexRecordSize * slotCount);
     logger?.debug({ slotCount, fileCount }, 'Cotar.index:Allocate');
 
     // Allocate the hash slots for the files
@@ -60,7 +60,6 @@ export const CotarIndexBuilder: TarIndexBuilder = {
     files.sort((a, b) => a.index - b.index);
     logger?.debug({ duration: Date.now() - currentTime }, 'Cotar.index:Hash');
 
-    // const writtenAt = new Set<number>();
     currentTime = Date.now();
 
     // Find the first hash index slot for the file to go into
@@ -90,8 +89,8 @@ export const CotarIndexBuilder: TarIndexBuilder = {
 
       const offset = index * IndexRecordSize + IndexHeaderSize;
       outputBuffer.writeBigUInt64LE(BigInt(file.hash), offset);
-      outputBuffer.writeUInt32LE(file.offset, offset + 8);
-      outputBuffer.writeUInt32LE(file.size, offset + 12);
+      outputBuffer.writeBigUInt64LE(BigInt(file.offset), offset + 8); // TODO write uint8/16/24 based off size
+      outputBuffer.writeBigUInt64LE(BigInt(file.size), offset + 16);
 
       if (i > 0 && i % 100_000 === 0 && logger != null) {
         const duration = Date.now() - currentTime;
@@ -99,15 +98,15 @@ export const CotarIndexBuilder: TarIndexBuilder = {
         logger.debug({ current: i, duration, biggestSearch }, 'Cotar.Index:Write');
       }
     }
-    // Store the slot count at the start of the file, this is used to find the position later
-    outputBuffer.writeUInt32LE(slotCount, 0);
+    // Store the slot count at the start and end of the file
+    writeHeaderFooter(outputBuffer, slotCount);
 
     return { buffer: outputBuffer, count: files.length };
   },
 
   /** Validate that the index matches the input file */
-  async validate(getBytes: AsyncReader, index: Buffer, logger?: LogType): Promise<void> {
-    const binIndex = new CotarIndexBinary(new SourceMemory('cotar', toArrayBuffer(index)));
+  async validate(getBytes: AsyncReader, index: Buffer, logger?: LogType): Promise<number> {
+    const binIndex = await CotarIndex.create(new SourceMemory('cotar', index));
     return TarReader.validate(getBytes, binIndex, logger);
   },
 };

@@ -1,20 +1,24 @@
-import { SourceMemory } from '@cogeotiff/chunk';
-import { SourceFile } from '@cogeotiff/source-file';
+import { SourceMemory } from '@chunkd/core';
+import { SourceFile } from '@chunkd/source-file';
 import * as cp from 'child_process';
 import fnv1a from '@sindresorhus/fnv1a';
 import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import path from 'path';
-import { CotarIndexBinary, IndexHeaderSize, IndexRecordSize } from '../binary.index';
+import { CotarIndex, toNumber } from '../binary.index';
 import { Cotar } from '../../cotar';
 import { TarReader } from '../../tar';
-import { CotarIndexBuilder, toArrayBuffer } from '../binary.index.builder';
+import { CotarIndexBuilder, writeHeaderFooter } from '../binary.index.builder';
+import { IndexHeaderSize, IndexRecordSize } from '../format';
 
 function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
   if (buf == null) return null;
   return String.fromCharCode(new Uint8Array(buf)[offset]);
 }
+
+const ExpectedRecord =
+  'Q09UAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmYwdbtIi0pwAAAAAAAAAAAQAAAAAAAAC/I5YiYFMqNwQAAAAAAAAABAAAAAAAAABDT1QBBAAAAA==';
 
 o.spec('CotarBinary.fake', () => {
   o('should load a tile from fake index', async () => {
@@ -25,21 +29,25 @@ o.spec('CotarBinary.fake', () => {
     ];
 
     const indexSize = 4;
-    const tarIndex: Buffer = Buffer.alloc(indexSize * IndexRecordSize + IndexHeaderSize);
+    const tarIndex: Buffer = Buffer.alloc(indexSize * IndexRecordSize + IndexHeaderSize * 2);
 
     for (const record of files) {
-      const hash = fnv1a.bigInt(record.path);
+      const hash = fnv1a.bigInt(record.path, { size: 64 });
       const index = Number(hash % BigInt(indexSize));
       const offset = index * IndexRecordSize + IndexHeaderSize;
       tarIndex.writeBigUInt64LE(hash, offset);
-      tarIndex.writeUInt32LE(record.offset, offset + 8);
-      tarIndex.writeUInt32LE(record.size, offset + 12);
+      tarIndex.writeBigUInt64LE(BigInt(record.offset), offset + 8);
+      tarIndex.writeBigUInt64LE(BigInt(record.size), offset + 16);
     }
     tarIndex.writeUInt32LE(indexSize);
 
+    writeHeaderFooter(tarIndex, indexSize);
+
+    o(tarIndex.toString('base64')).equals(ExpectedRecord);
+
     const cotar = new Cotar(
-      new SourceMemory('Tar', toArrayBuffer(Buffer.from('0123456789'))),
-      new CotarIndexBinary(new SourceMemory('index', toArrayBuffer(tarIndex))),
+      new SourceMemory('Tar', Buffer.from('0123456789')),
+      await CotarIndex.create(new SourceMemory('index', tarIndex)),
     );
 
     o(await cotar.index.find('tiles/0/0/0.pbf.gz')).deepEquals({ offset: 0, size: 1 });
@@ -74,14 +82,14 @@ o.spec('CotarBinary', () => {
   o('should create a binary index from a tar file', async () => {
     const fd = await fs.open(tarFilePath, 'r');
     const res = await CotarIndexBuilder.create(fd);
-    o(res.count).equals(3);
+    o(res.count > 3).equals(true);
     await fs.writeFile(tarFileIndexPath, res.buffer);
 
     const source = new SourceFile(tarFilePath);
     const sourceIndex = new SourceFile(tarFileIndexPath);
 
-    const index = new CotarIndexBinary(sourceIndex);
-    const cotar = new Cotar(source, new CotarIndexBinary(sourceIndex));
+    const index = await CotarIndex.create(sourceIndex as any);
+    const cotar = new Cotar(source as any, index);
 
     const fileData = await cotar.get('binary.test.js');
     o(fileData).notEquals(null);
@@ -92,5 +100,23 @@ o.spec('CotarBinary', () => {
 
     // Should validate
     await TarReader.validate(fd, index);
+  });
+});
+
+o.spec('toNumber', () => {
+  o('should fail for large numbers', () => {
+    // Closest real "number" is 450359962737049530000
+    o(() => toNumber(BigInt('450359962737049530001'))).throws(Error);
+    o(() => toNumber(BigInt('450359962737049530002'))).throws(Error);
+  });
+
+  o('should not throw for large safe numbers', () => {
+    o(toNumber(BigInt('450359962737049530000'))).equals(450359962737049530000);
+  });
+
+  o('should work for small bigints', () => {
+    for (let i = 0; i < 1_000; i++) {
+      o(toNumber(BigInt(i))).equals(i);
+    }
   });
 });
