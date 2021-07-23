@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/linz/cotar/compare/v3.1.0...v4.0.0) (2021-07-23)
+
+
+### Features
+
+* **core:** append index onto tar file to create a single ".tar.co" file ([#48](https://github.com/linz/cotar/issues/48)) ([a4becec](https://github.com/linz/cotar/commit/a4becec897b012fd279a80041a59e6bb52ac5c42))
+* **core:** remove ndjson index and just use a binary index ([#45](https://github.com/linz/cotar/issues/45)) ([5836d67](https://github.com/linz/cotar/commit/5836d67197224ffd5b2a88abae10acdf2bdf9be4))
+
+
+### BREAKING CHANGES
+
+* **core:** this changes both how the index is constructed and how it is stored
+
+* refactor: rename index creator
+
+* refactor: fix lint issues
+
+* refactor: remove unused code
+
+* test: adding tests for converting bigint to number
+
+
+
+
+
 # [3.1.0](https://github.com/linz/cotar/compare/v3.0.0...v3.1.0) (2021-07-07)
 
 

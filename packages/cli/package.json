@@ -1,6 +1,6 @@
 {
   "name": "@cotar/cli",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "main": "index.js",
   "license": "MIT",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@chunkd/source-file": "^4.5.1",
-    "@cotar/core": "^3.1.0",
+    "@cotar/core": "^4.0.0",
     "@oclif/command": "^1.8.0",
     "binparse": "^1.1.0",
     "pino": "^6.11.0",
