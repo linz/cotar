@@ -4088,9 +4088,9 @@ prettier@^2.3.2:
   integrity sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==
 
 pretty-json-log@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/pretty-json-log/-/pretty-json-log-0.3.2.tgz#9bd22d452ea005a3c293f5a641a6ec3d17cc83f5"
-  integrity sha512-dPjFb2RNFPUdGKIGCyfqeslmkqZZxPxq4UbLMJJZDs0y+GMYZfWo3FmT1VYAgcehbXTXRhNPcAlgbTWgUAQEHw==
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/pretty-json-log/-/pretty-json-log-0.3.3.tgz#bce1a3471d3213c76658337543b63a1d5e0bb876"
+  integrity sha512-b7zufIohRqhnEkr05NYID6zN4mAUGjzkY8OjhOOYvnm8Td6u9W0PDnDV3zJX/qLhm94LEYLKtFPkvsYvljZSDw==
   dependencies:
     ansi-colors "^4.1.1"
     split2 "^3.1.1"
