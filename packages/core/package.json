@@ -5,7 +5,7 @@
   "types": "build/src/index.d.ts",
   "license": "MIT",
   "dependencies": {
-    "@chunkd/core": "^4.5.1",
+    "@chunkd/core": "^7.2.0",
     "@sindresorhus/fnv1a": "^2.0.1",
     "binparse": "^1.1.0"
   },
