@@ -35,12 +35,17 @@
   resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-4.5.1.tgz#179d0f0e035a9af7c56ec4d88c01e9f4bc9b7a32"
   integrity sha512-8gZGvWD8yYWysvbrLla1uubYvgm+PQrzEdHSK8gMwtgJTULg3GOVpIUzFTFmxDdR2CjwKhdb1BD69NZbVoVI/Q==
 
-"@chunkd/source-file@^4.5.1":
-  version "4.5.1"
-  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-4.5.1.tgz#c5971adad64b21c1c5b9f74790f0fb33c9b54a78"
-  integrity sha512-LBv6rFgyDpUboJoCZZRwzzpRPcw2oNGm97LKRhOQl9Fu4QX4bGS1UEn82sddbu2nA278+pi4yKwvsGavDcBgXQ==
+"@chunkd/core@^7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-7.2.0.tgz#3c6fd3efc0050443014dd3c1e4311d670caec9b1"
+  integrity sha512-S7fCiSPWQFLYGJw+YqUeDIxEptjd0u/q/O7kxFt5mdvSOPOOnds+uDDwwQznrHJW0F6CvGaOzEl8e8W6z+gq5g==
+
+"@chunkd/source-file@^7.2.1":
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-7.2.1.tgz#3497e17a312a5dd2124c13e3e8197032da989c87"
+  integrity sha512-/Fat3+TeKjphVfAi5tmzIp2iAawqh24czLnnYgqYa0sUdHtpSFxQlnG34V4LMew/J9KwSa538d7ba3VMBU2Sjw==
   dependencies:
-    "@chunkd/core" "^4.5.1"
+    "@chunkd/core" "^7.2.0"
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
