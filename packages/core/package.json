@@ -3,6 +3,20 @@
   "version": "4.0.0",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linz/cotar.git",
+    "directory": "packages/core"
+  },
+  "author": {
+    "name": "Land Information New Zealand",
+    "url": "https://linz.govt.nz",
+    "organization": true
+  },
+  "type": "module",
+  "engines": {
+      "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
   "license": "MIT",
   "dependencies": {
     "@chunkd/core": "^7.2.2",

@@ -6,6 +6,10 @@
   "bin": {
     "cotar": "./bin/cotar"
   },
+  "type": "module",
+  "engines": {
+      "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
   "dependencies": {
     "@chunkd/source-file": "^7.2.2",
     "@cotar/core": "^4.0.0",

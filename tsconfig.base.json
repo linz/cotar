@@ -1,3 +1,7 @@
 {
     "extends": "@linzjs/style/tsconfig.base.json",
+    "compilerOptions": {
+        "module": "ES2020",
+        "moduleResolution": "Node",
+    }
 }

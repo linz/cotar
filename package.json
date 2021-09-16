@@ -9,10 +9,22 @@
         "lint": "eslint 'packages/*/{src,test}/**/*.{js,ts,tsx}' --quiet --fix",
         "test": "ospec packages/*/build/**/*.test.js"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/linz/cotar.git"
+      },
+      "author": {
+        "name": "Land Information New Zealand",
+        "url": "https://linz.govt.nz",
+        "organization": true
+      },
     "private": true,
     "keywords": [],
-    "author": "Blayne Chard",
-    "license": "ISC",
+    "type": "module",
+    "engines": {
+        "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+    },
+    "license": "MIT",
     "description": "",
     "devDependencies": {
         "@linzjs/style": "^3.0.0",
