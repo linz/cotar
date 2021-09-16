@@ -12,12 +12,12 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/linz/cotar.git"
-      },
-      "author": {
+    },
+    "author": {
         "name": "Land Information New Zealand",
         "url": "https://linz.govt.nz",
         "organization": true
-      },
+    },
     "private": true,
     "keywords": [],
     "type": "module",
@@ -29,6 +29,7 @@
     "devDependencies": {
         "@linzjs/style": "^3.0.0",
         "@types/ospec": "^4.0.2",
+        "conventional-github-releaser": "^3.1.5",
         "lerna": "^4.0.0",
         "ospec": "^4.0.0",
         "rimraf": "^3.0.0"
