@@ -90,8 +90,8 @@ o.spec('CotarBinary', () => {
     const source = new SourceFile(tarFilePath);
     const sourceIndex = new SourceFile(tarFileIndexPath);
 
-    const index = await CotarIndex.create(sourceIndex as any);
-    const cotar = new Cotar(source as any, index);
+    const index = await CotarIndex.create(sourceIndex);
+    const cotar = new Cotar(source, index);
 
     const fileData = await cotar.get('binary.test.js');
     o(fileData).notEquals(null);

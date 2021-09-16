@@ -66,7 +66,7 @@ o.spec('TarReader', () => {
     await fs.copyFile(tarFilePath, coTarFilePath);
     await fs.appendFile(coTarFilePath, res.buffer);
 
-    const cotar = await Cotar.fromTar(new SourceFile(coTarFilePath) as any);
+    const cotar = await Cotar.fromTar(new SourceFile(coTarFilePath));
     const tarTest = await cotar.index.find('tar.test.js');
     o(tarTest).notEquals(null);
     o(tarTest?.size).equals(tarTestStat.size);
