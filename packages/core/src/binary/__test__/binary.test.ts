@@ -95,7 +95,7 @@ o.spec('CotarBinary', () => {
 
     const fileData = await cotar.get('binary.test.js');
     o(fileData).notEquals(null);
-    o(Buffer.from(fileData!).toString().startsWith('"use strict"')).equals(true);
+    o(Buffer.from(fileData!).toString().startsWith('import {')).equals(true);
 
     const fakeFile = await cotar.get('fake.file.md');
     o(fakeFile).equals(null);
