@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.0.1](https://github.com/linz/cotar/compare/v5.0.0...v5.0.1) (2021-09-16)
+
+**Note:** Version bump only for package @cotar/cli
+
+
+
+
+
 # [5.0.0](https://github.com/linz/cotar/compare/v4.0.0...v5.0.0) (2021-09-16)
 
 

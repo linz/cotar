@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.0.1](https://github.com/linz/cotar/compare/v5.0.0...v5.0.1) (2021-09-16)
+
+
+### Bug Fixes
+
+* correct deployment logic for npm ([4fe1152](https://github.com/linz/cotar/commit/4fe1152be1c7f18472240e761be3a8de32c3f0bb))
+* remove unused any ([88b2b06](https://github.com/linz/cotar/commit/88b2b06f2f5a5ca545794e2e2d9a95d615f00a4f))
+
+
+
+
+
 # [5.0.0](https://github.com/linz/cotar/compare/v4.0.0...v5.0.0) (2021-09-16)
 
 
