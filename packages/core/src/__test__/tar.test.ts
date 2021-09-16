@@ -5,10 +5,12 @@ import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import * as path from 'path';
-import { CotarIndex } from '../binary/binary.index';
-import { CotarIndexBuilder } from '../binary/binary.index.builder';
-import { Cotar } from '../cotar';
-import { TarFileHeader, TarReader } from '../tar';
+import url from 'url';
+import { CotarIndexBuilder } from '../binary/binary.index.builder.js';
+import { CotarIndex } from '../binary/binary.index.js';
+import { Cotar } from '../cotar.js';
+import { TarFileHeader, TarReader } from '../tar.js';
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 o.spec('TarReader', () => {
   // Create a Tar file of the built source

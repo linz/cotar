@@ -1,7 +1,7 @@
 import { CotarIndexBinary, CotarIndexBuilder, TarReader } from '@cotar/core';
 import { Command, flags } from '@oclif/command';
 import { existsSync, promises as fs } from 'fs';
-import { logger } from '../log';
+import { logger } from '../log.js';
 import { LogType, SourceMemory } from '@chunkd/core';
 
 export class CreateCotar extends Command {

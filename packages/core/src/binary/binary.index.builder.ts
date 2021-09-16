@@ -1,8 +1,8 @@
 import { LogType, SourceMemory } from '@chunkd/core';
-import { TarReader } from '../tar';
-import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexResult } from '../tar.index';
-import { CotarIndex } from './binary.index';
-import { IndexHeaderSize, IndexMagic, IndexRecordSize, IndexSize, IndexVersion } from './format';
+import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexResult } from '../tar.index.js';
+import { TarReader } from '../tar.js';
+import { CotarIndex } from './binary.index.js';
+import { IndexHeaderSize, IndexMagic, IndexRecordSize, IndexSize, IndexVersion } from './format.js';
 
 /** Write the header/footer into the buffer */
 export function writeHeaderFooter(output: Buffer, count: number): void {

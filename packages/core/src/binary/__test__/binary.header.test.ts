@@ -1,6 +1,6 @@
 import o from 'ospec';
-import { CotarMetadataParser } from '../binary.index';
-import { writeHeaderFooter } from '../binary.index.builder';
+import { writeHeaderFooter } from '../binary.index.builder.js';
+import { CotarMetadataParser } from '../binary.index.js';
 
 const Example = {
   v1: {

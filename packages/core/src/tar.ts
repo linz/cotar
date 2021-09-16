@@ -1,7 +1,7 @@
 import { LogType } from '@chunkd/core';
 import { bp, StrutInfer, toHex } from 'binparse';
-import { CotarIndex } from './binary/binary.index';
-import { AsyncFileDescriptor, AsyncFileRead, AsyncReader } from './tar.index';
+import { CotarIndex } from './binary/binary.index.js';
+import { AsyncFileDescriptor, AsyncFileRead, AsyncReader } from './tar.index.js';
 
 export interface TarFileHeader {
   offset: number;

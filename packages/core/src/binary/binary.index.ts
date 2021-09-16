@@ -1,8 +1,8 @@
-import { LogType, ChunkSource } from '@chunkd/core';
+import { ChunkSource, LogType } from '@chunkd/core';
 import fnv1a from '@sindresorhus/fnv1a';
 import { bp, StrutInfer } from 'binparse';
-import { CotarIndexRecord } from '../cotar';
-import { IndexHeaderSize, IndexMagic, IndexRecordSize, IndexVersion } from './format';
+import { CotarIndexRecord } from '../cotar.js';
+import { IndexHeaderSize, IndexMagic, IndexRecordSize, IndexVersion } from './format.js';
 
 const Big0 = BigInt(0);
 

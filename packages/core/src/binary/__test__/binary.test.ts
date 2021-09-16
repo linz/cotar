@@ -1,16 +1,18 @@
 import { SourceMemory } from '@chunkd/core';
 import { SourceFile } from '@chunkd/source-file';
-import * as cp from 'child_process';
 import fnv1a from '@sindresorhus/fnv1a';
+import * as cp from 'child_process';
 import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
 import o from 'ospec';
 import path from 'path';
-import { CotarIndex, toNumber } from '../binary.index';
-import { Cotar } from '../../cotar';
-import { TarReader } from '../../tar';
-import { CotarIndexBuilder, writeHeaderFooter } from '../binary.index.builder';
-import { IndexHeaderSize, IndexRecordSize } from '../format';
+import url from 'url';
+import { Cotar } from '../../cotar.js';
+import { TarReader } from '../../tar.js';
+import { CotarIndexBuilder, writeHeaderFooter } from '../binary.index.builder.js';
+import { CotarIndex, toNumber } from '../binary.index.js';
+import { IndexHeaderSize, IndexRecordSize } from '../format.js';
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
   if (buf == null) return null;

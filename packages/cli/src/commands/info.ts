@@ -2,7 +2,7 @@ import { SourceFile } from '@chunkd/source-file';
 import { Cotar, TarReader } from '@cotar/core';
 import Command, { flags } from '@oclif/command';
 import { promises as fs } from 'fs';
-import { logger } from '../log';
+import { logger } from '../log.js';
 
 export class CreateCotar extends Command {
   static description = 'Validate that every file in the tar can be found in the index';
