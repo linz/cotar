@@ -1,6 +1,6 @@
 {
   "name": "@cotar/core",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "repository": {
@@ -15,7 +15,7 @@
   },
   "type": "module",
   "engines": {
-      "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
   "license": "MIT",
   "dependencies": {

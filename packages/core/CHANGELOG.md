@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.0.0](https://github.com/linz/cotar/compare/v4.0.0...v5.0.0) (2021-09-16)
+
+
+### Features
+
+* switch to chunkd v7 which uses a dataview based interface ([ddc62bf](https://github.com/linz/cotar/commit/ddc62bf017e92616e7e01b642c2581bc4abbc33e))
+* switch to esm modules ([5df415a](https://github.com/linz/cotar/commit/5df415a4b3668922f5e179fd371260482dd2238f))
+
+
+### BREAKING CHANGES
+
+* Switched to ESM modules this breaks all compatability
+with CommonJS modules
+
+
+
+
+
 # [4.0.0](https://github.com/linz/cotar/compare/v3.1.0...v4.0.0) (2021-07-23)
 
 
