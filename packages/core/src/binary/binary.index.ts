@@ -1,4 +1,4 @@
-import { ChunkSource, LogType } from '@chunkd/core';
+import { LogType, ChunkSource } from '@chunkd/core';
 import fnv1a from '@sindresorhus/fnv1a';
 import { bp, StrutInfer } from 'binparse';
 import { CotarIndexRecord } from '../cotar';
@@ -77,13 +77,13 @@ export class CotarIndex {
     while (true) {
       const offset = this.sourceOffset + index * IndexRecordSize + IndexHeaderSize;
       await this.source.loadBytes(offset, IndexRecordSize, logger);
-      startHash = this.source.bigUint64(offset);
+      startHash = this.source.getBigUint64(offset);
 
       // Found the file
       if (startHash === hash) {
-        const fileOffset = this.source.bigUint64(offset + 8);
-        const fileSize = this.source.bigUint64(offset + 16);
-        return { offset: toNumber(fileOffset), size: toNumber(fileSize) };
+        const fileOffset = this.source.getUint64(offset + 8);
+        const fileSize = this.source.getUint64(offset + 16);
+        return { offset: fileOffset, size: fileSize };
       }
       // Found a gap in the hash table (file doesnt exist)
       if (startHash === Big0) return null;
