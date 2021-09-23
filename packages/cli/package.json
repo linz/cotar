@@ -26,7 +26,7 @@
     "@oclif/core": "^0.5.38",
     "binparse": "^1.1.0",
     "pino": "^6.11.0",
-    "pretty-json-log": "^0.3.2"
+    "pretty-json-log": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^16.4.1",
