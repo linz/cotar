@@ -1445,10 +1445,10 @@ before-after-hook@^2.2.0:
   resolved "https://registry.yarnpkg.com/before-after-hook/-/before-after-hook-2.2.0.tgz#09c40d92e936c64777aa385c4e9b904f8147eaf0"
   integrity sha512-jH6rKQIfroBbhEXVmI7XmXe3ix5S/PgJqpzdDPnR8JGLHWNYLsYZ6tK5iWOF/Ra3oqEX0NobXGlzbiylIzVphQ==
 
-binparse@^1.1.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/binparse/-/binparse-1.2.1.tgz#5fafa44a7745f84dafa8a19ec1cd4c4c7774ba31"
-  integrity sha512-3kwsgGE5vELlwhFHFGl/xQfm3QzVMqh+JQLEmLeHlssiEISvq6yc3NXsvsa6jirbZwsg/eZU4gXquY8pLHzV6Q==
+binparse@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/binparse/-/binparse-2.0.0.tgz#1615ac04130b2e3fbb61022db2331fa5e623760c"
+  integrity sha512-o3Gcfl0kEO2k3zekEBJL8wTXckAONTEu+7SxLAUXXZ0ymyciHz/TA0Xje+tzgUHT+ed/zG7BDSTjfVcFd2e5Vw==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
