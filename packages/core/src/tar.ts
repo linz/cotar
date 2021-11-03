@@ -21,24 +21,26 @@ export enum TarType {
   LongLink = 'K'.charCodeAt(0),
 }
 
+// It takes time to load all the header in, load in only the chunks we care about
 export const TarHeader = bp.object('TarHeader', {
   path: bp.string(100),
-  mode: bp.string(8),
-  uid: bp.string(8),
-  gid: bp.string(8),
+  skip1: bp.skip(24),
+  // mode: bp.string(8),
+  // uid: bp.string(8),
+  // gid: bp.string(8),
   size: bp.bytes(12).refine((val) => parseInt(val.toString(), 8)),
-  mtime: bp.bytes(12),
-  unk1: bp.bytes(8),
+  skip2: bp.skip(20),
+  // unk1: bp.skip(8),
   type: bp.u8,
-  linkName: bp.string(100),
-  magic: bp.string(6),
-  version: bp.bytes(2),
-  uName: bp.string(32),
-  gName: bp.string(32),
-  devMajor: bp.bytes(8),
-  devMinor: bp.bytes(8),
-  prefix: bp.bytes(155),
-  padding: bp.bytes(12),
+  // linkName: bp.string(100),
+  // magic: bp.string(6),
+  // version: bp.bytes(2),
+  // uName: bp.string(32),
+  // gName: bp.string(32),
+  // devMajor: bp.bytes(8),
+  // devMinor: bp.bytes(8),
+  // prefix: bp.bytes(155),
+  // padding: bp.bytes(12),
 });
 
 /** Tar files are aligned to 512 byte blocks, loop to the closest block */
