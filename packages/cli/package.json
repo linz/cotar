@@ -24,7 +24,7 @@
     "@chunkd/source-file": "^7.2.2",
     "@cotar/core": "^5.0.1",
     "@oclif/core": "^1.0.2",
-    "binparse": "^1.1.0",
+    "binparse": "^2.0.1",
     "pino": "^7.0.5",
     "pretty-json-log": "^1.0.0"
   },
