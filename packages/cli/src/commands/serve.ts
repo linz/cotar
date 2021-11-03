@@ -1,3 +1,4 @@
+import { ChunkSource } from '@chunkd/core';
 import { SourceFile } from '@chunkd/source-file';
 import { Cotar, TarReader } from '@cotar/core';
 import { Command, flags } from '@oclif/command';
@@ -5,6 +6,58 @@ import http from 'http';
 import path from 'path';
 import { URL } from 'url';
 import { logger } from '../log.js';
+
+function toFolderName(f: string): string {
+  if (!f.startsWith('/')) f = '/' + f;
+  if (!f.endsWith('/')) f = f + '/';
+  return f;
+}
+
+/** Create a tree from a tar file */
+class FileTree {
+  nodes: Map<string, Set<string>> = new Map();
+  source: ChunkSource;
+  constructor(source: ChunkSource) {
+    this.source = source;
+  }
+
+  getBytes = async (offset: number, count: number): Promise<Buffer> => {
+    await this.source.loadBytes(offset, count);
+    const bytes = await this.source.bytes(offset, count);
+    return Buffer.from(bytes);
+  };
+
+  async init(): Promise<void> {
+    for await (const ctx of TarReader.iterate(this.getBytes)) {
+      const dirname = toFolderName(path.dirname(ctx.header.path));
+      let existing = this.nodes.get(dirname);
+      if (existing == null) {
+        existing = new Set();
+        this.nodes.set(dirname, existing);
+      }
+      existing.add(ctx.header.path.startsWith('/') ? ctx.header.path : '/' + ctx.header.path);
+
+      let current = '/';
+      const parts = ctx.header.path.split('/');
+      for (let i = 0; i < parts.length - 2; i++) {
+        const part = parts[i];
+        existing = this.nodes.get(current);
+        if (existing == null) {
+          existing = new Set();
+          this.nodes.set(current, existing);
+        }
+        const next = toFolderName(path.join(current, part));
+        existing.add(next);
+        current = next;
+      }
+    }
+  }
+
+  async list(pathName: string): Promise<Set<string> | undefined> {
+    if (this.nodes.size === 0) await this.init();
+    return this.nodes.get(toFolderName(pathName));
+  }
+}
 
 export class CotarServe extends Command {
   static description = 'Serve a cotar using http';
@@ -23,6 +76,7 @@ export class CotarServe extends Command {
 
     const source = new SourceFile(args.inputFile);
     const cotar = await Cotar.fromTar(source);
+    const fileTree = new FileTree(source);
 
     logger.info({ fileName: args.inputFile }, 'Cotar:Loaded');
 
@@ -39,34 +93,35 @@ export class CotarServe extends Command {
       res.writeHead(200);
       res.write(file);
       res.end();
-      logger.info({ fileName, duration: Date.now() - startTime }, '/v1/file');
+      logger.info({ action: 'file:get', fileName, duration: Date.now() - startTime }, req.url);
     }
 
     // List all the files in the source tar
-    async function sendFileList(req: http.IncomingMessage, res: http.ServerResponse): Promise<void> {
+    async function sendFileList(req: http.IncomingMessage, res: http.ServerResponse, pathName: string): Promise<void> {
       const startTime = Date.now();
-      const fd = await source.fd;
-      if (fd == null) {
-        res.writeHead(500);
+
+      const list = await fileTree.list(pathName ?? '/');
+      if (list == null) {
+        res.writeHead(404);
         return res.end();
       }
-      const fileList = [];
-      for await (const ctx of TarReader.iterate(TarReader.toFileReader(fd))) {
-        if (ctx.header.type !== TarReader.Type.File) continue;
-        fileList.push({ path: path.join('/v1/file/', ctx.header.path), size: ctx.header.size, offset: ctx.offset });
-      }
 
+      const fileList = [];
+      for (const fileName of list.values()) {
+        if (fileName.endsWith('/')) fileList.push('/v1/list' + fileName);
+        else fileList.push('/v1/file' + fileName);
+      }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write(JSON.stringify({ files: fileList }));
       res.end();
-      logger.info({ duration: Date.now() - startTime }, '/v1/files');
+      logger.info({ action: 'file:list', duration: Date.now() - startTime }, req.url);
     }
 
     const server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse): void => {
       const url = new URL(req.url ?? '', 'http://localhost');
 
-      if (url.pathname === '/v1/list' || url.pathname === '/v1/list/') {
-        sendFileList(req, res);
+      if (url.pathname.startsWith('/v1/list')) {
+        sendFileList(req, res, url.pathname.slice(8));
         return;
       }
 
