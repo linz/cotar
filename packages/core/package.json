@@ -19,7 +19,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@chunkd/core": "^7.2.2",
+    "@chunkd/core": "^7.2.4",
     "@sindresorhus/fnv1a": "^2.0.1",
     "binparse": "^2.0.1"
   },
@@ -32,7 +32,7 @@
     "*.png"
   ],
   "devDependencies": {
-    "@chunkd/source-file": "^7.2.2",
+    "@chunkd/source-file": "^7.2.4",
     "@types/node": "^15.12.1"
   }
 }
