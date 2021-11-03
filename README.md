@@ -31,6 +31,11 @@ TAR Index (.cotar.index) is a binary file containing the location and size of a 
 
 ![TarFileIndex](./static/TarFileIndex.png)
 
+
+### Performance
+
+Performance regression is monitored with [hyperfine-action](https://github.com/blacha/hyperfine-action) with results being hosted on github pages [benchmarks.html](https://linz.github.io/cotar/benchmarks.html)
+
 #### Questions:
 **Offset size `uint32` vs `uint64`**
 Large files will need large offsets 64 bit offsets give huge file support but need quite a few more bytes per record to store than `uint32`, for smaller files a `uint32` or `uint16` may be enough
