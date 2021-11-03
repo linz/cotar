@@ -9,14 +9,16 @@ export interface TarFileHeader {
 }
 
 export enum TarType {
-  File = 0,
-  HardLink = 1,
-  SymLink = 2,
-  CharDeviceNode = 3,
-  BlockDeviceNode = 4,
-  Directory = 5,
-  FifoNode = 6,
-  Reserved = 7,
+  File = '0'.charCodeAt(0),
+  HardLink = '1'.charCodeAt(0),
+  SymLink = '2'.charCodeAt(0),
+  CharDeviceNode = '3'.charCodeAt(0),
+  BlockDeviceNode = '4'.charCodeAt(0),
+  Directory = '5'.charCodeAt(0),
+  FifoNode = '6'.charCodeAt(0),
+  Reserved = '7'.charCodeAt(0),
+  LongName = 'L'.charCodeAt(0),
+  LongLink = 'K'.charCodeAt(0),
 }
 
 export const TarHeader = bp.object('TarHeader', {
@@ -27,7 +29,7 @@ export const TarHeader = bp.object('TarHeader', {
   size: bp.bytes(12).refine((val) => parseInt(val.toString(), 8)),
   mtime: bp.bytes(12),
   unk1: bp.bytes(8),
-  type: bp.string(1).refine(Number),
+  type: bp.u8,
   linkName: bp.string(100),
   magic: bp.string(6),
   version: bp.bytes(2),
@@ -65,7 +67,9 @@ export const TarReader = {
       if (isNaN(head.size)) return;
       ctx.offset += 512;
 
-      if (TarType[head.type] == null) throw new Error('Unknown header @ ' + toHex(ctx.offset));
+      if (TarType[head.type] == null) {
+        throw new Error('Unknown header @ ' + toHex(ctx.offset) + ' type:' + head.type);
+      }
       if (head.type === TarType.File) yield { header: head, offset: ctx.offset };
 
       ctx.offset += head.size;
