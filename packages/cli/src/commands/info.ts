@@ -8,7 +8,6 @@ export class CreateCotar extends Command {
   static description = 'Validate that every file in the tar can be found in the index';
   static flags = {
     verbose: flags.boolean({ description: 'verbose logging' }),
-    mbtiles: flags.string({ description: 'Source MBTiles for validation' }),
   };
 
   static args = [{ name: 'inputFile', required: true }];
