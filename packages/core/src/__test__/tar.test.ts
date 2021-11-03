@@ -1,3 +1,4 @@
+/** Start Header */
 import { SourceMemory } from '@chunkd/core';
 import { SourceFile } from '@chunkd/source-file';
 import * as cp from 'child_process';
@@ -17,7 +18,7 @@ o.spec('TarReader', () => {
   o.before(() => {
     cp.execSync(`tar cf ${tarFilePath} tar.test.*`, { cwd: __dirname });
   });
-  const tarFilePath = path.join(__dirname, 'test.tar');
+  const tarFilePath = path.join(__dirname, '_test.tar');
 
   let fd: FileHandle | null;
   const headBuffer = Buffer.alloc(512);
@@ -44,14 +45,16 @@ o.spec('TarReader', () => {
 
     const res = await CotarIndexBuilder.create(source);
 
-    await source.close();
-
     const index = await CotarIndex.create(new SourceMemory('index', res.buffer));
     o(res.count >= 3).equals(true);
 
     const tarTest = await index.find('tar.test.js');
     o(tarTest).notEquals(null);
     o(tarTest?.size).equals(tarTestStat.size);
+
+    const buf = Buffer.alloc(tarTest?.size ?? 0);
+    await source.read(buf, 0, tarTest?.size, tarTest?.offset);
+    o(buf.toString().startsWith(`/** Start Header */`)).equals(true);
   });
 
   o('should work with a .tar.co', async () => {
@@ -70,5 +73,10 @@ o.spec('TarReader', () => {
     const tarTest = await cotar.index.find('tar.test.js');
     o(tarTest).notEquals(null);
     o(tarTest?.size).equals(tarTestStat.size);
+
+    const data = await cotar.get('tar.test.js');
+    o(data).notEquals(null);
+    const buf = Buffer.from(data!.slice(0, 100));
+    o(buf.toString().startsWith(`/** Start Header */`)).equals(true);
   });
 });
