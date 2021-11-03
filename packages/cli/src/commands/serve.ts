@@ -63,6 +63,7 @@ export class CotarServe extends Command {
   static description = 'Serve a cotar using http';
   static flags = {
     port: flags.integer({ description: 'Port to run on', default: 8080 }),
+    baseUrl: flags.string({ description: 'Base url to use', default: 'http://localhost:8080' }),
     verbose: flags.boolean({ description: 'verbose logging' }),
   };
 
@@ -71,6 +72,8 @@ export class CotarServe extends Command {
   async run(): Promise<void> {
     const { args, flags } = this.parse(CotarServe);
     if (flags.verbose) logger.level = 'debug';
+
+    if (flags.port !== 8080) flags.baseUrl = flags.baseUrl.replace(':8080', `:${flags.port}`);
 
     logger.info({ fileName: args.inputFile }, 'Cotar:Load');
 
@@ -108,8 +111,8 @@ export class CotarServe extends Command {
 
       const fileList = [];
       for (const fileName of list.values()) {
-        if (fileName.endsWith('/')) fileList.push('/v1/list' + fileName);
-        else fileList.push('/v1/file' + fileName);
+        if (fileName.endsWith('/')) fileList.push(flags.baseUrl + '/v1/list' + fileName);
+        else fileList.push(flags.baseUrl + '/v1/file' + fileName);
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write(JSON.stringify({ files: fileList }));
@@ -117,24 +120,17 @@ export class CotarServe extends Command {
       logger.info({ action: 'file:list', duration: Date.now() - startTime }, req.url);
     }
 
-    const server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse): void => {
+    const server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse): void | Promise<void> => {
       const url = new URL(req.url ?? '', 'http://localhost');
 
-      if (url.pathname.startsWith('/v1/list')) {
-        sendFileList(req, res, url.pathname.slice(8));
-        return;
-      }
-
-      if (url.pathname.startsWith('/v1/file/')) {
-        sendFile(req, res, url.pathname.slice(9));
-        return;
-      }
+      if (url.pathname.startsWith('/v1/list')) return sendFileList(req, res, url.pathname.slice(8));
+      if (url.pathname.startsWith('/v1/file/')) return sendFile(req, res, url.pathname.slice(9));
 
       res.writeHead(404);
       res.end();
     });
 
     server.listen(flags.port);
-    logger.info({ url: 'http://localhost:' + flags.port + '/v1/list' }, 'Cotar:Server:Started');
+    logger.info({ url: flags.baseUrl + '/v1/list', port: flags.port }, 'Cotar:Server:Started');
   }
 }
