@@ -62,9 +62,9 @@ class FileTree {
 export class CotarServe extends Command {
   static description = 'Serve a cotar using http';
   static flags = {
-    index: flags.boolean({ description: 'Load the tar file list on startup', default: true }),
+    'disable-index': flags.boolean({ description: 'Load the tar file list on startup', default: false }),
     port: flags.integer({ description: 'Port to run on', default: 8080 }),
-    baseUrl: flags.string({ description: 'Base url to use', default: 'http://localhost:8080' }),
+    'base-url': flags.string({ description: 'Base url to use', default: 'http://localhost:8080' }),
     verbose: flags.boolean({ description: 'verbose logging' }),
   };
 
@@ -74,7 +74,7 @@ export class CotarServe extends Command {
     const { args, flags } = this.parse(CotarServe);
     if (flags.verbose) logger.level = 'debug';
 
-    if (flags.port !== 8080) flags.baseUrl = flags.baseUrl.replace(':8080', `:${flags.port}`);
+    if (flags.port !== 8080) flags['base-url'] = flags['base-url'].replace(':8080', `:${flags.port}`);
 
     logger.debug({ fileName: args.inputFile }, 'Cotar:Load');
     const startTime = Date.now();
@@ -82,7 +82,8 @@ export class CotarServe extends Command {
     const source = new SourceFile(args.inputFile);
     const cotar = await Cotar.fromTar(source);
     const fileTree = new FileTree(source);
-    if (flags.index) await fileTree.init();
+    if (flags['disable-index'] === false) await fileTree.init();
+
     logger.info({ fileName: args.inputFile, duration: Date.now() - startTime }, 'Cotar:Loaded');
 
     // Attempt to send a specific file from the tar
@@ -113,8 +114,8 @@ export class CotarServe extends Command {
 
       const fileList = [];
       for (const fileName of list.values()) {
-        if (fileName.endsWith('/')) fileList.push(flags.baseUrl + '/v1/list' + fileName);
-        else fileList.push(flags.baseUrl + '/v1/file' + fileName);
+        if (fileName.endsWith('/')) fileList.push(flags['base-url'] + '/v1/list' + fileName);
+        else fileList.push(flags['base-url'] + '/v1/file' + fileName);
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write(JSON.stringify({ files: fileList }));
@@ -133,6 +134,6 @@ export class CotarServe extends Command {
     });
 
     server.listen(flags.port);
-    logger.info({ url: flags.baseUrl + '/v1/list', port: flags.port }, 'Cotar:Server:Started');
+    logger.info({ url: flags['base-url'] + '/v1/list', port: flags.port }, 'Cotar:Server:Started');
   }
 }
