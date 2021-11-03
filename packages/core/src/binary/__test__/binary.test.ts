@@ -34,7 +34,7 @@ o.spec('CotarBinary.fake', () => {
     const tarIndex: Buffer = Buffer.alloc(indexSize * IndexRecordSize + IndexHeaderSize * 2);
 
     for (const record of files) {
-      const hash = fnv1a.bigInt(record.path, { size: 64 });
+      const hash = fnv1a(record.path, { size: 64 });
       const index = Number(hash % BigInt(indexSize));
       const offset = index * IndexRecordSize + IndexHeaderSize;
       tarIndex.writeBigUInt64LE(hash, offset);

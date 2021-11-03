@@ -29,7 +29,7 @@ export class CotarIndex {
   }
 
   static hash(path: string): bigint {
-    return fnv1a.bigInt(path, { size: 64 });
+    return fnv1a(path, { size: 64 });
   }
 
   static async loadMetadata(source: ChunkSource, sourceOffset: number, isHeader: boolean): Promise<CotarMetadata> {
