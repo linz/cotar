@@ -1,11 +1,9 @@
 {
-    "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "lib": ["es2018"],
-        "outDir": "build"
-    },
-    "include": ["src/**/*"],
-    "references": [
-        { "path": "../core" }
-    ]
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["es2018"],
+    "outDir": "build"
+  },
+  "include": ["src/**/*"],
+  "references": [{ "path": "../core" }]
 }
