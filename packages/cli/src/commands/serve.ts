@@ -62,6 +62,7 @@ class FileTree {
 export class CotarServe extends Command {
   static description = 'Serve a cotar using http';
   static flags = {
+    index: flags.boolean({ description: 'Load the tar file list on startup', default: true }),
     port: flags.integer({ description: 'Port to run on', default: 8080 }),
     baseUrl: flags.string({ description: 'Base url to use', default: 'http://localhost:8080' }),
     verbose: flags.boolean({ description: 'verbose logging' }),
@@ -75,13 +76,14 @@ export class CotarServe extends Command {
 
     if (flags.port !== 8080) flags.baseUrl = flags.baseUrl.replace(':8080', `:${flags.port}`);
 
-    logger.info({ fileName: args.inputFile }, 'Cotar:Load');
+    logger.debug({ fileName: args.inputFile }, 'Cotar:Load');
+    const startTime = Date.now();
 
     const source = new SourceFile(args.inputFile);
     const cotar = await Cotar.fromTar(source);
     const fileTree = new FileTree(source);
-
-    logger.info({ fileName: args.inputFile }, 'Cotar:Loaded');
+    if (flags.index) await fileTree.init();
+    logger.info({ fileName: args.inputFile, duration: Date.now() - startTime }, 'Cotar:Loaded');
 
     // Attempt to send a specific file from the tar
     async function sendFile(req: http.IncomingMessage, res: http.ServerResponse, fileName: string): Promise<void> {
