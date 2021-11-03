@@ -4,7 +4,7 @@ import { Command, flags } from '@oclif/command';
 import { promises as fs } from 'fs';
 import { logger } from '../log.js';
 
-export class CreateCotar extends Command {
+export class CotarInfo extends Command {
   static description = 'Validate that every file in the tar can be found in the index';
   static flags = {
     verbose: flags.boolean({ description: 'verbose logging' }),
@@ -13,7 +13,7 @@ export class CreateCotar extends Command {
   static args = [{ name: 'inputFile', required: true }];
 
   async run(): Promise<void> {
-    const { args, flags } = this.parse(CreateCotar);
+    const { args, flags } = this.parse(CotarInfo);
     if (flags.verbose) logger.level = 'debug';
 
     logger.info({ fileName: args.inputFile }, 'Cotar:Load');
