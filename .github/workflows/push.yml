@@ -20,3 +20,8 @@ jobs:
         run: npx lerna publish from-git --yes
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN_LINZJS}}
+
+      - name: Create test tar
+        run: tar cf node_modules.tar node_modules
+
+      - uses: blacha/hyperfine-action@v1
