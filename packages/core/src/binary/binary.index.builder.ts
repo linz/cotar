@@ -22,8 +22,18 @@ export function writeHeaderFooter(output: Buffer, count: number): void {
 
 const Big0 = BigInt(0);
 
+const DefaultMaxSearch = 50;
+export interface CotarIndexOptions {
+  packingFactor?: number;
+  maxSearch?: number;
+}
+
 export const CotarIndexBuilder = {
-  async create(getBytes: AsyncFileRead | AsyncFileDescriptor, logger?: LogType): Promise<TarIndexResult> {
+  async create(
+    getBytes: AsyncFileRead | AsyncFileDescriptor,
+    opts?: CotarIndexOptions,
+    logger?: LogType,
+  ): Promise<TarIndexResult> {
     if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
     let fileCount = 0;
     let currentTime = Date.now();
@@ -50,7 +60,8 @@ export const CotarIndexBuilder = {
     }
     hashSeen.clear();
 
-    const slotCount = Math.ceil(fileCount * TarReader.PackingFactor);
+    const packingFactor = opts?.packingFactor ?? TarReader.PackingFactor;
+    const slotCount = Math.ceil(fileCount * packingFactor);
     const outputBuffer = Buffer.alloc(IndexSize + IndexRecordSize * slotCount);
     logger?.debug({ slotCount, fileCount }, 'Cotar.index:Allocate');
 
@@ -61,6 +72,8 @@ export const CotarIndexBuilder = {
     logger?.debug({ duration: Date.now() - currentTime }, 'Cotar.index:Hash');
 
     currentTime = Date.now();
+
+    const maxSearch = opts?.maxSearch ?? DefaultMaxSearch;
 
     // Find the first hash index slot for the file to go into
     // Since the packing factor is quite low there will be a number of hash index collisions
@@ -81,7 +94,7 @@ export const CotarIndexBuilder = {
         if (index === file.index) throw new Error('Hash index Looped');
 
         // Couldn't find a space fot this index within 50 index spots
-        if (searchCount > 50) {
+        if (searchCount > maxSearch) {
           throw new Error('SearchCount too high: ' + searchCount + ' index:' + file.index + ' current:' + index);
         }
       }
