@@ -35,35 +35,43 @@ export const CotarIndexBuilder = {
     logger?: LogType,
   ): Promise<TarIndexResult> {
     if (typeof getBytes !== 'function') getBytes = TarReader.toFileReader(getBytes);
-    let fileCount = 0;
     let currentTime = Date.now();
     const files = [];
 
     // Loop over every file in the tar archive create a hash and validating there are no collisions
     const hashSeen = new Map();
     for await (const ctx of TarReader.iterate(getBytes)) {
-      if (ctx.header.type !== TarReader.Type.File) continue;
-      fileCount++;
-      const hash = CotarIndex.hash(ctx.header.path);
-      if (hashSeen.has(hash)) {
-        throw new Error('HashCollision:' + hashSeen.get(hash) + ' and ' + ctx.header.path);
+      if (ctx.header.type === TarReader.Type.HardLink) {
+        const hash = CotarIndex.hash(ctx.header.linkName);
+        const target = hashSeen.get(hash);
+        if (target == null) throw new Error('Link to unknown file: ' + ctx.header.linkName);
+        files.push({ ...target, hash: CotarIndex.hash(ctx.header.path) });
+      } else if (ctx.header.type === TarReader.Type.File) {
+        // console.log(ctx.header.path);
+        const hash = CotarIndex.hash(ctx.header.path);
+        const fileObj = { hash, path: ctx.header.path, offset: ctx.offset, size: ctx.header.size, index: -1 };
+        if (hashSeen.has(hash)) {
+          throw new Error('HashCollision:' + hashSeen.get(hash).path + ' and ' + ctx.header.path);
+        } else {
+          hashSeen.set(hash, fileObj);
+        }
+        files.push(fileObj);
       } else {
-        hashSeen.set(hash, ctx.header.path);
+        continue;
       }
-      files.push({ hash, path: ctx.header.path, offset: ctx.offset, size: ctx.header.size, index: -1 });
 
-      if (fileCount % 25_000 === 0 && logger != null) {
+      if (files.length % 25_000 === 0 && logger != null) {
         const duration = Date.now() - currentTime;
         currentTime = Date.now();
-        logger.debug({ current: fileCount, duration }, 'Cotar.Index:ReadTar');
+        logger.debug({ current: files.length, duration }, 'Cotar.Index:ReadTar');
       }
     }
     hashSeen.clear();
 
     const packingFactor = opts?.packingFactor ?? TarReader.PackingFactor;
-    const slotCount = Math.ceil(fileCount * packingFactor);
+    const slotCount = Math.ceil(files.length * packingFactor);
     const outputBuffer = Buffer.alloc(IndexSize + IndexRecordSize * slotCount);
-    logger?.debug({ slotCount, fileCount }, 'Cotar.index:Allocate');
+    logger?.debug({ slotCount, fileCount: files.length }, 'Cotar.index:Allocate');
 
     // Allocate the hash slots for the files
     currentTime = Date.now();

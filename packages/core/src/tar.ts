@@ -32,7 +32,7 @@ export const TarHeader = bp.object('TarHeader', {
   skip2: bp.skip(20),
   // unk1: bp.skip(8),
   type: bp.u8,
-  // linkName: bp.string(100),
+  linkName: bp.string(100),
   // magic: bp.string(6),
   // version: bp.bytes(2),
   // uName: bp.string(32),
@@ -72,7 +72,7 @@ export const TarReader = {
       if (TarType[head.type] == null) {
         throw new Error('Unknown header @ ' + toHex(ctx.offset) + ' type:' + head.type);
       }
-      if (head.type === TarType.File) yield { header: head, offset: ctx.offset };
+      yield { header: head, offset: ctx.offset };
 
       ctx.offset += head.size;
     }
