@@ -69,6 +69,7 @@ export const TarReader = {
       if (isNaN(head.size)) return;
       ctx.offset += 512;
 
+      if (head.type === 0) head.type = TarType.File;
       if (TarType[head.type] == null) {
         throw new Error('Unknown header @ ' + toHex(ctx.offset) + ' type:' + head.type);
       }
