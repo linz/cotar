@@ -47,7 +47,6 @@ export const CotarIndexBuilder = {
         if (target == null) throw new Error('Link to unknown file: ' + ctx.header.linkName);
         files.push({ ...target, hash: CotarIndex.hash(ctx.header.path) });
       } else if (ctx.header.type === TarReader.Type.File) {
-        // console.log(ctx.header.path);
         const hash = CotarIndex.hash(ctx.header.path);
         const fileObj = { hash, path: ctx.header.path, offset: ctx.offset, size: ctx.header.size, index: -1 };
         if (hashSeen.has(hash)) {
