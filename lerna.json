@@ -1,5 +1,7 @@
 {
   "useYarn": true,
-  "packages": ["packages/*"],
-  "version": "5.0.1"
+  "packages": [
+    "packages/*"
+  ],
+  "version": "5.1.0"
 }

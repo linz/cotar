@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.1.0](https://github.com/linz/cotar/compare/v5.0.1...v5.1.0) (2021-11-29)
+
+
+### Bug Fixes
+
+* **cli:** correct import path ([2f9220b](https://github.com/linz/cotar/commit/2f9220b6662302b56c6491b4b50956e44a9f5886))
+* **cli:** remove unused mbtiles command ([183dca8](https://github.com/linz/cotar/commit/183dca8c26b99809cef622cfa3974fd80349685b))
+
+
+### Features
+
+* **cli:** basic webserver for cotar using "cotar serve data.tar" ([7dbc06c](https://github.com/linz/cotar/commit/7dbc06c4c3835c191dd0c8d5c104ea5decda8972))
+* **cli:** create a tree from the tar to make it easier to navigate ([14eea64](https://github.com/linz/cotar/commit/14eea643e182ff9944d71165c755e58b7057d11a))
+* **cli:** laod the cotar file list into memory by default ([45ebfc1](https://github.com/linz/cotar/commit/45ebfc16e03c840ea47d7f83f92b6fc6044a5506))
+* **cli:** support customising the port with baseUrl ([29049ec](https://github.com/linz/cotar/commit/29049ecfa36865cc619409ce1c22ad1182eb19cc))
+* **cli:** use --base-url and --disable-index to be consitent ([70a33f7](https://github.com/linz/cotar/commit/70a33f77e24725d04f35cc185adf6f23430236f9))
+* **core:** support customising the search count and packing factor ([d1a1f2a](https://github.com/linz/cotar/commit/d1a1f2a2923377d9ed6e0bb2ff0125d4c009bcce))
+
+
+
+
+
 ## [5.0.1](https://github.com/linz/cotar/compare/v5.0.0...v5.0.1) (2021-09-16)
 
 **Note:** Version bump only for package @cotar/cli

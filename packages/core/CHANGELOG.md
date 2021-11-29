@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.1.0](https://github.com/linz/cotar/compare/v5.0.1...v5.1.0) (2021-11-29)
+
+
+### Bug Fixes
+
+* **core:** ignore gnutar's extra field types ([e1d3d14](https://github.com/linz/cotar/commit/e1d3d14a3e99da48eba66fe78abfbc182715059a))
+* **core:** TarHeader.type can be "0" or 0x00 for regular files ([9185225](https://github.com/linz/cotar/commit/9185225adc06e101d7dd99cb61faacdb3fd867c4))
+
+
+### Features
+
+* **core:** support customising the search count and packing factor ([d1a1f2a](https://github.com/linz/cotar/commit/d1a1f2a2923377d9ed6e0bb2ff0125d4c009bcce))
+* **core:** support hard links to dedupe data ([ba573a1](https://github.com/linz/cotar/commit/ba573a1b761118b6754f91b582a558745ec4d366))
+* **tar:** create tars while deduping duplicate files ([#126](https://github.com/linz/cotar/issues/126)) ([ca8e419](https://github.com/linz/cotar/commit/ca8e419d40ffe7833d87d425a94b0caaf5cf470b))
+
+
+### Performance Improvements
+
+* only read the tar header parts that are needed ([6d9429d](https://github.com/linz/cotar/commit/6d9429d05f5747c323898f883e2cdff404b6df13))
+
+
+
+
+
 ## [5.0.1](https://github.com/linz/cotar/compare/v5.0.0...v5.0.1) (2021-09-16)
 
 
