@@ -6,7 +6,7 @@
     "build": "tsc -b --pretty",
     "build-watch": "tsc -b --pretty --watch",
     "version": "lerna version --conventional-commits --no-push --sign-git-commit --sign-git-tag",
-    "lint": "eslint . --quiet --fix --ignore-path .gitignore",
+    "lint": "eslint packages/ --quiet --fix --ignore-path .gitignore",
     "test": "ospec --globs 'packages/*/build/**/*.test.js'"
   },
   "repository": {
