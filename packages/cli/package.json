@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.4.1",
-    "@types/pino": "^6.3.5"
+    "@types/pino": "^7.0.5"
   },
   "publishConfig": {
     "access": "public"
