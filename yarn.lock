@@ -2579,11 +2579,6 @@ fast-redact@^3.0.0:
   resolved "https://registry.yarnpkg.com/fast-redact/-/fast-redact-3.0.0.tgz#ac2f9e36c9f4976f5db9fb18c6ffbaf308cf316d"
   integrity sha512-a/S/Hp6aoIjx7EmugtzLqXmcNsyFszqbt6qQ99BdG61QjBZF6shNis0BYR6TsZOQ1twYc0FN2Xdhwwbv6+KD0w==
 
-fastify-warning@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/fastify-warning/-/fastify-warning-0.2.0.tgz#e717776026a4493dc9a2befa44db6d17f618008f"
-  integrity sha512-s1EQguBw/9qtc1p/WTY4eq9WMRIACkj+HTcOIK1in4MV5aFaQC9ZCIt0dJ7pr5bIf4lPpHvAtP2ywpTNgs7hqw==
-
 fastq@^1.6.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/fastq/-/fastq-1.11.0.tgz#bb9fb955a07130a918eb63c1f5161cc32a5d0858"
@@ -4686,16 +4681,15 @@ pino-std-serializers@^4.0.0:
   integrity sha512-cK0pekc1Kjy5w9V2/n+8MkZwusa6EyyxfeQCB799CQRhRt/CqYKiWs5adeu8Shve2ZNffvfC/7J64A2PJo1W/Q==
 
 pino@*, pino@^7.0.5:
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-7.5.0.tgz#0491b33a0a9f2b600bec83fdd7141aee2f96586d"
-  integrity sha512-F/583dsETP+2fh9jE8rjN+sjrfP8EX2jAeZ1EyyPt+vuj4C59dhUcSDXke+8VLXxWoxUHc43MBG9eT5C2fba8A==
+  version "7.6.5"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-7.6.5.tgz#a8bf9bfacbbcb78b4fe34f9378c29ef229b07b5d"
+  integrity sha512-38tAwlJ7HevMENHD5FZE+yxSlAH5Wg3FoOjbB3MX2j3/kgpOEkmDHhTVKkecR57qxD5doHo2yi9nac94gqqbiQ==
   dependencies:
     fast-redact "^3.0.0"
-    fastify-warning "^0.2.0"
-    get-caller-file "^2.0.5"
     on-exit-leak-free "^0.2.0"
     pino-abstract-transport v0.5.0
     pino-std-serializers "^4.0.0"
+    process-warning "^1.0.0"
     quick-format-unescaped "^4.0.3"
     real-require "^0.1.0"
     safe-stable-stringify "^2.1.0"
@@ -4743,6 +4737,11 @@ process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
+
+process-warning@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/process-warning/-/process-warning-1.0.0.tgz#980a0b25dc38cd6034181be4b7726d89066b4616"
+  integrity sha512-du4wfLyj4yCZq1VupnVSZmRsPJsNuxoDQFdCFHLaYiEbFBD7QE0a+I4D7hOxrVnh78QE/YipFAj9lXHiXocV+Q==
 
 progress@^2.0.0:
   version "2.0.3"
