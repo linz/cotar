@@ -33,6 +33,6 @@
   ],
   "devDependencies": {
     "@chunkd/source-file": "^8.0.1",
-    "@types/node": "^16.11.10"
+    "@types/node": "^17.0.17"
   }
 }
