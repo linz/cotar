@@ -50,6 +50,11 @@ export const CotarIndexBuilder = {
         const hash = CotarIndex.hash(ctx.header.path);
         const fileObj = { hash, path: ctx.header.path, offset: ctx.offset, size: ctx.header.size, index: -1 };
         if (hashSeen.has(hash)) {
+          // Duplicate file??
+          if (hashSeen.get(hash).path === ctx.header.path) {
+            logger?.warn({ path: ctx.header.path }, 'DuplicateFilePath');
+            continue;
+          }
           throw new Error('HashCollision:' + hashSeen.get(hash).path + ' and ' + ctx.header.path);
         } else {
           hashSeen.set(hash, fileObj);
