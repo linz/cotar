@@ -75,7 +75,11 @@ export const CotarIndexBuilder = {
     // Allocate the hash slots for the files
     currentTime = Date.now();
     for (const file of files) file.index = Number(BigInt(file.hash) % BigInt(slotCount));
-    files.sort((a, b) => a.index - b.index);
+    files.sort((a, b) => {
+      const ret = a.index - b.index;
+      if (ret === 0) return a.offset - b.offset;
+      return ret;
+    });
     logger?.debug({ duration: Date.now() - currentTime }, 'Cotar.index:Hash');
 
     currentTime = Date.now();
