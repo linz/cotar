@@ -2,7 +2,7 @@ import { ChunkSource, LogType } from '@chunkd/core';
 import fnv1a from '@sindresorhus/fnv1a';
 import { bp, StrutInfer } from 'binparse';
 import { CotarIndexRecord } from '../cotar.js';
-import { IndexHeaderSize, IndexMagic, IndexV2RecordSize, IndexV1RecordSize, IndexVersion } from './format.js';
+import { IndexHeaderSize, IndexMagic, IndexV1RecordSize, IndexV2RecordSize } from './format.js';
 
 const Big0 = BigInt(0);
 const Big32 = BigInt(32);
