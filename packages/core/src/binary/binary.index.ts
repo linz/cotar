@@ -52,10 +52,8 @@ export class CotarIndex {
     if (metadata.magic !== IndexMagic) {
       throw new Error(`Invalid source: ${source.uri} invalid magic found: ${metadata.magic}`);
     }
-    if (metadata.version !== IndexVersion) {
-      throw new Error(`Invalid source: ${source.uri} invalid version found: ${metadata.version}`);
-    }
-    return metadata;
+    if (metadata.version === 1 || metadata.version === 2) return metadata;
+    throw new Error(`Invalid source: ${source.uri} invalid version found: ${metadata.version}`);
   }
 
   static async create(source: ChunkSource, sourceOffset = 0, isHeader = true): Promise<CotarIndex> {

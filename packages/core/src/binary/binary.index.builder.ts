@@ -5,18 +5,18 @@ import { CotarIndex } from './binary.index.js';
 import { IndexHeaderSize, IndexMagic, IndexV2RecordSize, IndexSize, IndexVersion } from './format.js';
 
 /** Write the header/footer into the buffer */
-export function writeHeaderFooter(output: Buffer, count: number): void {
+export function writeHeaderFooter(output: Buffer, count: number, version = IndexVersion): void {
   if (output.length < IndexSize * 2) {
     throw new Error('Buffer is too small for CotarHeader, minimum size: ' + IndexSize * 2);
   }
   // Write the header at the start of the buffer
   output.write(IndexMagic, 0);
-  output.writeUInt8(IndexVersion, 3);
+  output.writeUInt8(version, 3);
   output.writeUInt32LE(count, 4);
 
   // Write the header at the end of the buffer
   output.write(IndexMagic, output.length - 8);
-  output.writeUInt8(IndexVersion, output.length - 5);
+  output.writeUInt8(version, output.length - 5);
   output.writeUInt32LE(count, output.length - 4);
 }
 
