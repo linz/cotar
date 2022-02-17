@@ -6,13 +6,13 @@ import { TarReader } from '../tar.js';
 
 /** Crate a binary tar index from a source tar, then validate all files inside the tar exist in the index */
 async function main(): Promise<void> {
-  const fd = await fs.open('node_modules.tar', 'r');
+  const fd = await fs.open('test.tar', 'r');
   const res = await CotarIndexBuilder.create(fd);
 
   const source = new SourceMemory('Memory', res.buffer);
   const cotarIndex = new CotarIndexBinary(source, { version: 2, count: res.count, magic: 'COT' });
 
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 5; i++) {
     await TarReader.validate(fd, cotarIndex);
   }
 }
