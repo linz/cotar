@@ -81,8 +81,9 @@ export const CotarIndexBuilder = {
     currentTime = Date.now();
     for (const file of files) file.index = Number(BigInt(file.hash) % BigInt(slotCount));
     files.sort((a, b) => {
-      const ret = a.index - b.index;
-      if (ret === 0) return a.offset - b.offset;
+      let ret = a.index - b.index;
+      if (ret === 0) ret = a.offset - b.offset;
+      if (ret === 0) return a.hash - b.hash;
       return ret;
     });
     logger?.debug({ duration: Date.now() - currentTime }, 'Cotar.index:Hash');
