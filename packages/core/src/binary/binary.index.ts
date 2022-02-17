@@ -5,6 +5,8 @@ import { CotarIndexRecord } from '../cotar.js';
 import { IndexHeaderSize, IndexMagic, IndexV2RecordSize, IndexV1RecordSize, IndexVersion } from './format.js';
 
 const Big0 = BigInt(0);
+const Big32 = BigInt(32);
+const BigUint32Max = BigInt(2 ** 32 - 1);
 
 export const CotarMetadataParser = bp.object('CotarMetadata', {
   magic: bp.string(IndexMagic.length),
@@ -77,23 +79,30 @@ export class CotarIndex {
 
     const slotCount = this.metadata.count;
     const startIndex = Number(hash % BigInt(slotCount));
-    let startHash: BigInt | null = null;
+
+    // working with u64 is sometimes hard, split into two u32s
+    const hashHigh = Number(hash >> Big32);
+    const hashLow = Number(hash & BigUint32Max);
+    let startHashHigh: number | null = null;
+    let startHashLow: number | null = null;
 
     let index = startIndex;
     while (true) {
       const offset = this.sourceOffset + index * IndexV2RecordSize + IndexHeaderSize;
       await this.source.loadBytes(offset, IndexV2RecordSize, logger);
-      startHash = this.source.getBigUint64(offset);
+
+      startHashLow = this.source.getUint32(offset);
+      startHashHigh = this.source.getUint32(offset + 4);
 
       // Found the file
-      if (startHash === hash) {
+      if (startHashHigh === hashHigh && startHashLow === hashLow) {
         // Tar offsets are block aligned to 512byte blocks
         const fileOffset = this.source.getUint32(offset + 8) * 512;
         const fileSize = this.source.getUint32(offset + 12);
         return { offset: fileOffset, size: fileSize };
       }
-      // Found a gap in the hash table (file doesnt exist)
-      if (startHash === Big0) return null;
+      // Found a gap in the hash table (file doesn't exist)
+      if (startHashHigh === 0 && startHashLow === 0) return null;
 
       index++;
       // Loop around if we hit the end of the hash table

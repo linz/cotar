@@ -4,11 +4,11 @@ import { CotarMetadataParser } from '../binary.index.js';
 
 const Example = {
   v1: {
-    buf: Buffer.from('Q09UAtIClkk=', 'base64'),
+    buf: Buffer.from('Q09UAdIClkk=', 'base64'),
     header: {
       magic: 'COT',
       count: 1234567890,
-      version: 2,
+      version: 1,
     },
   },
   v2: {
