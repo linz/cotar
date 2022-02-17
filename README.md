@@ -36,14 +36,14 @@ TAR Index (.index) is a binary file containing the location and size of a file i
 
 - Internal file count is limited to `uint32` this limits the tar to ~4 Billion files
 - Internal file sizes are limited to `uint32` this stops the indexer from indexing files inside the tar that are over 4GB in size
-- Internal File block offsets are limited to `uint32` however tar's are block aligned at 512 byte intervals so the final tar size is limited to 200TB
+- Internal File block offsets are limited to `uint32` however tar's are block aligned at 512 byte intervals so the final tar size is limited to 2TB
 
 
 ### V1 To V2
 
-V1 was using 24 bytes per index record, uint64 for hash, file offset and file size. This was inefficent as most files inside the archives are < 100KB in size 
+V1 was using 24 bytes per index record, using `uint64` for hash, file offset and file size. This was inefficient as most files inside the archives are < 100KB in size
 
-V2 moves to a uint32 for offsets, it changes from raw byte offset in the file to block offset. tar files are block algined at 512byte intervals. to get the raw offset `const rawOffset = blockOffset * 512` this limits the tar to 200TB in size.
+V2 moves to a uint32 for offsets, it changes from raw byte offset in the file to block offset. tar files are block algined at 512byte intervals. to get the raw offset `const rawOffset = blockOffset * 512` this limits the tar to 2TB in size.
 
 V2 moves to uint32 for file size this limits internal files to 4GB in size
 
