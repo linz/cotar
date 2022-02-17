@@ -10,7 +10,7 @@ async function main(): Promise<void> {
   const res = await CotarIndexBuilder.create(fd);
 
   const source = new SourceMemory('Memory', res.buffer);
-  const cotarIndex = new CotarIndexBinary(source, res.count);
+  const cotarIndex = new CotarIndexBinary(source, { version: 2, count: res.count, magic: 'COT' });
 
   for (let i = 0; i < 50; i++) {
     await TarReader.validate(fd, cotarIndex);

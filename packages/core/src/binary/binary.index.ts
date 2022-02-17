@@ -2,7 +2,7 @@ import { ChunkSource, LogType } from '@chunkd/core';
 import fnv1a from '@sindresorhus/fnv1a';
 import { bp, StrutInfer } from 'binparse';
 import { CotarIndexRecord } from '../cotar.js';
-import { IndexHeaderSize, IndexMagic, IndexRecordSize, IndexVersion } from './format.js';
+import { IndexHeaderSize, IndexMagic, IndexV2RecordSize, IndexV1RecordSize, IndexVersion } from './format.js';
 
 const Big0 = BigInt(0);
 
@@ -20,12 +20,12 @@ export class CotarIndex {
 
   /** Should the metadata be read from the header or the footer */
   isHeader = true;
-  size: number;
+  metadata: CotarMetadata;
 
-  constructor(source: ChunkSource, size: number, sourceOffset = 0) {
+  constructor(source: ChunkSource, metadata: CotarMetadata, sourceOffset = 0) {
     this.source = source;
     this.sourceOffset = sourceOffset;
-    this.size = size;
+    this.metadata = metadata;
   }
 
   static hash(path: string): bigint {
@@ -58,7 +58,7 @@ export class CotarIndex {
 
   static async create(source: ChunkSource, sourceOffset = 0, isHeader = true): Promise<CotarIndex> {
     const metadata = await this.getMetadata(source, sourceOffset, isHeader);
-    return new CotarIndex(source, metadata.count, sourceOffset);
+    return new CotarIndex(source, metadata, sourceOffset);
   }
 
   /**
@@ -67,16 +67,53 @@ export class CotarIndex {
    * @returns the index if found, null otherwise
    */
   async find(fileName: string, logger?: LogType): Promise<CotarIndexRecord | null> {
+    if (this.metadata.version === 1) return this._findV1(fileName, logger);
+    if (this.metadata.version === 2) return this._findV2(fileName, logger);
+    throw new Error('Invalid metadata version');
+  }
+
+  async _findV2(fileName: string, logger?: LogType): Promise<CotarIndexRecord | null> {
     const hash = CotarIndex.hash(fileName);
 
-    const slotCount = this.size;
+    const slotCount = this.metadata.count;
     const startIndex = Number(hash % BigInt(slotCount));
     let startHash: BigInt | null = null;
 
     let index = startIndex;
     while (true) {
-      const offset = this.sourceOffset + index * IndexRecordSize + IndexHeaderSize;
-      await this.source.loadBytes(offset, IndexRecordSize, logger);
+      const offset = this.sourceOffset + index * IndexV2RecordSize + IndexHeaderSize;
+      await this.source.loadBytes(offset, IndexV2RecordSize, logger);
+      startHash = this.source.getBigUint64(offset);
+
+      // Found the file
+      if (startHash === hash) {
+        // Tar offsets are block aligned to 512byte blocks
+        const fileOffset = this.source.getUint32(offset + 8) * 512;
+        const fileSize = this.source.getUint32(offset + 12);
+        return { offset: fileOffset, size: fileSize };
+      }
+      // Found a gap in the hash table (file doesnt exist)
+      if (startHash === Big0) return null;
+
+      index++;
+      // Loop around if we hit the end of the hash table
+      if (index >= slotCount) index = 0;
+      if (index === startIndex) return null;
+    }
+  }
+
+  // TODO(2022-02) this should be removed once we migrate from v1
+  async _findV1(fileName: string, logger?: LogType): Promise<CotarIndexRecord | null> {
+    const hash = CotarIndex.hash(fileName);
+
+    const slotCount = this.metadata.count;
+    const startIndex = Number(hash % BigInt(slotCount));
+    let startHash: BigInt | null = null;
+
+    let index = startIndex;
+    while (true) {
+      const offset = this.sourceOffset + index * IndexV1RecordSize + IndexHeaderSize;
+      await this.source.loadBytes(offset, IndexV1RecordSize, logger);
       startHash = this.source.getBigUint64(offset);
 
       // Found the file

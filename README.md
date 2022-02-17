@@ -27,19 +27,31 @@ This makes it very easy to add new files to a archive as more files can just be 
 ![TarFileBackground](./static/TarFileBackground.png)
 
 ### Tar Index
-TAR Index (.cotar.index) is a binary file containing the location and size of a file inside of a tar. with this index a tar file can be randomly read.
+TAR Index (.index) is a binary file containing the location and size of a file inside of a tar. with this index a tar file can be randomly read.
 
 ![TarFileIndex](./static/TarFileIndex.png)
 
+
+### Limits
+
+- Internal file count is limited to `uint32` this limits the tar to ~4 Billion files
+- Internal file sizes are limited to `uint32` this stops the indexer from indexing files inside the tar that are over 4GB in size
+- Internal File block offsets are limited to `uint32` however tar's are block aligned at 512 byte intervals so the final tar size is limited to 200TB
+
+
+### V1 To V2
+
+V1 was using 24 bytes per index record, uint64 for hash, file offset and file size. This was inefficent as most files inside the archives are < 100KB in size 
+
+V2 moves to a uint32 for offsets, it changes from raw byte offset in the file to block offset. tar files are block algined at 512byte intervals. to get the raw offset `const rawOffset = blockOffset * 512` this limits the tar to 200TB in size.
+
+V2 moves to uint32 for file size this limits internal files to 4GB in size
 
 ### Performance
 
 Performance regression is monitored with [hyperfine-action](https://github.com/blacha/hyperfine-action) with results being hosted on github pages [benchmarks.html](https://linz.github.io/cotar/benchmarks.html)
 
 #### Questions:
-**Offset size `uint32` vs `uint64`**
-Large files will need large offsets 64 bit offsets give huge file support but need quite a few more bytes per record to store than `uint32`, for smaller files a `uint32` or `uint16` may be enough
-
 **Hash size**
 The type of the hash could be changed as well as the number of bits of the hash used based on how unique the file hashes are, a uint64 hash is mostly completely wasted on a tar file containing 100 files. 
 conversely a tar file containing 2,000,000 files needs a hash much larger than 16bits
@@ -48,20 +60,6 @@ conversely a tar file containing 2,000,000 files needs a hash much larger than 1
 `FNV-1a` was chosen as it is implementation simplicity and provides a pretty good [distribution](https://softwareengineering.stackexchange.com/questions/49550/which-hashing-algorithm-is-best-for-uniqueness-and-speed) of hash values for a 64bit hash. 
 Any hash type could be used `farmhash` or even `sha256` and then the bits sliced down to the number needed for the hash index.
 
-
-**Configuring the record size**
-Based on Offset size, hash size and type, these could be configured in the index's header/footer by putting the number of bytes needed for offset/hash/size as variables into the header. 
-This will slightly add to the index size but the main issue it adds to the complexity of reading the file.
-
-for example the next generation header could look like
-```
-Magic: "COT"
-version: 0x02
-count: 0x72365123 // uint32 for record count (Limited to ~4 billion files)
-offset: 0x04 // 4 bytes for offset (uint32)
-size: 0x02 // 2 byte for size (uint16)
-hash: 0x08 // 8 bytes for hash (uint64)
-```
 
 ## Future investigation
 
@@ -79,4 +77,8 @@ See: https://github.com/tapalcatl/tapalcatl-2-spec
 
 Having a single tar file greatly simplifies the distribution of the files, It would be quite simple to tar both the index (.tar.index) and data tar into another tar to combine the files into a single distribution
 
+> 2022-01 done
+
 3. Use AWS S3's response-encoding to decompress internal gziped content on the fly
+
+

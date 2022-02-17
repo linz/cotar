@@ -2,7 +2,7 @@ import { LogType, SourceMemory } from '@chunkd/core';
 import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexResult } from '../tar.index.js';
 import { TarReader } from '../tar.js';
 import { CotarIndex } from './binary.index.js';
-import { IndexHeaderSize, IndexMagic, IndexRecordSize, IndexSize, IndexVersion } from './format.js';
+import { IndexHeaderSize, IndexMagic, IndexV2RecordSize, IndexSize, IndexVersion } from './format.js';
 
 /** Write the header/footer into the buffer */
 export function writeHeaderFooter(output: Buffer, count: number): void {
@@ -74,7 +74,7 @@ export const CotarIndexBuilder = {
 
     const packingFactor = opts?.packingFactor ?? TarReader.PackingFactor;
     const slotCount = Math.ceil(files.length * packingFactor);
-    const outputBuffer = Buffer.alloc(IndexSize + IndexRecordSize * slotCount);
+    const outputBuffer = Buffer.alloc(IndexSize + IndexV2RecordSize * slotCount);
     logger?.debug({ slotCount, fileCount: files.length }, 'Cotar.index:Allocate');
 
     // Allocate the hash slots for the files
@@ -103,7 +103,7 @@ export const CotarIndexBuilder = {
       let searchCount = 0;
       while (true) {
         if (index >= slotCount) index = 0;
-        if (outputBuffer.readBigUInt64LE(index * IndexRecordSize + IndexHeaderSize) === Big0) break;
+        if (outputBuffer.readBigUInt64LE(index * IndexV2RecordSize + IndexHeaderSize) === Big0) break;
         searchCount++;
         index++;
 
@@ -117,10 +117,10 @@ export const CotarIndexBuilder = {
       }
       biggestSearch = Math.max(biggestSearch, searchCount);
 
-      const offset = index * IndexRecordSize + IndexHeaderSize;
+      const offset = index * IndexV2RecordSize + IndexHeaderSize;
       outputBuffer.writeBigUInt64LE(BigInt(file.hash), offset);
-      outputBuffer.writeBigUInt64LE(BigInt(file.offset), offset + 8); // TODO write uint8/16/24 based off size
-      outputBuffer.writeBigUInt64LE(BigInt(file.size), offset + 16);
+      outputBuffer.writeUInt32LE(file.offset / 512, offset + 8); // Tar files are block aligned to 512 bytes
+      outputBuffer.writeUInt32LE(file.size, offset + 12);
 
       if (i > 0 && i % 100_000 === 0 && logger != null) {
         const duration = Date.now() - currentTime;
