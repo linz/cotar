@@ -21,8 +21,9 @@ export function writeHeaderFooter(output: Buffer, count: number): void {
 }
 
 const Big0 = BigInt(0);
-
-const DefaultMaxSearch = 50;
+// Max number of records to allow searching this should easily fit within one range request of ~32KB
+// 32KB / 16 bytes = 2048
+const DefaultMaxSearch = 256;
 export interface CotarIndexOptions {
   packingFactor?: number;
   maxSearch?: number;
