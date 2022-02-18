@@ -22,6 +22,6 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN_LINZJS}}
 
       - name: Create test tar
-        run: tar cf node_modules.tar node_modules
+        run: yarn run test-create-data
 
       - uses: blacha/hyperfine-action@v1

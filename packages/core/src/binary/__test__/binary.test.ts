@@ -11,7 +11,7 @@ import { Cotar } from '../../cotar.js';
 import { TarReader } from '../../tar.js';
 import { CotarIndexBuilder, writeHeaderFooter } from '../binary.index.builder.js';
 import { CotarIndex, toNumber } from '../binary.index.js';
-import { IndexHeaderSize, IndexRecordSize } from '../format.js';
+import { IndexHeaderSize, IndexV1RecordSize, IndexV2RecordSize } from '../format.js';
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
@@ -19,33 +19,34 @@ function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
   return String.fromCharCode(new Uint8Array(buf)[offset]);
 }
 
-const ExpectedRecord =
-  'Q09UAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmYwdbtIi0pwAAAAAAAAAAAQAAAAAAAAC/I5YiYFMqNwQAAAAAAAAABAAAAAAAAABDT1QBBAAAAA==';
+const ExpectedRecordV1 =
+  'Q09UAQQAAAB0wPmDP22WfQAEAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmYwdbtIi0pwAAAAAAAAAAAQAAAAAAAAC/I5YiYFMqNwACAAAAAAAABAAAAAAAAABDT1QBBAAAAA==';
+const ExpectedRecordV2 =
+  'Q09UAgQAAAB0wPmDP22WfQIAAAAIAAAAAAAAAAAAAAAAAAAAAAAAACZjB1u0iLSnAAAAAAEAAAC/I5YiYFMqNwEAAAAEAAAAQ09UAgQAAAA=';
 
 o.spec('CotarBinary.fake', () => {
-  o('should load a tile from fake index', async () => {
+  const TestFiles = [
+    { path: 'tiles/0/0/0.pbf.gz', offset: 0, size: 1 },
+    { path: 'tiles/1/1/1.pbf.gz', offset: 512, size: 4 },
+    { path: 'tiles/1/1/2.pbf.gz', offset: 1024, size: 8 },
+  ];
+
+  const TestFileSize = TestFiles.length + 1;
+  o('should load a tile from fake v1 index', async () => {
     // Manually create a fake binary index
-    const files = [
-      { path: 'tiles/0/0/0.pbf.gz', offset: 0, size: 1 },
-      { path: 'tiles/1/1/1.pbf.gz', offset: 4, size: 4 },
-    ];
+    const tarIndex: Buffer = Buffer.alloc(TestFileSize * IndexV1RecordSize + IndexHeaderSize * 2);
 
-    const indexSize = 4;
-    const tarIndex: Buffer = Buffer.alloc(indexSize * IndexRecordSize + IndexHeaderSize * 2);
-
-    for (const record of files) {
+    for (const record of TestFiles) {
       const hash = fnv1a(record.path, { size: 64 });
-      const index = Number(hash % BigInt(indexSize));
-      const offset = index * IndexRecordSize + IndexHeaderSize;
+      const index = Number(hash % BigInt(TestFileSize));
+      const offset = index * IndexV1RecordSize + IndexHeaderSize;
       tarIndex.writeBigUInt64LE(hash, offset);
       tarIndex.writeBigUInt64LE(BigInt(record.offset), offset + 8);
       tarIndex.writeBigUInt64LE(BigInt(record.size), offset + 16);
     }
-    tarIndex.writeUInt32LE(indexSize);
+    writeHeaderFooter(tarIndex, TestFileSize, 1);
 
-    writeHeaderFooter(tarIndex, indexSize);
-
-    o(tarIndex.toString('base64')).equals(ExpectedRecord);
+    o(tarIndex.toString('base64')).equals(ExpectedRecordV1);
 
     const cotar = new Cotar(
       new SourceMemory('Tar', Buffer.from('0123456789')),
@@ -53,17 +54,43 @@ o.spec('CotarBinary.fake', () => {
     );
 
     o(await cotar.index.find('tiles/0/0/0.pbf.gz')).deepEquals({ offset: 0, size: 1 });
-    o(await cotar.index.find('tiles/1/1/1.pbf.gz')).deepEquals({ offset: 4, size: 4 });
+    o(await cotar.index.find('tiles/1/1/1.pbf.gz')).deepEquals({ offset: 512, size: 4 });
+    o(await cotar.index.find('tiles/1/1/2.pbf.gz')).deepEquals({ offset: 1024, size: 8 });
     o(await cotar.index.find('tiles/1/1/3.pbf.gz')).equals(null);
 
     const tile0 = await cotar.get('tiles/0/0/0.pbf.gz');
     o(tile0).notEquals(null);
     o(abToChar(tile0, 0)).equals('0');
+  });
 
-    const tile1 = await cotar.get('tiles/1/1/1.pbf.gz');
-    o(tile1).notEquals(null);
-    o(tile1!.byteLength).equals(4);
-    o(abToChar(tile1, 0)).equals('4');
+  o('should load a tile from fake v2 index', async () => {
+    const tarIndex: Buffer = Buffer.alloc(TestFileSize * IndexV2RecordSize + IndexHeaderSize * 2);
+
+    for (const record of TestFiles) {
+      const hash = fnv1a(record.path, { size: 64 });
+      const index = Number(hash % BigInt(TestFileSize));
+      const offset = index * IndexV2RecordSize + IndexHeaderSize;
+      tarIndex.writeBigUInt64LE(hash, offset);
+      tarIndex.writeUInt32LE(record.offset / 512, offset + 8);
+      tarIndex.writeUInt32LE(record.size, offset + 12);
+    }
+    writeHeaderFooter(tarIndex, TestFileSize);
+
+    o(tarIndex.toString('base64')).equals(ExpectedRecordV2);
+
+    const cotar = new Cotar(
+      new SourceMemory('Tar', Buffer.from('0123456789')),
+      await CotarIndex.create(new SourceMemory('index', tarIndex)),
+    );
+
+    o(await cotar.index.find('tiles/0/0/0.pbf.gz')).deepEquals({ offset: 0, size: 1 });
+    o(await cotar.index.find('tiles/1/1/1.pbf.gz')).deepEquals({ offset: 512, size: 4 });
+    o(await cotar.index.find('tiles/1/1/2.pbf.gz')).deepEquals({ offset: 1024, size: 8 });
+    o(await cotar.index.find('tiles/1/1/3.pbf.gz')).equals(null);
+
+    const tile0 = await cotar.get('tiles/0/0/0.pbf.gz');
+    o(tile0).notEquals(null);
+    o(abToChar(tile0, 0)).equals('0');
   });
 });
 
