@@ -82,10 +82,15 @@ export const CotarIndexBuilder = {
     currentTime = Date.now();
     for (const file of files) file.index = Number(BigInt(file.hash) % BigInt(slotCount));
     files.sort((a, b) => {
-      let ret = a.index - b.index;
-      if (ret === 0) ret = a.offset - b.offset;
-      if (ret === 0) return a.hash - b.hash;
-      return ret;
+      const indexDiff = a.index - b.index;
+      if (indexDiff !== 0) return indexDiff;
+
+      const offsetDiff = a.offset - b.offset;
+      if (offsetDiff !== 0) return offsetDiff;
+
+      // Hashes can not collide so a.hash must be > or < b.hash
+      if (a.hash > b.hash) return 1;
+      return -1;
     });
     logger?.debug({ duration: Date.now() - currentTime }, 'Cotar.index:Hash');
 
