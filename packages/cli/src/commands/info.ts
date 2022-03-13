@@ -1,13 +1,13 @@
 import { SourceFile } from '@chunkd/source-file';
 import { Cotar, CotarIndexBinary, TarReader } from '@cotar/core';
-import { Command, flags } from '@oclif/command';
+import { Command, Flags } from '@oclif/core';
 import { promises as fs } from 'fs';
 import { logger } from '../log.js';
 
 export class CotarInfo extends Command {
   static description = 'Validate that every file in the tar can be found in the index';
   static flags = {
-    verbose: flags.boolean({ description: 'verbose logging' }),
+    verbose: Flags.boolean({ description: 'verbose logging' }),
   };
 
   static args = [
@@ -27,7 +27,7 @@ export class CotarInfo extends Command {
   }
 
   async run(): Promise<void> {
-    const { args, flags } = this.parse(CotarInfo);
+    const { args, flags } = await this.parse(CotarInfo);
     if (flags.verbose) logger.level = 'debug';
 
     logger.info({ fileName: args.inputFile }, 'Cotar:Load');

@@ -1,23 +1,23 @@
 import { LogType, SourceMemory } from '@chunkd/core';
 import { CotarIndexBinary, CotarIndexBuilder, CotarIndexOptions, TarReader } from '@cotar/core';
-import { Command, flags } from '@oclif/command';
+import { Command, Flags } from '@oclif/core';
 import { existsSync, promises as fs } from 'fs';
 import { logger } from '../log.js';
 
 export class CreateCotar extends Command {
   static description = 'Create a cloud optimized tar';
   static flags = {
-    force: flags.boolean({ description: 'force overwriting existing files' }),
-    packing: flags.integer({ description: 'Packing factor for the hash map', default: 25 }),
-    'max-search': flags.integer({ description: 'Max search factor', default: 50 }),
-    verbose: flags.boolean({ description: 'verbose logging' }),
-    limit: flags.integer({ description: 'Only ingest this many files' }),
+    force: Flags.boolean({ description: 'force overwriting existing files' }),
+    packing: Flags.integer({ description: 'Packing factor for the hash map', default: 25 }),
+    'max-search': Flags.integer({ description: 'Max search factor', default: 50 }),
+    verbose: Flags.boolean({ description: 'verbose logging' }),
+    limit: Flags.integer({ description: 'Only ingest this many files' }),
   };
 
   static args = [{ name: 'inputFile', required: true }];
 
   async run(): Promise<void> {
-    const { args, flags } = this.parse(CreateCotar);
+    const { args, flags } = await this.parse(CreateCotar);
     if (flags.verbose) logger.level = 'debug';
 
     const outputFile = args.inputFile + '.co';

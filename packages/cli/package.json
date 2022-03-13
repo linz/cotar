@@ -23,7 +23,7 @@
   "dependencies": {
     "@chunkd/source-file": "^8.0.1",
     "@cotar/core": "^5.2.0",
-    "@oclif/core": "^1.0.2",
+    "@oclif/core": "^1.5.3",
     "binparse": "^2.0.1",
     "pino": "^7.0.5",
     "pretty-json-log": "^1.0.0"

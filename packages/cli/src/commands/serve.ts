@@ -1,7 +1,7 @@
 import { ChunkSource } from '@chunkd/core';
 import { SourceFile } from '@chunkd/source-file';
 import { Cotar, TarReader } from '@cotar/core';
-import { Command, flags } from '@oclif/command';
+import { Command, Flags } from '@oclif/core';
 import http from 'http';
 import path from 'path';
 import { URL } from 'url';
@@ -62,16 +62,16 @@ class FileTree {
 export class CotarServe extends Command {
   static description = 'Serve a cotar using http';
   static flags = {
-    'disable-index': flags.boolean({ description: 'Load the tar file list on startup', default: false }),
-    port: flags.integer({ description: 'Port to run on', default: 8080 }),
-    'base-url': flags.string({ description: 'Base url to use', default: 'http://localhost:8080' }),
-    verbose: flags.boolean({ description: 'verbose logging' }),
+    'disable-index': Flags.boolean({ description: 'Load the tar file list on startup', default: false }),
+    port: Flags.integer({ description: 'Port to run on', default: 8080 }),
+    'base-url': Flags.string({ description: 'Base url to use', default: 'http://localhost:8080' }),
+    verbose: Flags.boolean({ description: 'verbose logging' }),
   };
 
   static args = [{ name: 'inputFile', required: true }];
 
   async run(): Promise<void> {
-    const { args, flags } = this.parse(CotarServe);
+    const { args, flags } = await this.parse(CotarServe);
     if (flags.verbose) logger.level = 'debug';
 
     if (flags.port !== 8080) flags['base-url'] = flags['base-url'].replace(':8080', `:${flags.port}`);
