@@ -33,7 +33,7 @@ export class CotarInfo extends Command {
     logger.info({ fileName: args.inputFile }, 'Cotar:Load');
 
     const index = await this.loadIndex(args.inputFile, args.indexFile);
-    logger.info({ fileName: args.inputFile, indexFile: args.indexFile }, 'Cotar:Loaded');
+    logger.info({ fileName: args.inputFile, indexFile: args.indexFile, metadata: index.metadata }, 'Cotar:Loaded');
 
     const fd = await fs.open(args.inputFile, 'r');
     const fileCount = await TarReader.validate(fd, index, logger);
