@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.2.0](https://github.com/linz/cotar/compare/v5.1.1...v5.2.0) (2022-03-13)
+
+
+### Features
+
+* **cli:** validate seperate index files ([#191](https://github.com/linz/cotar/issues/191)) ([8ced487](https://github.com/linz/cotar/commit/8ced48712963d2172229410c0809284592cf234f))
+
+
+
+
+
 ## [5.1.1](https://github.com/linz/cotar/compare/v5.1.0...v5.1.1) (2021-11-29)
 
 **Note:** Version bump only for package @cotar/cli

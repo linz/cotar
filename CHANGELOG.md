@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.2.0](https://github.com/linz/cotar/compare/v5.1.1...v5.2.0) (2022-03-13)
+
+
+### Bug Fixes
+
+* cannot sort using bigint returns ([d18691d](https://github.com/linz/cotar/commit/d18691da666a13c6055e43e413ba2955b6ee6ae1))
+* **core:** sort could still be unstable where multiple files reference the same offset (hard links) ([04cd0c8](https://github.com/linz/cotar/commit/04cd0c841f8e490863e360586aa5e7cfde9ca65c))
+* skip over duplicate files inside tars ([e167bf7](https://github.com/linz/cotar/commit/e167bf78dfea2cb908f69c8fe5cdf5434a380863))
+* **core:** make file sort stable ([42a5922](https://github.com/linz/cotar/commit/42a59222cf1f748a4e29e01d1632fa8c54708e93))
+
+
+### Features
+
+* **cli:** validate seperate index files ([#191](https://github.com/linz/cotar/issues/191)) ([8ced487](https://github.com/linz/cotar/commit/8ced48712963d2172229410c0809284592cf234f))
+* **core:** create version 2 header switching to uint32 for block offsets ([#179](https://github.com/linz/cotar/issues/179)) ([a968a11](https://github.com/linz/cotar/commit/a968a11316153326702711274318b081a2149658))
+
+
+
+
+
 ## [5.1.1](https://github.com/linz/cotar/compare/v5.1.0...v5.1.1) (2021-11-29)
 
 **Note:** Version bump only for package @cotar/base
