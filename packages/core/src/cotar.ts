@@ -1,4 +1,4 @@
-import { ChunkSource, LogType } from '@chunkd/core';
+import { ChunkSource } from '@chunkd/core';
 import { CotarIndex } from './binary/binary.index.js';
 import { IndexV2RecordSize, IndexSize } from './binary/format.js';
 
@@ -33,14 +33,13 @@ export class Cotar {
   /**
    * Read a file from a cotar
    * @param fileName File to read
-   * @param logger optional logger for additional trace metrics
    * @returns the file's contents or null if it cannot be found
    */
-  async get(fileName: string, logger?: LogType): Promise<null | ArrayBuffer> {
-    const index = await this.index.find(fileName, logger);
+  async get(fileName: string): Promise<null | ArrayBuffer> {
+    const index = await this.index.find(fileName);
     if (index == null) return null;
 
-    await this.source.loadBytes(index.offset, index.size, logger);
+    await this.source.loadBytes(index.offset, index.size);
     return this.source.bytes(index.offset, index.size);
   }
 }

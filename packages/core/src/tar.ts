@@ -1,6 +1,6 @@
-import { LogType } from '@chunkd/core';
 import { bp, StrutInfer, toHex } from 'binparse';
 import { CotarIndex } from './binary/binary.index.js';
+import { LogType } from './log.js';
 import { AsyncFileDescriptor, AsyncFileRead, AsyncReader } from './tar.index.js';
 
 export interface TarFileHeader {

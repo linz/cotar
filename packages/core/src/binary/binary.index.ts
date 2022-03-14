@@ -1,4 +1,4 @@
-import { ChunkSource, LogType } from '@chunkd/core';
+import { ChunkSource } from '@chunkd/core';
 import fnv1a from '@sindresorhus/fnv1a';
 import { bp, StrutInfer } from 'binparse';
 import { CotarIndexRecord } from '../cotar.js';
@@ -66,13 +66,13 @@ export class CotarIndex {
    * @param fileName file to search for
    * @returns the index if found, null otherwise
    */
-  async find(fileName: string, logger?: LogType): Promise<CotarIndexRecord | null> {
-    if (this.metadata.version === 1) return this._findV1(fileName, logger);
-    if (this.metadata.version === 2) return this._findV2(fileName, logger);
+  async find(fileName: string): Promise<CotarIndexRecord | null> {
+    if (this.metadata.version === 1) return this._findV1(fileName);
+    if (this.metadata.version === 2) return this._findV2(fileName);
     throw new Error('Invalid metadata version');
   }
 
-  async _findV2(fileName: string, logger?: LogType): Promise<CotarIndexRecord | null> {
+  async _findV2(fileName: string): Promise<CotarIndexRecord | null> {
     const hash = CotarIndex.hash(fileName);
 
     const slotCount = this.metadata.count;
@@ -87,7 +87,7 @@ export class CotarIndex {
     let index = startIndex;
     while (true) {
       const offset = this.sourceOffset + index * IndexV2RecordSize + IndexHeaderSize;
-      await this.source.loadBytes(offset, IndexV2RecordSize, logger);
+      await this.source.loadBytes(offset, IndexV2RecordSize);
 
       startHashLow = this.source.getUint32(offset);
       startHashHigh = this.source.getUint32(offset + 4);
@@ -110,7 +110,7 @@ export class CotarIndex {
   }
 
   // TODO(2022-02) this should be removed once we migrate from v1
-  async _findV1(fileName: string, logger?: LogType): Promise<CotarIndexRecord | null> {
+  async _findV1(fileName: string): Promise<CotarIndexRecord | null> {
     const hash = CotarIndex.hash(fileName);
 
     const slotCount = this.metadata.count;
@@ -120,7 +120,7 @@ export class CotarIndex {
     let index = startIndex;
     while (true) {
       const offset = this.sourceOffset + index * IndexV1RecordSize + IndexHeaderSize;
-      await this.source.loadBytes(offset, IndexV1RecordSize, logger);
+      await this.source.loadBytes(offset, IndexV1RecordSize);
       startHash = this.source.getBigUint64(offset);
 
       // Found the file

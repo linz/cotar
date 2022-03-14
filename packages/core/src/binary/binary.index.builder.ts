@@ -1,4 +1,5 @@
-import { LogType, SourceMemory } from '@chunkd/core';
+import { SourceMemory } from '@chunkd/core';
+import { LogType } from '../log.js';
 import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexResult } from '../tar.index.js';
 import { TarReader } from '../tar.js';
 import { CotarIndex } from './binary.index.js';

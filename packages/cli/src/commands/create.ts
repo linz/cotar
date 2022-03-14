@@ -1,7 +1,8 @@
-import { LogType, SourceMemory } from '@chunkd/core';
+import { SourceMemory } from '@chunkd/core';
 import { CotarIndexBinary, CotarIndexBuilder, CotarIndexOptions, TarReader } from '@cotar/core';
 import { Command, Flags } from '@oclif/core';
 import { existsSync, promises as fs } from 'fs';
+import pino from 'pino';
 import { logger } from '../log.js';
 
 export class CreateCotar extends Command {
@@ -42,7 +43,12 @@ export class CreateCotar extends Command {
     logger.info({ output: outputFile, duration }, 'Cotar:Created');
   }
 
-  async toTarIndex(filename: string, indexFileName: string, opts: CotarIndexOptions, logger: LogType): Promise<Buffer> {
+  async toTarIndex(
+    filename: string,
+    indexFileName: string,
+    opts: CotarIndexOptions,
+    logger: pino.Logger,
+  ): Promise<Buffer> {
     const fd = await fs.open(filename, 'r');
     logger.info({ index: indexFileName }, 'Cotar.Index:Start');
     const startTime = Date.now();
