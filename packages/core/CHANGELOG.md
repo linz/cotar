@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.3.0](https://github.com/linz/cotar/compare/v5.2.0...v5.3.0) (2022-03-17)
+
+
+### Bug Fixes
+
+* **core:** v1 metadata should have a different offset size to v2 metadata ([1b86503](https://github.com/linz/cotar/commit/1b86503e33acfa4e52d577ed91d66e7f91496e39))
+
+
+
+
+
 # [5.2.0](https://github.com/linz/cotar/compare/v5.1.1...v5.2.0) (2022-03-13)
 
 

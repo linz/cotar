@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.3.0](https://github.com/linz/cotar/compare/v5.2.0...v5.3.0) (2022-03-17)
+
+
+### Features
+
+* **cli:** include cotar metadata in info output ([9c2ed7e](https://github.com/linz/cotar/commit/9c2ed7e335de91492d7bf69cb840121317182b9e))
+
+
+
+
+
 # [5.2.0](https://github.com/linz/cotar/compare/v5.1.1...v5.2.0) (2022-03-13)
 
 
