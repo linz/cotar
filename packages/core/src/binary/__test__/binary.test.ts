@@ -158,6 +158,9 @@ o.spec('CotarBinary', () => {
 
     // Should validate
     await TarReader.validate(fd, index);
+    await fd.close();
+    await source.close?.();
+    await sourceIndex.close?.();
   });
 });
 

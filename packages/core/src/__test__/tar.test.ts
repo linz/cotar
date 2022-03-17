@@ -55,6 +55,8 @@ o.spec('TarReader', () => {
     const buf = Buffer.alloc(tarTest?.size ?? 0);
     await source.read(buf, 0, tarTest?.size, tarTest?.offset);
     o(buf.toString().startsWith(`/** Start Header */`)).equals(true);
+
+    await source.close();
   });
 
   o('should work with a .tar.co', async () => {
@@ -78,5 +80,7 @@ o.spec('TarReader', () => {
     o(data).notEquals(null);
     const buf = Buffer.from(data!.slice(0, 100));
     o(buf.toString().startsWith(`/** Start Header */`)).equals(true);
+
+    await cotar.source.close?.();
   });
 });

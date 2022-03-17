@@ -48,7 +48,6 @@ o.spec('CotarBinaryHeaderFooter', () => {
     writeHeaderFooter(buf, Example.v2.header.count);
 
     const buf64 = buf.toString('base64');
-    console.log(buf64);
     // Should start and end with the same data
     o(buf64.startsWith('Q09UAtIClkk')).equals(true);
     o(buf64.endsWith('Q09UAtIClkk=')).equals(true);
