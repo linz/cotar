@@ -51,6 +51,17 @@ V2 moves to uint32 for file size this limits internal files to 4GB in size
 
 Performance regression is monitored with [hyperfine-action](https://github.com/blacha/hyperfine-action) with results being hosted on github pages [benchmarks.html](https://linz.github.io/cotar/benchmarks.html)
 
+#### Cloud Performance
+Hosting a COTAR inside of AWS S3, a requesting service would need to do three requests to the COTAR to find a random file inside the archive, and would generally only need to load in a few KB of overhead
+
+1. Read the COTAR header (8 bytes), this gives the size of the archive aswell as the number of records 
+2. Read the hash entry of the file (~2KB), this gives the size of the file and the offset in the archive. The hash entry the position to the index record can be calculated on the client size `offset = hash(fileName) % recordCount` and will always be within 100 records of that location and generally less than 5. So only a very small portion of the index needs to be read. 
+3. Read the file data from the archive
+
+Real world: Using a lambda function reading a tar file from the same region the read performance can vary quite signifcantly, but generally a 64KB read request generally completes between 20-50ms. This means that from a completely cold cache a random small file can be read between 60-150ms, if the record count is known before (eg as part of the filename) then only 2 requests are required which will generally complete between 40-100ms.
+
+![S3 request times from a lambda function reading S3 over 2022-03 to 2022-04](./static/S3RequestDuration.png)
+
 #### Questions:
 **Hash size**
 The type of the hash could be changed as well as the number of bits of the hash used based on how unique the file hashes are, a uint64 hash is mostly completely wasted on a tar file containing 100 files. 
@@ -61,24 +72,23 @@ conversely a tar file containing 2,000,000 files needs a hash much larger than 1
 Any hash type could be used `farmhash` or even `sha256` and then the bits sliced down to the number needed for the hash index.
 
 
-## Future investigation
+## Other Formats
 
-1. Zip files
+###  Zip
 
-ZIP store their metadata at the end of the file, and so the metadata can be read with a single range request for the last 1+MB of data.
-then individual files can be read directly from the ZIP.
+Zip has a Central Directory (CD) at the end of the file which makes it easier than a TAR to find files in the archive as the reader of the archive only has to scan the CD instead of the entire file. However finding a file inside the CD is not easy as each index is variable length. To Find a specific file inside the ZIP archive the reader would need to read a large portion of the index. For a test file with 600,000 records the CD was 55MB.
 
-See: https://github.com/tapalcatl/tapalcatl-2-spec
-> 2021-04 comments
-> The internal zip header is quite large with a 600,000 file test zip, the header was 55MB vs a 5MB gziped header using JSON
+Minio works around this by creating a smaller index of the CD and then using the index to lookup the CD and File Record 
 
+- https://blog.min.io/small-file-archives/
+- https://github.com/tapalcatl/tapalcatl-2-spec
 
-2. Combine tar with tar.index into a single tar
+###  MPQ
 
-Having a single tar file greatly simplifies the distribution of the files, It would be quite simple to tar both the index (.tar.index) and data tar into another tar to combine the files into a single distribution
+MPQ has a very similar format to COTAR with a hash index at the start of the file which makes it cloud optimized by default, the biggest issue is not a an open standard and does not have much open tooling for reading and creating archives. 
 
-> 2022-01 done
+## Related cloud native file formats
 
-3. Use AWS S3's response-encoding to decompress internal gziped content on the fly
-
-
+- Cloud Optimised GeoTiff [COG](https://www.cogeo.org/) 
+- [PMTiles](https://github.com/protomaps/PMTiles) Cloud-optimized, single-file map tile archives
+- [flatgeobuf](https://github.com/flatgeobuf/flatgeobuf) performant binary encoding for geographic data based on flatbuffers
