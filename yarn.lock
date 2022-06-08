@@ -23,17 +23,17 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@chunkd/core@^8.0.1", "@chunkd/core@^8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-8.1.0.tgz#724da02f4059eef853c8b690af6729d77d54702c"
-  integrity sha512-Ij+UlGyz9kQW27/NKBDYh89v+6jOHoVdKv6bhxNG1SQzJRThumbnJelbm27rOYzF1MTbgvECIWjEqHTeSljtOQ==
+"@chunkd/core@^8.0.1", "@chunkd/core@^8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-8.3.0.tgz#3bdd25e0d8da12ba0d752ba61a16d90c308eebf9"
+  integrity sha512-tM5ulZ4Jc/vWRtYXNZCYLMXZBhE76mFTs/Ut2Bx0c5yI02EBK9lgVNXt5gRSEPc/A1Zsod0W4kLl6Yq2NcInWg==
 
 "@chunkd/source-file@^8.0.1":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-8.1.0.tgz#f6b9378a4610194eadda2212185f0cc2df32a27e"
-  integrity sha512-6McqwaoLNjsv0AygZoRvw6ZC1+aPHyNJMCZUG7g5nDPtNwYWFBBTn4RIeRPUyN40m5/O0YTINvpYMnJamfePZw==
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-8.3.0.tgz#0268d80018a2c2697c66f2b3ca940dd90ea1ba67"
+  integrity sha512-WIYjw06NSeIeW8nlcaAvsDCApagTu6Ne5DslSDFYFlVE4H4Iv7FEdrPghHGjsIZEdPPVPewHNhoQtU4Pfa12SA==
   dependencies:
-    "@chunkd/core" "^8.1.0"
+    "@chunkd/core" "^8.3.0"
 
 "@eslint/eslintrc@^1.2.1":
   version "1.2.1"
