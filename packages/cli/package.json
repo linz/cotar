@@ -25,7 +25,7 @@
     "@cotar/core": "^5.3.0",
     "@oclif/core": "^1.5.3",
     "binparse": "^2.0.1",
-    "pino": "^7.0.5",
+    "pino": "^8.1.0",
     "pretty-json-log": "^1.0.0"
   },
   "devDependencies": {
