@@ -2,6 +2,9 @@ import { createHash } from 'crypto';
 import { createWriteStream } from 'fs';
 import tar from 'tar-stream';
 
+// Default modified time to 0, to make the builds reproducable
+const mtime = new Date(0);
+
 export class TarBuilder {
   tarPath: string;
   packer: tar.Pack;
@@ -24,9 +27,9 @@ export class TarBuilder {
     if (dupeFile) {
       // Duplicate file contents create hard link
       this.stats.duplicate++;
-      await new Promise((r) => this.packer.entry({ name: fileName, type: 'link', linkname: dupeFile }, r));
+      await new Promise((r) => this.packer.entry({ name: fileName, type: 'link', linkname: dupeFile, mtime }, r));
     } else {
-      await new Promise((r) => this.packer.entry({ name: fileName }, data, r));
+      await new Promise((r) => this.packer.entry({ name: fileName, mtime }, data, r));
       this.fileHashes[hashIndex].set(hash, fileName);
     }
     this.stats.total++;

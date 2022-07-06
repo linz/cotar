@@ -31,3 +31,11 @@ Fetch a specific file from the tar
 ```
 curl http://localhost:8080/v1/file/package.json
 ```
+
+### Creating reproducible tars
+
+Create a reproducible tar where most metadata is stripped from the files such as modified time, which means two tar files from the same source data should have the exact same hash.
+
+```bash
+cotar tar output.tar files/
+```
