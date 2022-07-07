@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.4.1](https://github.com/linz/cotar/compare/v5.4.0...v5.4.1) (2022-07-07)
+
+
+### Bug Fixes
+
+* **tar:** hide the tar-stream types from endusers ([#251](https://github.com/linz/cotar/issues/251)) ([ad38a18](https://github.com/linz/cotar/commit/ad38a18e87b35566f936f648af2353f9f34e5e53))
+
+
+
+
+
 # [5.4.0](https://github.com/linz/cotar/compare/v5.3.0...v5.4.0) (2022-07-07)
 
 
