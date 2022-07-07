@@ -1,13 +1,13 @@
 import { createHash } from 'crypto';
 import { createWriteStream } from 'fs';
-import tar from 'tar-stream';
+import * as tar from 'tar-stream';
 
 // Default modified time to 0, to make the builds reproducable
 const mtime = new Date(0);
 
 export class TarBuilder {
   tarPath: string;
-  packer: tar.Pack;
+  private packer: tar.Pack;
   // Maps run into issues after 120M files, use a collection of maps to allow for huggee files
   fileHashes: Map<string, string>[] = [];
   stats: { total: number; duplicate: number } = { total: 0, duplicate: 0 };
