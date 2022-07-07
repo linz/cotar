@@ -23,17 +23,51 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@chunkd/core@^8.0.1", "@chunkd/core@^8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-8.1.0.tgz#724da02f4059eef853c8b690af6729d77d54702c"
-  integrity sha512-Ij+UlGyz9kQW27/NKBDYh89v+6jOHoVdKv6bhxNG1SQzJRThumbnJelbm27rOYzF1MTbgvECIWjEqHTeSljtOQ==
+"@chunkd/core@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-8.4.0.tgz#749434f6ae6d8fd95405bb0b33d73ebae6583d79"
+  integrity sha512-ayU+POyD/klSRJVf/x4ePeNnl6o+AFD87gTkqvwCuvh00snaJZGgtO7q8zzErAcDcvLla6mCElHtaQO6kn3dVw==
 
-"@chunkd/source-file@^8.0.1":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-8.1.0.tgz#f6b9378a4610194eadda2212185f0cc2df32a27e"
-  integrity sha512-6McqwaoLNjsv0AygZoRvw6ZC1+aPHyNJMCZUG7g5nDPtNwYWFBBTn4RIeRPUyN40m5/O0YTINvpYMnJamfePZw==
+"@chunkd/fs@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-8.4.0.tgz#cbb4add22a163b1a610e2af1339d88de9ea4585d"
+  integrity sha512-0PghRk1R8aJAP6YrGLQlQHlQNDEClAvwD6fN4J/K+FZ4ik0/RqzrcPWP54pNmGoZvGWqnNs0M2gG+bq2hJi8+g==
   dependencies:
-    "@chunkd/core" "^8.1.0"
+    "@chunkd/core" "^8.4.0"
+    "@chunkd/source-file" "^8.4.0"
+    "@chunkd/source-http" "^8.4.0"
+  optionalDependencies:
+    "@chunkd/source-aws" "^8.4.0"
+    "@chunkd/source-google-cloud" "^8.4.0"
+
+"@chunkd/source-aws@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-aws/-/source-aws-8.4.0.tgz#4dc8ab748a87fd15f29d93ef872375998e90f0e2"
+  integrity sha512-GwUuQ2Z6mdws1hRv7nilszvTnGZx+X3IMtB+wR8oT76ISxd1fXp19tGB7YqtcHnqQIBMWCk+XzjfDoFyGJ2xcg==
+  dependencies:
+    "@chunkd/core" "^8.4.0"
+
+"@chunkd/source-file@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-8.4.0.tgz#6567f4170e3b8b762fb78db01b5d15f8bf3c9dc3"
+  integrity sha512-yk0PRpSO24MrkXJbDseeVErZ7SAOj/FptNvh3GNGd6tUEIFpQIROsQdrRyGWBKh+geK0JI/edE/r+rmDzCC6eQ==
+  dependencies:
+    "@chunkd/core" "^8.4.0"
+
+"@chunkd/source-google-cloud@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-google-cloud/-/source-google-cloud-8.4.0.tgz#4dc7b74817ac73ceb5bcb1cbd38e99875ad5b8a4"
+  integrity sha512-36q9p5j6tL719y3PMZe+LO0wVZpaWFxAwnoY064aT430+H4FCPjJQ0Eon0Z+akEl0LU6+c3USS7hkHpchsKhMg==
+  dependencies:
+    "@chunkd/core" "^8.4.0"
+
+"@chunkd/source-http@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-http/-/source-http-8.4.0.tgz#a8e2260aaa0c1293f528f8d36d7b2a7e79dcb026"
+  integrity sha512-IXkErCyuKC/WcIZGjREy4OQsXyA29yhFtu2fGXmv5AroEVRltDX7wA9dVzzOBw/jhgLTuvbFvHvtdWn1A8OWxA==
+  dependencies:
+    "@chunkd/core" "^8.4.0"
+    node-fetch "^3.1.0"
 
 "@eslint/eslintrc@^1.2.1":
   version "1.2.1"
@@ -2166,6 +2200,11 @@ dargs@^7.0.0:
   resolved "https://registry.yarnpkg.com/dargs/-/dargs-7.0.0.tgz#04015c41de0bcb69ec84050f3d9be0caf8d6d5cc"
   integrity sha512-2iy1EkLdlBzQGvbweYRFxmFath8+K7+AKB0TlhHWkNuH+TmovaMH/Wp7V7R4u7f4SnX3OgLsU9t1NI9ioDnUpg==
 
+data-uri-to-buffer@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/data-uri-to-buffer/-/data-uri-to-buffer-4.0.0.tgz#b5db46aea50f6176428ac05b73be39a57701a64b"
+  integrity sha512-Vr3mLBA8qWmcuschSLAOogKgQ/Jwxulv3RNE4FXnYWRGujzrRWQI4m12fQqRkwX06C0KanhLr4hK+GydchZsaA==
+
 dateformat@^3.0.0:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
@@ -2603,6 +2642,14 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
+fetch-blob@^3.1.2, fetch-blob@^3.1.4:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/fetch-blob/-/fetch-blob-3.2.0.tgz#f09b8d4bbd45adc6f0c20b7e787e793e309dcce9"
+  integrity sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==
+  dependencies:
+    node-domexception "^1.0.0"
+    web-streams-polyfill "^3.0.3"
+
 figures@^3.0.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/figures/-/figures-3.2.0.tgz#625c18bd293c604dc4a8ddb2febf0c88341746af"
@@ -2671,6 +2718,13 @@ flatted@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.1.1.tgz#c4b489e80096d9df1dfc97c79871aea7c617c469"
   integrity sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==
+
+formdata-polyfill@^4.0.10:
+  version "4.0.10"
+  resolved "https://registry.yarnpkg.com/formdata-polyfill/-/formdata-polyfill-4.0.10.tgz#24807c31c9d402e002ab3d8c720144ceb8848423"
+  integrity sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==
+  dependencies:
+    fetch-blob "^3.1.2"
 
 from2@^2.1.1:
   version "2.3.0"
@@ -4088,10 +4142,24 @@ nice-try@^1.0.4:
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
 
+node-domexception@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/node-domexception/-/node-domexception-1.0.0.tgz#6888db46a1f71c0b76b3f7555016b63fe64766e5"
+  integrity sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==
+
 node-fetch@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
+
+node-fetch@^3.1.0:
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-3.2.6.tgz#6d4627181697a9d9674aae0d61548e0d629b31b9"
+  integrity sha512-LAy/HZnLADOVkVPubaxHDft29booGglPFDr2Hw0J1AercRh01UiVFm++KMDnJeH9sHgNB4hsXPii7Sgym/sTbw==
+  dependencies:
+    data-uri-to-buffer "^4.0.0"
+    fetch-blob "^3.1.4"
+    formdata-polyfill "^4.0.10"
 
 node-gyp@^8.4.1:
   version "8.4.1"
@@ -5840,6 +5908,11 @@ wcwidth@^1.0.0:
   integrity sha1-8LDc+RW8X/FSivrbLA4XtTLaL+g=
   dependencies:
     defaults "^1.0.3"
+
+web-streams-polyfill@^3.0.3:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-3.2.1.tgz#71c2718c52b45fd49dbeee88634b3a60ceab42a6"
+  integrity sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q==
 
 webidl-conversions@^6.1.0:
   version "6.1.0"

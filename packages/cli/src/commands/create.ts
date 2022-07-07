@@ -21,6 +21,10 @@ export class CreateCotar extends Command {
     const { args, flags } = await this.parse(CreateCotar);
     if (flags.verbose) logger.level = 'debug';
 
+    if (!args.inputFile.endsWith('.tar')) {
+      throw new Error(`Can only create a cotar from a tar file input:"${args.inputFile}"`);
+    }
+
     const outputFile = args.inputFile + '.co';
     if (existsSync(outputFile) && !flags.force) {
       logger.error({ output: outputFile }, 'Output file exists, aborting..');
