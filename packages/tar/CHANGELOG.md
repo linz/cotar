@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.4.0](https://github.com/linz/cotar/compare/v5.3.0...v5.4.0) (2022-07-07)
+
+
+### Features
+
+* **cli:** create reproducable tar with "cotar tar" ([#250](https://github.com/linz/cotar/issues/250)) ([13776fb](https://github.com/linz/cotar/commit/13776fbe33f5daa7b5fca0c25001a641e49a616f))
+
+
+
+
+
 # [5.2.0](https://github.com/linz/cotar/compare/v5.1.1...v5.2.0) (2022-03-13)
 
 
