@@ -24,7 +24,6 @@ export class CreateTar extends Command {
       throw new Error(`Invalid output, needs to be .tar :"${args.outputFile}"`);
     }
 
-    // const outputFile = args.inputFile + '.co';
     if (existsSync(args.outputFile) && !flags.force) {
       logger.error({ output: args.outputFile }, 'Output file exists, aborting..');
       return;
