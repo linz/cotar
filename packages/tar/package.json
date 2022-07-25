@@ -30,7 +30,7 @@
     "*.png"
   ],
   "devDependencies": {
-    "@types/node": "^16.11.10",
+    "@types/node": "^18.6.1",
     "@types/tar-stream": "^2.2.2"
   }
 }
