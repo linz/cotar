@@ -4791,12 +4791,12 @@ prettier@^2.5.1:
   integrity sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==
 
 pretty-json-log@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/pretty-json-log/-/pretty-json-log-1.0.0.tgz#8417783f93a114418dbccdb1302a6a2c0ed38654"
-  integrity sha512-qdsh1G8Gk3QQo3bWDXL+Q8UnQpTVOSfA3DsVlon92KtoX7MK89Tfhxb9rxFpma1W2dKL0K7LZ7V7kku6MMHRLQ==
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/pretty-json-log/-/pretty-json-log-1.2.0.tgz#d90a0783d7455d4186db289cf1ed15bb4f00b47c"
+  integrity sha512-pvK8j+0mCi7B5RhNxLyMnU+XSu26h8HPSTmWeb2tUZpe6FYiAKoM1ppz+8R7kHfiEPAimCXegqUXYMiQyNP3mA==
   dependencies:
     ansi-colors "^4.1.1"
-    split2 "^3.1.1"
+    split2 "^4.1.0"
 
 proc-log@^2.0.0, proc-log@^2.0.1:
   version "2.0.1"
@@ -5417,14 +5417,14 @@ split2@^2.0.0:
   dependencies:
     through2 "^2.0.2"
 
-split2@^3.0.0, split2@^3.1.1:
+split2@^3.0.0:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/split2/-/split2-3.2.2.tgz#bf2cf2a37d838312c249c89206fd7a17dd12365f"
   integrity sha512-9NThjpgZnifTkJpzTZ7Eue85S49QwpNhZTq6GRJwObb6jnLFNGB7Qm73V5HewTROPyxD0C29xqmaI68bQtV+hg==
   dependencies:
     readable-stream "^3.0.0"
 
-split2@^4.0.0:
+split2@^4.0.0, split2@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/split2/-/split2-4.1.0.tgz#101907a24370f85bb782f08adaabe4e281ecf809"
   integrity sha512-VBiJxFkxiXRlUIeyMQi8s4hgvKCSjtknJv/LVYbrgALPwf5zSKmEwV9Lst25AkvMDnvxODugjdl6KZgwKM1WYQ==
