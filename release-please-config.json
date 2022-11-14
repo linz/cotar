@@ -1,9 +1,19 @@
 {
     "bootstrap-sha": "f08b7bc5df38a955bd0ee3f10f6ddc9b098e3d52",
-    "plugins": ["node-workspace"],
+    "plugins": [
+        "node-workspace"
+    ],
     "packages": {
         "packages/core": {},
         "packages/cli": {},
-        "packages/tar": {}
-    }
+        "packages/tar": {},
+        ".": {
+            "changelog-path": "CHANGELOG.md",
+            "bump-minor-pre-major": false,
+            "bump-patch-for-minor-pre-major": false,
+            "draft": false,
+            "prerelease": false
+        }
+    },
+    "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
 }

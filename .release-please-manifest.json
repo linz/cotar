@@ -1,5 +1,6 @@
 {
     "packages/cli": "5.4.1",
     "packages/core": "5.4.0",
-    "packages/tar": "5.4.1"
-  }
+    "packages/tar": "5.4.1",
+    ".": "0.0.0"
+}
