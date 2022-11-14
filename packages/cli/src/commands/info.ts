@@ -39,6 +39,10 @@ export class CotarInfo extends Command {
     const fileCount = await TarReader.validate(fd, index, logger);
     await fd.close();
 
-    logger.info({ fileName: args.inputFile, files: fileCount }, 'Cotar:Validated');
+    if (fileCount === 0) {
+      logger.error({ fileName: args.inputFile, files: fileCount }, 'Cotar:Validated:Failed');
+    } else {
+      logger.info({ fileName: args.inputFile, files: fileCount }, 'Cotar:Validated');
+    }
   }
 }
