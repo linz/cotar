@@ -4,6 +4,7 @@ import { Cotar, TarReader } from '@cotar/core';
 import { Command, Flags } from '@oclif/core';
 import http from 'http';
 import path from 'path';
+import { performance } from 'perf_hooks';
 import { URL } from 'url';
 import { logger } from '../log.js';
 
@@ -39,7 +40,7 @@ class FileTree {
 
       let current = '/';
       const parts = ctx.header.path.split('/');
-      for (let i = 0; i < parts.length - 2; i++) {
+      for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
         existing = this.nodes.get(current);
         if (existing == null) {
@@ -55,8 +56,13 @@ class FileTree {
 
   async list(pathName: string): Promise<Set<string> | undefined> {
     if (this.nodes.size === 0) await this.init();
+    console.log('List', { pathName: toFolderName(pathName) });
     return this.nodes.get(toFolderName(pathName));
   }
+}
+
+function toDuration(now: number): number {
+  return Number((performance.now() - now).toFixed(4));
 }
 
 export class CotarServe extends Command {
@@ -77,18 +83,18 @@ export class CotarServe extends Command {
     if (flags.port !== 8080) flags['base-url'] = flags['base-url'].replace(':8080', `:${flags.port}`);
 
     logger.debug({ fileName: args.inputFile }, 'Cotar:Load');
-    const startTime = Date.now();
+    const startTime = performance.now();
 
     const source = new SourceFile(args.inputFile);
     const cotar = await Cotar.fromTar(source);
     const fileTree = new FileTree(source);
     if (flags['disable-index'] === false) await fileTree.init();
 
-    logger.info({ fileName: args.inputFile, duration: Date.now() - startTime }, 'Cotar:Loaded');
+    logger.info({ fileName: args.inputFile, duration: toDuration(startTime) }, 'Cotar:Loaded');
 
     // Attempt to send a specific file from the tar
     async function sendFile(req: http.IncomingMessage, res: http.ServerResponse, fileName: string): Promise<void> {
-      const startTime = Date.now();
+      const startTime = performance.now();
 
       const file = await cotar.get(fileName);
       if (file == null) {
@@ -99,12 +105,12 @@ export class CotarServe extends Command {
       res.writeHead(200);
       res.write(file);
       res.end();
-      logger.info({ action: 'file:get', fileName, duration: Date.now() - startTime }, req.url);
+      logger.info({ action: 'file:get', fileName, duration: toDuration(startTime) }, req.url);
     }
 
     // List all the files in the source tar
     async function sendFileList(req: http.IncomingMessage, res: http.ServerResponse, pathName: string): Promise<void> {
-      const startTime = Date.now();
+      const startTime = performance.now();
 
       const list = await fileTree.list(pathName ?? '/');
       if (list == null) {
@@ -120,7 +126,7 @@ export class CotarServe extends Command {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write(JSON.stringify({ files: fileList }));
       res.end();
-      logger.info({ action: 'file:list', duration: Date.now() - startTime }, req.url);
+      logger.info({ action: 'file:list', duration: toDuration(startTime) }, req.url);
     }
 
     const server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse): void | Promise<void> => {
@@ -129,6 +135,7 @@ export class CotarServe extends Command {
       if (url.pathname.startsWith('/v1/list')) return sendFileList(req, res, url.pathname.slice(8));
       if (url.pathname.startsWith('/v1/file/')) return sendFile(req, res, url.pathname.slice(9));
 
+      logger.info({ status: 404 }, req.url);
       res.writeHead(404);
       res.end();
     });
