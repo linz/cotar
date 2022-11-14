@@ -115,7 +115,7 @@ export class CotarIndex {
 
     const slotCount = this.metadata.count;
     const startIndex = Number(hash % BigInt(slotCount));
-    let startHash: BigInt | null = null;
+    let startHash: bigint | null = null;
 
     let index = startIndex;
     while (true) {
