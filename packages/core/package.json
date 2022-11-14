@@ -19,7 +19,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@chunkd/core": "^8.4.0",
+    "@chunkd/core": "^10.0.0",
     "@sindresorhus/fnv1a": "^3.0.0",
     "binparse": "^2.0.1"
   },
