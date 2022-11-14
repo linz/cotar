@@ -25,8 +25,8 @@
     "@chunkd/source-file": "^8.4.0",
     "@cotar/core": "^5.4.0",
     "@cotar/tar": "^5.4.1",
-    "@oclif/core": "^1.5.3",
     "binparse": "^2.0.1",
+    "cmd-ts": "^0.11.0",
     "pino": "^8.1.0",
     "pretty-json-log": "^1.0.0"
   },
@@ -36,10 +36,6 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "oclif": {
-    "commands": "./build/src/commands",
-    "bin": "cotar"
   },
   "files": [
     "build/src",
