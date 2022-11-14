@@ -1,0 +1,9 @@
+{
+    "bootstrap-sha": "f08b7bc5df38a955bd0ee3f10f6ddc9b098e3d52",
+    "plugins": ["node-workspace"],
+    "packages": {
+        "packages/core": {},
+        "packages/cli": {},
+        "packages/tar": {}
+    }
+}
