@@ -1,50 +1,42 @@
 import { fsa } from '@chunkd/fs';
 import { TarBuilder } from '@cotar/tar';
-import { Command, Flags } from '@oclif/core';
+import { command, positional, restPositionals } from 'cmd-ts';
 import { existsSync } from 'fs';
+import { performance } from 'perf_hooks';
+import { force, toDuration, verbose } from '../common.js';
 import { logger } from '../log.js';
 
-export class CreateTar extends Command {
-  static description = 'Create a reproducible tar';
-  static flags = {
-    force: Flags.boolean({ description: 'force overwriting existing files' }),
-    verbose: Flags.boolean({ description: 'verbose logging' }),
-  };
+export const commandTar = command({
+  name: 'tar',
+  description: 'Create reproducible tar file',
+  args: {
+    force,
+    verbose,
+    output: positional({ displayName: 'Output', description: 'Output tar file location' }),
+    input: restPositionals({ displayName: 'Input', description: 'Input locations' }),
+  },
+  async handler(args) {
+    if (args.verbose) logger.level = 'debug';
 
-  static args = [
-    { name: 'outputFile', required: true },
-    { name: 'input', required: true },
-  ];
-
-  async run(): Promise<void> {
-    const { args, flags } = await this.parse(CreateTar);
-    if (flags.verbose) logger.level = 'debug';
-
-    if (!args.outputFile.endsWith('.tar')) {
-      throw new Error(`Invalid output, needs to be .tar :"${args.outputFile}"`);
+    if (!args.output.endsWith('.tar')) {
+      throw new Error(`Invalid output, needs to be .tar :"${args.output}"`);
     }
 
-    if (existsSync(args.outputFile) && !flags.force) {
-      logger.error({ output: args.outputFile }, 'Output file exists, aborting..');
+    if (existsSync(args.output) && !args.force) {
+      logger.error({ output: args.output }, 'Output file exists, aborting..');
       return;
     }
 
-    const startTime = Date.now();
+    const startTime = performance.now();
+    const tarBuilder = new TarBuilder(args.output);
 
-    const tarBuilder = new TarBuilder(args.outputFile);
-
-    const files = await fsa.toArray(fsa.list(args.input));
-    // Ensure files are put into the same order
-    files.sort((a, b) => a.localeCompare(b));
-    logger.info({ output: args.outputFile, files: files.length }, 'Tar:Create');
-
-    for (const file of files) await tarBuilder.write(file, await fsa.read(file));
+    for (const input of args.input.sort()) {
+      const files = await fsa.toArray(fsa.list(input));
+      files.sort((a, b) => a.localeCompare(b));
+      for (const file of files) await tarBuilder.write(file, await fsa.read(file));
+    }
 
     await tarBuilder.close();
-
-    logger.info(
-      { output: args.outputFile, stats: tarBuilder.stats, duration: Date.now() - startTime },
-      'Tar:Create:Done',
-    );
-  }
-}
+    logger.info({ output: args.output, stats: tarBuilder.stats, duration: toDuration(startTime) }, 'Tar:Create:Done');
+  },
+});

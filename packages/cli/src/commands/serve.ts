@@ -1,96 +1,51 @@
-import { ChunkSource } from '@chunkd/core';
 import { SourceFile } from '@chunkd/source-file';
-import { Cotar, TarReader } from '@cotar/core';
-import { Command, Flags } from '@oclif/core';
+import { Cotar } from '@cotar/core';
+import { command, flag, number, option, positional, string } from 'cmd-ts';
 import http from 'http';
-import path from 'path';
 import { performance } from 'perf_hooks';
 import { URL } from 'url';
+import { toDuration, verbose } from '../common.js';
 import { logger } from '../log.js';
+import { FileTree } from '../util/file.tree.js';
 
-function toFolderName(f: string): string {
-  if (!f.startsWith('/')) f = '/' + f;
-  if (!f.endsWith('/')) f = f + '/';
-  return f;
-}
+export const commandServe = command({
+  name: 'serve',
+  description: 'Serve cotar file via http',
+  args: {
+    verbose,
+    port: option({
+      type: number,
+      long: 'port',
+      description: 'HTTP port to use',
+      defaultValue: () => 8080,
+    }),
+    disableIndex: flag({
+      long: 'disable-index',
+      description: 'disable index load on startup',
+      defaultValue: () => false,
+    }),
+    baseUrl: option({
+      type: string,
+      long: 'base-url',
+      description: 'Base URL to expose',
+      defaultValue: () => 'http://localhost:8080',
+    }),
+    input: positional({ displayName: 'Input', description: 'Cotar file' }),
+  },
+  async handler(args) {
+    if (args.verbose) logger.level = 'debug';
 
-/** Create a tree from a tar file */
-class FileTree {
-  nodes: Map<string, Set<string>> = new Map();
-  source: ChunkSource;
-  constructor(source: ChunkSource) {
-    this.source = source;
-  }
+    if (args.port !== 8080) args.baseUrl = args.baseUrl.replace(':8080', `:${args.port}`);
 
-  getBytes = async (offset: number, count: number): Promise<Buffer> => {
-    await this.source.loadBytes(offset, count);
-    const bytes = await this.source.bytes(offset, count);
-    return Buffer.from(bytes);
-  };
-
-  async init(): Promise<void> {
-    for await (const ctx of TarReader.iterate(this.getBytes)) {
-      const dirname = toFolderName(path.dirname(ctx.header.path));
-      let existing = this.nodes.get(dirname);
-      if (existing == null) {
-        existing = new Set();
-        this.nodes.set(dirname, existing);
-      }
-      existing.add(ctx.header.path.startsWith('/') ? ctx.header.path : '/' + ctx.header.path);
-
-      let current = '/';
-      const parts = ctx.header.path.split('/');
-      for (let i = 0; i < parts.length - 1; i++) {
-        const part = parts[i];
-        existing = this.nodes.get(current);
-        if (existing == null) {
-          existing = new Set();
-          this.nodes.set(current, existing);
-        }
-        const next = toFolderName(path.join(current, part));
-        existing.add(next);
-        current = next;
-      }
-    }
-  }
-
-  async list(pathName: string): Promise<Set<string> | undefined> {
-    if (this.nodes.size === 0) await this.init();
-    console.log('List', { pathName: toFolderName(pathName) });
-    return this.nodes.get(toFolderName(pathName));
-  }
-}
-
-function toDuration(now: number): number {
-  return Number((performance.now() - now).toFixed(4));
-}
-
-export class CotarServe extends Command {
-  static description = 'Serve a cotar using http';
-  static flags = {
-    'disable-index': Flags.boolean({ description: 'Load the tar file list on startup', default: false }),
-    port: Flags.integer({ description: 'Port to run on', default: 8080 }),
-    'base-url': Flags.string({ description: 'Base url to use', default: 'http://localhost:8080' }),
-    verbose: Flags.boolean({ description: 'verbose logging' }),
-  };
-
-  static args = [{ name: 'inputFile', required: true }];
-
-  async run(): Promise<void> {
-    const { args, flags } = await this.parse(CotarServe);
-    if (flags.verbose) logger.level = 'debug';
-
-    if (flags.port !== 8080) flags['base-url'] = flags['base-url'].replace(':8080', `:${flags.port}`);
-
-    logger.debug({ fileName: args.inputFile }, 'Cotar:Load');
+    logger.debug({ fileName: args.input }, 'Cotar:Load');
     const startTime = performance.now();
 
-    const source = new SourceFile(args.inputFile);
+    const source = new SourceFile(args.input);
     const cotar = await Cotar.fromTar(source);
     const fileTree = new FileTree(source);
-    if (flags['disable-index'] === false) await fileTree.init();
+    if (args.disableIndex === false) await fileTree.init();
 
-    logger.info({ fileName: args.inputFile, duration: toDuration(startTime) }, 'Cotar:Loaded');
+    logger.info({ fileName: args.input, duration: toDuration(startTime) }, 'Cotar:Loaded');
 
     // Attempt to send a specific file from the tar
     async function sendFile(req: http.IncomingMessage, res: http.ServerResponse, fileName: string): Promise<void> {
@@ -98,6 +53,7 @@ export class CotarServe extends Command {
 
       const file = await cotar.get(fileName);
       if (file == null) {
+        logger.info({ status: 404 }, req.url);
         res.writeHead(404);
         return res.end();
       }
@@ -105,7 +61,7 @@ export class CotarServe extends Command {
       res.writeHead(200);
       res.write(file);
       res.end();
-      logger.info({ action: 'file:get', fileName, duration: toDuration(startTime) }, req.url);
+      logger.info({ action: 'file:get', fileName, status: 200, duration: toDuration(startTime) }, req.url);
     }
 
     // List all the files in the source tar
@@ -114,19 +70,20 @@ export class CotarServe extends Command {
 
       const list = await fileTree.list(pathName ?? '/');
       if (list == null) {
+        logger.info({ status: 404 }, req.url);
         res.writeHead(404);
         return res.end();
       }
 
       const fileList = [];
       for (const fileName of list.values()) {
-        if (fileName.endsWith('/')) fileList.push(flags['base-url'] + '/v1/list' + fileName);
-        else fileList.push(flags['base-url'] + '/v1/file' + fileName);
+        if (fileName.endsWith('/')) fileList.push(args.baseUrl + '/v1/list' + fileName);
+        else fileList.push(args.baseUrl + '/v1/file' + fileName);
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write(JSON.stringify({ files: fileList }));
       res.end();
-      logger.info({ action: 'file:list', duration: toDuration(startTime) }, req.url);
+      logger.info({ action: 'file:list', status: 200, duration: toDuration(startTime) }, req.url);
     }
 
     const server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse): void | Promise<void> => {
@@ -140,7 +97,7 @@ export class CotarServe extends Command {
       res.end();
     });
 
-    server.listen(flags.port);
-    logger.info({ url: flags['base-url'] + '/v1/list', port: flags.port }, 'Cotar:Server:Started');
-  }
-}
+    server.listen(args.port);
+    logger.info({ url: args.baseUrl + '/v1/list', port: args.port }, 'Cotar:Server:Started');
+  },
+});

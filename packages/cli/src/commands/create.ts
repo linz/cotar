@@ -1,68 +1,71 @@
 import { SourceMemory } from '@chunkd/core';
 import { CotarIndexBinary, CotarIndexBuilder, CotarIndexOptions, TarReader } from '@cotar/core';
-import { Command, Flags } from '@oclif/core';
+import { command, number, option, positional } from 'cmd-ts';
 import { existsSync, promises as fs } from 'fs';
 import pino from 'pino';
+import { force, verbose } from '../common.js';
 import { logger } from '../log.js';
 
-export class CreateCotar extends Command {
-  static description = 'Create a cloud optimized tar';
-  static flags = {
-    force: Flags.boolean({ description: 'force overwriting existing files' }),
-    packing: Flags.integer({ description: 'Packing factor for the hash map', default: 25 }),
-    'max-search': Flags.integer({ description: 'Max search factor', default: 50 }),
-    verbose: Flags.boolean({ description: 'verbose logging' }),
-    limit: Flags.integer({ description: 'Only ingest this many files' }),
-  };
+export const commandCreate = command({
+  name: 'create',
+  description: 'Create a cotar from a tar',
+  args: {
+    force,
+    verbose,
+    packing: option({
+      type: number,
+      long: 'packing',
+      description: 'Packing factor for the hash map',
+      defaultValue: () => 25,
+    }),
+    maxSearch: option({ type: number, long: 'max-search', description: 'Max search factor', defaultValue: () => 50 }),
+    input: positional({ displayName: 'Input', description: 'Input tar file' }),
+  },
+  async handler(args) {
+    if (args.verbose) logger.level = 'debug';
 
-  static args = [{ name: 'inputFile', required: true }];
-
-  async run(): Promise<void> {
-    const { args, flags } = await this.parse(CreateCotar);
-    if (flags.verbose) logger.level = 'debug';
-
-    if (!args.inputFile.endsWith('.tar')) {
-      throw new Error(`Can only create a cotar from a tar file input:"${args.inputFile}"`);
+    if (!args.input.endsWith('.tar')) {
+      throw new Error(`Can only create a cotar from a tar file input:"${args.input}"`);
     }
 
-    const outputFile = args.inputFile + '.co';
-    if (existsSync(outputFile) && !flags.force) {
+    const outputFile = args.input + '.co';
+    if (existsSync(outputFile) && !args.force) {
       logger.error({ output: outputFile }, 'Output file exists, aborting..');
       return;
     }
     logger.info({ output: outputFile }, 'Cotar:Create');
 
-    const opts: CotarIndexOptions = { packingFactor: 1 + flags.packing / 100, maxSearch: flags['max-search'] };
+    const opts: CotarIndexOptions = { packingFactor: 1 + args.packing / 100, maxSearch: args.maxSearch };
 
-    const indexFile = args.inputFile + '.index';
+    const indexFile = args.input + '.index';
 
     const startTime = Date.now();
-    const buf = await this.toTarIndex(args.inputFile, indexFile, opts, logger);
+    const buf = await toTarIndex(args.input, indexFile, opts, logger);
 
     logger.info({ output: outputFile }, 'Cotar:Craete:WriteTar');
-    await fs.copyFile(args.inputFile, outputFile);
+    await fs.copyFile(args.input, outputFile);
     await fs.appendFile(outputFile, buf);
 
     const duration = Date.now() - startTime;
     logger.info({ output: outputFile, duration }, 'Cotar:Created');
-  }
+  },
+});
 
-  async toTarIndex(
-    filename: string,
-    indexFileName: string,
-    opts: CotarIndexOptions,
-    logger: pino.Logger,
-  ): Promise<Buffer> {
-    const fd = await fs.open(filename, 'r');
-    logger.info({ index: indexFileName }, 'Cotar.Index:Start');
-    const startTime = Date.now();
+async function toTarIndex(
+  filename: string,
+  indexFileName: string,
+  opts: CotarIndexOptions,
+  logger: pino.Logger,
+): Promise<Buffer> {
+  const fd = await fs.open(filename, 'r');
+  logger.info({ index: indexFileName }, 'Cotar.Index:Start');
+  const startTime = Date.now();
 
-    const { buffer, count } = await CotarIndexBuilder.create(fd, opts, logger);
+  const { buffer, count } = await CotarIndexBuilder.create(fd, opts, logger);
 
-    logger.info({ count, size: buffer.length, duration: Date.now() - startTime }, 'Cotar.Index:Created');
-    const index = await CotarIndexBinary.create(new SourceMemory('index', buffer));
-    await TarReader.validate(fd, index, logger);
-    await fd.close();
-    return buffer;
-  }
+  logger.info({ count, size: buffer.length, duration: Date.now() - startTime }, 'Cotar.Index:Created');
+  const index = await CotarIndexBinary.create(new SourceMemory('index', buffer));
+  await TarReader.validate(fd, index, logger);
+  await fd.close();
+  return buffer;
 }
