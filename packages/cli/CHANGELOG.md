@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.4.2](https://github.com/linz/cotar/compare/cli-v5.4.1...cli-v5.4.2) (2022-11-14)
+
+
+### Bug Fixes
+
+* **cli:** correct file name of validate command ([ca6110e](https://github.com/linz/cotar/commit/ca6110e7940cf2eb8726eb5b945d61be3c054347))
+
 ## [5.4.1](https://github.com/linz/cotar/compare/v5.4.0...v5.4.1) (2022-07-07)
 
 **Note:** Version bump only for package @cotar/cli
