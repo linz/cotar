@@ -1,6 +1,6 @@
 import { subcommands } from 'cmd-ts';
 import { commandCreate } from './commands/create.js';
-import { commandValidate } from './commands/info.js';
+import { commandValidate } from './commands/validate.js';
 import { commandServe } from './commands/serve.js';
 import { commandTar } from './commands/tar.js';
 
