@@ -44,6 +44,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [5.5.0](https://github.com/linz/cotar/compare/core-v5.4.0...core-v5.5.0) (2022-11-15)
+
+
+### Features
+
+* count the number of filled records in the hash table ([#357](https://github.com/linz/cotar/issues/357)) ([8b6e55b](https://github.com/linz/cotar/commit/8b6e55b93c85a8c432886fccc485d848b5be6977))
+
 ## [5.1.1](https://github.com/linz/cotar/compare/v5.1.0...v5.1.1) (2021-11-29)
 
 **Note:** Version bump only for package @cotar/core

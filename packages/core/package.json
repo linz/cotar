@@ -1,6 +1,6 @@
 {
   "name": "@cotar/core",
-  "version": "5.4.0",
+  "version": "5.5.0",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "repository": {
