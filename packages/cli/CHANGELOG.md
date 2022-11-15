@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.5.0](https://github.com/linz/cotar/compare/cli-v5.4.2...cli-v5.5.0) (2022-11-15)
+
+
+### Features
+
+* count the number of filled records in the hash table ([#357](https://github.com/linz/cotar/issues/357)) ([8b6e55b](https://github.com/linz/cotar/commit/8b6e55b93c85a8c432886fccc485d848b5be6977))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cotar/core bumped from ^5.4.0 to ^5.5.0
+
 ## [5.4.2](https://github.com/linz/cotar/compare/cli-v5.4.1...cli-v5.4.2) (2022-11-14)
 
 
