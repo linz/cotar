@@ -24,6 +24,12 @@ export type CotarMetadata = {
 };
 
 export class CotarIndex {
+  static HeaderV2 = {
+    /** Number of bytes used for the Header/Footer */
+    Size: IndexHeaderSize,
+    /** Number of bytes used per record */
+    Record: IndexV2RecordSize,
+  };
   source: ChunkSource;
   sourceOffset: number;
 
