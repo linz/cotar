@@ -1,6 +1,6 @@
 import { ChunkSource } from '@chunkd/core';
 import fnv1a from '@sindresorhus/fnv1a';
-import { bp, StrutInfer } from 'binparse';
+import { bp } from 'binparse';
 import { CotarIndexRecord } from '../cotar.js';
 import { IndexHeaderSize, IndexMagic, IndexV1RecordSize, IndexV2RecordSize } from './format.js';
 
@@ -14,7 +14,14 @@ export const CotarMetadataParser = bp.object('CotarMetadata', {
   count: bp.lu32,
 });
 
-export type CotarMetadata = StrutInfer<typeof CotarMetadataParser>;
+export type CotarMetadata = {
+  /** Magic string "COT" */
+  magic: string;
+  /** Cotar version */
+  version: number;
+  /** Number of slots in the path name hash map */
+  count: number;
+};
 
 export class CotarIndex {
   source: ChunkSource;
