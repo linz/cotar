@@ -21,15 +21,31 @@ export const commandValidate = command({
 
     const fd = await fs.open(args.input, 'r');
     const fileCount = await TarReader.validate(fd, index, logger);
+    const hashCount = await countHashTable(index);
     await fd.close();
 
-    if (fileCount === 0) {
-      logger.error({ fileName: args.input, files: fileCount }, 'Cotar:Validated:Failed');
+    if (fileCount !== hashCount) {
+      logger.error({ fileName: args.input, files: fileCount, hashCount }, 'Cotar:Validated:Failed');
     } else {
-      logger.info({ fileName: args.input, files: fileCount }, 'Cotar:Validated');
+      logger.info({ fileName: args.input, files: fileCount, hashCount }, 'Cotar:Validated');
     }
   },
 });
+
+/** Count the hashes found in the hash table */
+async function countHashTable(index: CotarIndexBinary): Promise<number> {
+  if (index.metadata.version !== 2) throw new Error('Only cotar version >2 can be validated');
+  const slotCount = index.metadata.count;
+
+  let filled = 0;
+  for (let i = 0; i < slotCount; i++) {
+    const offset = index.sourceOffset + i * CotarIndexBinary.HeaderV2.Record + CotarIndexBinary.HeaderV2.Size;
+    await index.source.loadBytes(offset, CotarIndexBinary.HeaderV2.Record);
+    if (index.source.getUint32(offset) > 0 || index.source.getUint32(offset + 4) > 0) filled++;
+  }
+
+  return filled;
+}
 
 async function loadIndex(tarFile: string, indexFile?: string): Promise<CotarIndexBinary> {
   if (indexFile == null) {
