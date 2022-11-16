@@ -2,7 +2,7 @@ import o from 'ospec';
 import { FileTree } from '../file.tree.js';
 
 function setToList(s?: Set<string>): string[] {
-  if (s == null || s.size == 0) return [];
+  if (s == null || s.size === 0) return [];
   return [...s.values()];
 }
 
