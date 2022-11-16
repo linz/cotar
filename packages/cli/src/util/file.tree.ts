@@ -3,6 +3,7 @@ import { TarReader } from '@cotar/core';
 import path from 'path';
 
 function toFolderName(f: string): string {
+  if (f === '.') return '/';
   if (!f.startsWith('/')) f = '/' + f;
   if (!f.endsWith('/')) f = f + '/';
   return f;
@@ -23,28 +24,34 @@ export class FileTree {
   };
 
   async init(): Promise<void> {
-    for await (const ctx of TarReader.iterate(this.getBytes)) {
-      const dirname = toFolderName(path.dirname(ctx.header.path));
-      let existing = this.nodes.get(dirname);
+    for await (const ctx of TarReader.iterate(this.getBytes)) this.addFile(ctx.header.path);
+  }
+
+  addFile(filePath: string): void {
+    filePath = filePath.startsWith('/') ? filePath : '/' + filePath;
+    const dirname = toFolderName(path.dirname(filePath));
+
+    let existing = this.nodes.get(dirname);
+    if (existing == null) {
+      existing = new Set();
+      this.nodes.set(dirname, existing);
+    }
+    existing.add(filePath);
+    let current = '/';
+    const parts = filePath.split('/');
+
+    // Everything should start with "/"
+    for (let i = 1; i < parts.length - 1; i++) {
+      console.log(filePath, parts);
+      const part = parts[i];
+      let existing = this.nodes.get(current);
       if (existing == null) {
         existing = new Set();
-        this.nodes.set(dirname, existing);
+        this.nodes.set(current, existing);
       }
-      existing.add(ctx.header.path.startsWith('/') ? ctx.header.path : '/' + ctx.header.path);
-
-      let current = '/';
-      const parts = ctx.header.path.split('/');
-      for (let i = 0; i < parts.length - 1; i++) {
-        const part = parts[i];
-        existing = this.nodes.get(current);
-        if (existing == null) {
-          existing = new Set();
-          this.nodes.set(current, existing);
-        }
-        const next = toFolderName(path.join(current, part));
-        existing.add(next);
-        current = next;
-      }
+      const next = toFolderName(path.join(current, part));
+      existing.add(next);
+      current = next;
     }
   }
 

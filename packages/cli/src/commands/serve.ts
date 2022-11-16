@@ -8,6 +8,14 @@ import { toDuration, verbose } from '../common.js';
 import { logger } from '../log.js';
 import { FileTree } from '../util/file.tree.js';
 
+function rewriteFile(fileName: string, buf: ArrayBuffer, args: { baseUrl: string }): Buffer | ArrayBuffer {
+  if (fileName === 'WMTSCapabilities.xml' || fileName.endsWith('/WMTSCapabilities.xml')) {
+    const text = Buffer.from(buf).toString();
+    return Buffer.from(text.replace(/template="\//g, `template="${args.baseUrl}/v1/file/`));
+  }
+  return buf;
+}
+
 export const commandServe = command({
   name: 'serve',
   description: 'Serve cotar file via http',
@@ -29,6 +37,11 @@ export const commandServe = command({
       long: 'base-url',
       description: 'Base URL to expose',
       defaultValue: () => 'http://localhost:8080',
+    }),
+    disableRewrite: flag({
+      long: 'disable-rewrite',
+      description: 'Disable rewriting files to use the serve http urls',
+      defaultValue: () => false,
     }),
     input: positional({ displayName: 'Input', description: 'Cotar file' }),
   },
@@ -53,13 +66,16 @@ export const commandServe = command({
 
       const file = await cotar.get(fileName);
       if (file == null) {
+        // Attempt to serve both `foo.tiff` and `/foo.tiff`
+        if (!fileName.startsWith('/')) return sendFile(req, res, '/' + fileName);
+
         logger.info({ status: 404 }, req.url);
         res.writeHead(404);
         return res.end();
       }
 
       res.writeHead(200);
-      res.write(file);
+      res.write(args.disableRewrite ? file : rewriteFile(fileName, file, args));
       res.end();
       logger.info({ action: 'file:get', fileName, status: 200, duration: toDuration(startTime) }, req.url);
     }
