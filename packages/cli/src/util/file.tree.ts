@@ -42,7 +42,6 @@ export class FileTree {
 
     // Everything should start with "/"
     for (let i = 1; i < parts.length - 1; i++) {
-      console.log(filePath, parts);
       const part = parts[i];
       let existing = this.nodes.get(current);
       if (existing == null) {
