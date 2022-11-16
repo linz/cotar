@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.6.0](https://github.com/linz/cotar/compare/cli-v5.5.0...cli-v5.6.0) (2022-11-16)
+
+
+### Features
+
+* **cli:** add "version" cli to dump version information ([2e91fff](https://github.com/linz/cotar/commit/2e91fff7bbf7c3b302ed84f0586e275d0be8abda))
+* **cli:** rewrite wmts template urls if they are relative paths ([#361](https://github.com/linz/cotar/issues/361)) ([c2622ff](https://github.com/linz/cotar/commit/c2622ff0257c823201f564f6d7a76811115b192d))
+
 ## [5.5.0](https://github.com/linz/cotar/compare/cli-v5.4.2...cli-v5.5.0) (2022-11-15)
 
 
