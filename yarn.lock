@@ -1172,20 +1172,25 @@
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.1.tgz#283f669ff76d7b8260df8ab7a4262cc83d988256"
   integrity sha512-fZQQafSREFyuZcdWFAExYjBiCL7AUCdgsk80iO0q4yihYYdcIiH28CcuPTGFgLOCC8RlW49GSQxdHwZP+I7CNg==
 
-"@types/node@*", "@types/node@^16.11.10", "@types/node@^16.4.1":
+"@types/node@*":
   version "16.11.10"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.10.tgz#2e3ad0a680d96367103d3e670d41c2fed3da61ae"
   integrity sha512-3aRnHa1KlOEEhJ6+CvyHKK5vE9BcLGjtUpwvqYLRvYNQKMfabu3BwfJaA/SLW8dxe28LsNDjtHwePTuzn3gmOA==
+
+"@types/node@^18.11.9":
+  version "18.11.9"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.9.tgz#02d013de7058cea16d36168ef2fc653464cfbad4"
+  integrity sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
   integrity sha512-f5j5b/Gf71L+dbqxIpQ4Z2WlmI/mPJ0fOkGGmFgtb6sAu97EPczzbS3/tJKxmcYDj55OX6ssqwDAWOHIYDRDGA==
 
-"@types/ospec@^4.0.2":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@types/ospec/-/ospec-4.0.3.tgz#a15d0f0a5e3eae481fa19bfe04b5ad621c19ace8"
-  integrity sha512-eE1PW3v2rsX4N9SeEWas7SDdOpESBCw7H5YwsCiFmt0fu5SXAXXz/n7gRCt8xVQpArm0Gsn47V3oPLGxvj8pzA==
+"@types/ospec@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@types/ospec/-/ospec-4.0.4.tgz#24c4a7be8cda3cd4ba3178c96674d0f6f31dae54"
+  integrity sha512-MZMMHJ4kbwmXVZjSsCECPAe6J+BQmDx74dm5Wz/6f/Yk7Go1EEk2vuB2QLEmRBVuEGbMKOZlavtZ+NxIkdjiGA==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -4511,10 +4516,10 @@ os-tmpdir@~1.0.2:
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
   integrity sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==
 
-ospec@^4.0.0:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/ospec/-/ospec-4.1.1.tgz#52faa97b2de3bec5b447795b0b460da5c0ebb4a9"
-  integrity sha512-fgWIk1eLDidfB+ixTo3PL3HuuO6iX2LhgWxdnWwqRu2rJdpTowgeAP0RHgt3DSUVyszs964fMuq1tB7Ov2C38A==
+ospec@^4.1.6:
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/ospec/-/ospec-4.1.6.tgz#85748e3660bd91745972c7e10ae322f56543382f"
+  integrity sha512-Rq+kpRz/ombmIy+g0fAV7mwehtHyQT/J7IjmwVEBw6nbYPxycWgJS3c8BQ0n36kgWOIP5I2SE124cEdunqSH+g==
   dependencies:
     glob "^7.1.3"
 
