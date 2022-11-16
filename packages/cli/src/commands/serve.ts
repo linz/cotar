@@ -55,7 +55,8 @@ export const commandServe = command({
       if (file == null) {
         logger.info({ status: 404 }, req.url);
         res.writeHead(404);
-        return res.end();
+        res.end();
+        return;
       }
 
       res.writeHead(200);
@@ -72,7 +73,8 @@ export const commandServe = command({
       if (list == null) {
         logger.info({ status: 404 }, req.url);
         res.writeHead(404);
-        return res.end();
+        res.end();
+        return;
       }
 
       const fileList = [];
