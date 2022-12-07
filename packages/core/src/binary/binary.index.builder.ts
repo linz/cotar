@@ -22,11 +22,28 @@ export function writeHeaderFooter(output: Buffer, count: number, version = Index
 }
 
 const Big0 = BigInt(0);
-// Max number of records to allow searching this should easily fit within one range request of ~32KB
-// 32KB / 16 bytes = 2048
-const DefaultMaxSearch = 256;
+
+const DefaultCotarIndexOptions = {
+  packingFactor: 1.25,
+  maxSearch: 256
+}
+
 export interface CotarIndexOptions {
+  /**
+   * percentage of extra space allocated to the hash table
+   * 
+   * a larger packing factor reduces the maxSearch amount significantly but also increases cotar size.
+   * 
+   * @default 1.25
+   */
   packingFactor?: number;
+  /** 
+   * Max number of records to allow searching this should easily fit within one range request of ~32KB
+   * 
+   * The hash table indexes are 16 bytes, so 32KB/16 bytes = 2048
+   * 
+   * @default 256
+   */
   maxSearch?: number;
 }
 
@@ -74,7 +91,7 @@ export const CotarIndexBuilder = {
     }
     hashSeen.clear();
 
-    const packingFactor = opts?.packingFactor ?? TarReader.PackingFactor;
+    const packingFactor = opts?.packingFactor ?? DefaultCotarIndexOptions.packingFactor;
     const slotCount = Math.ceil(files.length * packingFactor);
     const outputBuffer = Buffer.alloc(IndexSize + IndexV2RecordSize * slotCount);
     logger?.debug({ slotCount, fileCount: files.length }, 'Cotar.index:Allocate');
@@ -97,7 +114,7 @@ export const CotarIndexBuilder = {
 
     currentTime = Date.now();
 
-    const maxSearch = opts?.maxSearch ?? DefaultMaxSearch;
+    const maxSearch = opts?.maxSearch ?? DefaultCotarIndexOptions.maxSearch;
 
     // Find the first hash index slot for the file to go into
     // Since the packing factor is quite low there will be a number of hash index collisions
