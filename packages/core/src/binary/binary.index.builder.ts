@@ -25,23 +25,23 @@ const Big0 = BigInt(0);
 
 const DefaultCotarIndexOptions = {
   packingFactor: 1.25,
-  maxSearch: 256
-}
+  maxSearch: 256,
+};
 
 export interface CotarIndexOptions {
   /**
    * percentage of extra space allocated to the hash table
-   * 
+   *
    * a larger packing factor reduces the maxSearch amount significantly but also increases cotar size.
-   * 
+   *
    * @default 1.25
    */
   packingFactor?: number;
-  /** 
+  /**
    * Max number of records to allow searching this should easily fit within one range request of ~32KB
-   * 
+   *
    * The hash table indexes are 16 bytes, so 32KB/16 bytes = 2048
-   * 
+   *
    * @default 256
    */
   maxSearch?: number;
