@@ -53,9 +53,6 @@ export function alignOffsetToBlock(ctx: { offset: number }): void {
 }
 
 export const TarReader = {
-  /** When packing indexes into a binary file allow upto this amount extra space so there are less index collisions */
-  PackingFactor: 1.15,
-
   Type: TarType,
   /** Iterate the tar file headers  */
   async *iterate(getBytes: AsyncFileRead): AsyncGenerator<TarFileHeader> {
