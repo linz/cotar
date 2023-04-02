@@ -4469,9 +4469,9 @@ os-tmpdir@~1.0.2:
   integrity sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==
 
 ospec@^4.1.6:
-  version "4.1.7"
-  resolved "https://registry.yarnpkg.com/ospec/-/ospec-4.1.7.tgz#bd0e5142ad5181f7ebb5ed3ef27c90717eee0431"
-  integrity sha512-NPUfOn3/4+xZBolrIxRDrdK+RIPkEZAzEN2Dr7ui0WIXzbo6EDui4beW0mSe6WQEdRSQ2JpkooHsv9k5M9ErbA==
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/ospec/-/ospec-4.2.0.tgz#8cbddee75db6b0a3d24e07196c79088fcbb88b32"
+  integrity sha512-KS7aAuuMCxRjxZULAqk8OBf4Cleik7+iGr8w3rS1RSLC/KqOEsZANj86QwQmQoJgSAezJYH44NwUue5IcQ0NTg==
   dependencies:
     glob "^7.1.3"
 
