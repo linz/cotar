@@ -1,7 +1,10 @@
 {
   "extends": "@linzjs/style/tsconfig.base.json",
   "compilerOptions": {
-    "module": "ES2020",
-    "moduleResolution": "Node"
+    "module": "NodeNext",
+    // Reduce the js size as the map files are made as well
+    "inlineSourceMap": false,
+    "inlineSources": false,
+    "sourceMap": true,
   }
 }

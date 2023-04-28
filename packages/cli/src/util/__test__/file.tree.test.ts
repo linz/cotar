@@ -34,7 +34,7 @@ o.spec('FileTree', () => {
     o(list(tree, '/foo/bar/')).deepEquals(['/foo/bar/baz.tiff', '/foo/bar/bazB.tiff']);
   });
 
-  o('should add root paths', () => {
+  o('should default root paths', () => {
     const tree = new FileTree(null as any);
 
     tree.addFile('foo.tiff');
