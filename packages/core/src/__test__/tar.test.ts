@@ -36,7 +36,12 @@ o.spec('TarReader', () => {
   o('should iterate files', async () => {
     const files: TarFileHeader[] = [];
     for await (const file of TarReader.iterate(readBytes)) files.push(file);
-    o(files.map((c) => c.header.path)).deepEquals(['tar.test.d.ts', 'tar.test.d.ts.map', 'tar.test.js']);
+    o(files.map((c) => c.header.path)).deepEquals([
+      'tar.test.d.ts',
+      'tar.test.d.ts.map',
+      'tar.test.js',
+      'tar.test.js.map',
+    ]);
   });
 
   o('should create a index', async () => {
