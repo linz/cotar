@@ -29,12 +29,12 @@
   integrity sha512-11c7jTgKdvVqmdfX4y6zhh/MXYZbtWu+ZnLHQjuqeGEEbyxDhmsUXVX+xjEYJ+bE8Y3+fNBys+pHJscnJPQHWw==
 
 "@chunkd/fs@^10.0.6":
-  version "10.0.6"
-  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-10.0.6.tgz#0da10db5f2ff39dd0ae4ce10aa8dfa995c57d448"
-  integrity sha512-khbB1S8vOcpYR/yggqIPmhSXnMJpJpgvGBhD+QkSdRMVIiFYO4iT6+RqMSj9MQqo+LyZDLKSP/0GBuU4rsVpSw==
+  version "10.0.8"
+  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-10.0.8.tgz#1311d7626fabc93cf37f6940108ab55b6ef38e4d"
+  integrity sha512-0Pw0Mi6xPq681NyB3VmHOgM+VebzHgQL7YjOu2WM+0l427h0eCwhv1BzDml/57SGJ9pRpvY2Cdjyr9x9FZh9vg==
   dependencies:
     "@chunkd/core" "^10.2.0"
-    "@chunkd/source-file" "^10.0.3"
+    "@chunkd/source-file" "^10.0.5"
     "@chunkd/source-http" "^10.1.1"
   optionalDependencies:
     "@chunkd/source-aws" "^10.2.0"
@@ -47,10 +47,10 @@
   dependencies:
     "@chunkd/core" "^10.2.0"
 
-"@chunkd/source-file@^10.0.3":
-  version "10.0.3"
-  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-10.0.3.tgz#de8dadab79e265395acdbcc15632cdec459d1258"
-  integrity sha512-sU6lEEExfQD7kSGkwdQ2sSt4UjudZTDzhCxy5QUQKR+A3uyaAcezFVMQzc9LH3bLtGRE7tKQifnsUmi3WWpthw==
+"@chunkd/source-file@^10.0.3", "@chunkd/source-file@^10.0.5":
+  version "10.0.5"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-10.0.5.tgz#5aa616f1daf4cf0da50a327e2767421b2474c756"
+  integrity sha512-/wNFq+bqd7RExn2AJ8eNhY+ZuA5IUS6LAeVSA62EaA+Rd45U8VpVmdfZADFsXS2BhkEUqkfOyQzoBsw137dJPQ==
   dependencies:
     "@chunkd/core" "^10.2.0"
 
