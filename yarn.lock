@@ -48,9 +48,9 @@
     "@chunkd/core" "^10.2.0"
 
 "@chunkd/source-file@^10.0.3":
-  version "10.0.3"
-  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-10.0.3.tgz#de8dadab79e265395acdbcc15632cdec459d1258"
-  integrity sha512-sU6lEEExfQD7kSGkwdQ2sSt4UjudZTDzhCxy5QUQKR+A3uyaAcezFVMQzc9LH3bLtGRE7tKQifnsUmi3WWpthw==
+  version "10.0.5"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-10.0.5.tgz#5aa616f1daf4cf0da50a327e2767421b2474c756"
+  integrity sha512-/wNFq+bqd7RExn2AJ8eNhY+ZuA5IUS6LAeVSA62EaA+Rd45U8VpVmdfZADFsXS2BhkEUqkfOyQzoBsw137dJPQ==
   dependencies:
     "@chunkd/core" "^10.2.0"
 
