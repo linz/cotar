@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@chunkd/core@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-10.2.0.tgz#2c58bee623d78ee838568752dbfc20d5e7729a7b"
-  integrity sha512-11c7jTgKdvVqmdfX4y6zhh/MXYZbtWu+ZnLHQjuqeGEEbyxDhmsUXVX+xjEYJ+bE8Y3+fNBys+pHJscnJPQHWw==
+"@chunkd/core@^10.2.0", "@chunkd/core@^10.3.0":
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-10.3.0.tgz#1775eba69fcb2b5a87edde3d84cdb8e5dab13933"
+  integrity sha512-a284uWnisLtDbMBMRMPHWsHConhcozOUmRKhw27FXbleuvoqYAHlwE7nfSFFOg6ho1wWhbEIyVfh/nTz8kLkOA==
 
 "@chunkd/fs@^10.0.6":
   version "10.0.6"
@@ -48,11 +48,11 @@
     "@chunkd/core" "^10.2.0"
 
 "@chunkd/source-file@^10.0.3":
-  version "10.0.3"
-  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-10.0.3.tgz#de8dadab79e265395acdbcc15632cdec459d1258"
-  integrity sha512-sU6lEEExfQD7kSGkwdQ2sSt4UjudZTDzhCxy5QUQKR+A3uyaAcezFVMQzc9LH3bLtGRE7tKQifnsUmi3WWpthw==
+  version "10.0.6"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-10.0.6.tgz#79f2c0f049d3e2e7e9e82ec15a1dd8e5f173ec5c"
+  integrity sha512-L1i2uvnUtw//9BARawvwUkn7xLRPbQXaRW5hX7CoCyn0L1rU1zU0Jxu+Fs1WXLSJG+f8fmVGvQ+55ukOdu6P1w==
   dependencies:
-    "@chunkd/core" "^10.2.0"
+    "@chunkd/core" "^10.3.0"
 
 "@chunkd/source-google-cloud@^10.0.3":
   version "10.0.3"
