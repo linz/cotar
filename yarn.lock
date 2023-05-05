@@ -24,9 +24,9 @@
     js-tokens "^4.0.0"
 
 "@chunkd/core@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-10.2.0.tgz#2c58bee623d78ee838568752dbfc20d5e7729a7b"
-  integrity sha512-11c7jTgKdvVqmdfX4y6zhh/MXYZbtWu+ZnLHQjuqeGEEbyxDhmsUXVX+xjEYJ+bE8Y3+fNBys+pHJscnJPQHWw==
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/core/-/core-10.3.0.tgz#1775eba69fcb2b5a87edde3d84cdb8e5dab13933"
+  integrity sha512-a284uWnisLtDbMBMRMPHWsHConhcozOUmRKhw27FXbleuvoqYAHlwE7nfSFFOg6ho1wWhbEIyVfh/nTz8kLkOA==
 
 "@chunkd/fs@^10.0.6":
   version "10.0.6"
