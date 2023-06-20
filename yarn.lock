@@ -1107,10 +1107,10 @@ axios@^1.0.0:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
-b4a@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/b4a/-/b4a-1.6.1.tgz#9effac93a469a868d024e16fd77162c653544cbd"
-  integrity sha512-AsKjNhz72yxteo/0EtQEiwkMUgk/tGmycXlbG4g3Ard2/ULtNLUykGOkeK0egmN27h0xMAhb76jYccW+XTBExA==
+b4a@^1.6.4:
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/b4a/-/b4a-1.6.4.tgz#ef1c1422cae5ce6535ec191baeed7567443f36c9"
+  integrity sha512-fpWrvyVHEKyeEvbKZTVOeZF3VSKKWtJxFIxX/jaVPf+cLbGUSitjb49pHLqPV2BUNNZ0LcoeEGfE/YCpyDYHIw==
 
 balanced-match@^1.0.0:
   version "1.0.0"
@@ -1150,15 +1150,6 @@ bl@^4.0.3, bl@^4.1.0:
     buffer "^5.5.0"
     inherits "^2.0.4"
     readable-stream "^3.4.0"
-
-bl@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/bl/-/bl-6.0.0.tgz#1f10c18a3289d412053add35cca09019075cff2d"
-  integrity sha512-Ik9BVIMdcWzSOCpzDv2XpQ4rJ4oZBuk3ck6MgiOv0EopdgtohN2uSCrrLlkH1Jf0KnpZZMBA3D0bUMbCdj/jgA==
-  dependencies:
-    buffer "^6.0.3"
-    inherits "^2.0.4"
-    readable-stream "^4.2.0"
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -5099,17 +5090,7 @@ readable-stream@^2.0.0, readable-stream@~2.3.6:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-readable-stream@^4.0.0, readable-stream@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-4.2.0.tgz#a7ef523d3b39e4962b0db1a1af22777b10eeca46"
-  integrity sha512-gJrBHsaI3lgBoGMW/jHZsQ/o/TIWiu5ENCJG1BB7fuCKzpFM8GaS2UoBVt9NO+oI+3FcrBNbUkl3ilDe09aY4A==
-  dependencies:
-    abort-controller "^3.0.0"
-    buffer "^6.0.3"
-    events "^3.3.0"
-    process "^0.11.10"
-
-readable-stream@^4.1.0:
+readable-stream@^4.0.0, readable-stream@^4.1.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-4.3.0.tgz#0914d0c72db03b316c9733bb3461d64a3cc50cba"
   integrity sha512-MuEnA0lbSi7JS8XM+WNJlWZkHAAdm7gETHdFK//Q/mChGyj2akEFtdLZh32jSdkWGbRwCW9pn6g3LWDdDeZnBQ==
@@ -5459,10 +5440,10 @@ ssri@^10.0.0, ssri@^10.0.1:
   dependencies:
     minipass "^4.0.0"
 
-streamx@^2.12.5:
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/streamx/-/streamx-2.13.0.tgz#590ad191bf326d76175e1d223ecad3b240256d46"
-  integrity sha512-9jD4uoX0juNSIcv4PazT+97FpM4Mww3cp7PM23HRTLANhgb7K7n1mB45guH/kT5F4enl04kApOM3EeoUXSPfvw==
+streamx@^2.15.0:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/streamx/-/streamx-2.15.0.tgz#f58c92e6f726b5390dcabd6dd9094d29a854d698"
+  integrity sha512-HcxY6ncGjjklGs1xsP1aR71INYcsXFJet5CU1CHqihQ2J5nOsbd4OjgjHO42w/4QNv9gZb3BueV+Vxok5pLEXg==
   dependencies:
     fast-fifo "^1.1.0"
     queue-tick "^1.0.1"
@@ -5572,13 +5553,12 @@ supports-color@^7.1.0:
     has-flag "^4.0.0"
 
 tar-stream@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/tar-stream/-/tar-stream-3.0.0.tgz#43de9f0e8d1bccc0036dbe2731260ca7668406b6"
-  integrity sha512-O6OfUKBbQOqAhh6owTWmA730J/yZCYcpmZ1DBj2YX51ZQrt7d7NgzrR+CnO9wP6nt/viWZW2XeXLavX3/ZEbEg==
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/tar-stream/-/tar-stream-3.1.3.tgz#007239066e95fd3c8c38b3886e46818f1dc07398"
+  integrity sha512-oX1ywwb1FyBeLDOV/c9oHPT5y9RcjYkWmmYL5wxcPtKqraL9V0IaeHaX5cRmk5WPVX5z9kmxfsUwiHamIs5CvA==
   dependencies:
-    b4a "^1.6.1"
-    bl "^6.0.0"
-    streamx "^2.12.5"
+    b4a "^1.6.4"
+    streamx "^2.15.0"
 
 tar-stream@~2.2.0:
   version "2.2.0"
