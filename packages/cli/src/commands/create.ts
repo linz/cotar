@@ -1,5 +1,6 @@
 import { SourceMemory } from '@chunkd/core';
-import { CotarIndexBinary, CotarIndexBuilder, CotarIndexOptions, TarReader } from '@cotar/core';
+import { CotarIndexBuilder, CotarIndexOptions, TarReader } from '@cotar/builder';
+import { CotarIndex } from '@cotar/core';
 import { command, number, option, positional } from 'cmd-ts';
 import { existsSync, promises as fs } from 'fs';
 import pino from 'pino';
@@ -64,7 +65,7 @@ async function toTarIndex(
   const { buffer, count } = await CotarIndexBuilder.create(fd, opts, logger);
 
   logger.info({ count, size: buffer.length, duration: Date.now() - startTime }, 'Cotar.Index:Created');
-  const index = await CotarIndexBinary.create(new SourceMemory('index', buffer));
+  const index = await CotarIndex.create(new SourceMemory('index', buffer));
   await TarReader.validate(fd, index, logger);
   await fd.close();
   return buffer;

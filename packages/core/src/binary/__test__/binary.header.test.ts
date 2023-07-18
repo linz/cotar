@@ -1,7 +1,6 @@
-import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { writeHeaderFooter } from '../binary.index.builder.js';
-import { readMetadata } from '../binary.index.js';
+import { describe, it } from 'node:test';
+import { readMetadata } from '../../binary.index.js';
 
 const Example = {
   v1: {
@@ -40,21 +39,5 @@ describe('CotarBinaryHeaderFooter', () => {
   it('should parse v2 header', () => {
     const header = readMetadata(Example.v2.buf);
     assert.deepEqual(header, Example.v2.header);
-  });
-
-  it('should write a header and a footer', () => {
-    const buf = Buffer.alloc(32);
-    writeHeaderFooter(buf, Example.v2.header.count);
-
-    const buf64 = buf.toString('base64');
-    // Should start and end with the same data
-    assert.equal(buf64.startsWith('Q09UAtIClkk'), true);
-    assert.equal(buf64.endsWith('Q09UAtIClkk='), true);
-
-    const headStart = readMetadata(buf);
-    const headEnd = readMetadata(buf.slice(buf.length - 8));
-
-    assert.deepEqual(headStart, Example.v2.header);
-    assert.deepEqual(headEnd, Example.v2.header);
   });
 });

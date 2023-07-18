@@ -1,5 +1,5 @@
 import { ChunkSource } from '@chunkd/core';
-import { TarReader } from '@cotar/core';
+import { TarReader } from '@cotar/builder';
 import path from 'path';
 
 function toFolderName(f: string): string {

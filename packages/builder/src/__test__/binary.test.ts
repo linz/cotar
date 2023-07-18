@@ -1,10 +1,17 @@
 import { SourceMemory } from '@chunkd/core';
+import { SourceFile } from '@chunkd/source-file';
+import { Cotar, CotarIndex, IndexHeaderSize, IndexV2RecordSize } from '@cotar/core';
 import fnv1a from '@sindresorhus/fnv1a';
+import * as cp from 'child_process';
+import { promises as fs } from 'fs';
+import { FileHandle } from 'fs/promises';
 import assert from 'node:assert';
-import { describe, it } from 'node:test';
-import { CotarIndex } from '../../binary.index.js';
-import { Cotar } from '../../cotar.js';
-import { IndexHeaderSize, IndexV2RecordSize } from '../../format.js';
+import { afterEach, before, beforeEach, describe, it } from 'node:test';
+import path from 'path';
+import url from 'url';
+import { CotarIndexBuilder, writeHeaderFooter } from '../binary.index.builder.js';
+import { TarReader } from '../tar.js';
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
   if (buf == null) return null;
@@ -34,9 +41,7 @@ describe('CotarBinary.fake', () => {
     tarIndexV2.writeUInt32LE(record.offset / 512, offsetV2 + 8);
     tarIndexV2.writeUInt32LE(record.size, offsetV2 + 12);
   }
-  tarIndexV2.write('COT', 0);
-  tarIndexV2.writeUInt8(2, 3);
-  tarIndexV2.writeUInt32LE(TestFiles.length, 4);
+  writeHeaderFooter(tarIndexV2, TestFileSize);
 
   it('should load a tile from fake v2 index', async () => {
     assert.equal(tarIndexV2.toString('base64'), ExpectedRecordV2);
@@ -71,5 +76,46 @@ describe('CotarBinary.fake', () => {
     const tile0 = await cotar.get('tiles/0/0/0.pbf.gz');
     assert.notEqual(tile0, null);
     assert.equal(abToChar(tile0, 0), '0');
+  });
+});
+
+describe('CotarBinary', () => {
+  // Create a Tar file of the built source
+  before(() => {
+    cp.execSync(`tar cf ${tarFilePath} *.test.*`, { cwd: __dirname });
+  });
+  const tarFilePath = path.join(__dirname, 'test.tar');
+  const tarFileIndexPath = path.join(__dirname, 'test.tar.index');
+  let fd: FileHandle | null;
+
+  beforeEach(async () => {
+    fd = await fs.open(tarFilePath, 'r');
+  });
+  afterEach(() => fd?.close());
+
+  it('should create a binary index from a tar file', async () => {
+    const fd = await fs.open(tarFilePath, 'r');
+    const res = await CotarIndexBuilder.create(fd);
+    assert.equal(res.count > 3, true);
+    await fs.writeFile(tarFileIndexPath, res.buffer);
+
+    const source = new SourceFile(tarFilePath);
+    const sourceIndex = new SourceFile(tarFileIndexPath);
+
+    const index = await CotarIndex.create(sourceIndex);
+    const cotar = new Cotar(source, index);
+
+    const fileData = await cotar.get('binary.test.js');
+    assert.notEqual(fileData, null);
+    assert.equal(Buffer.from(fileData!).toString().startsWith('import {'), true);
+
+    const fakeFile = await cotar.get('fake.file.md');
+    assert.equal(fakeFile, null);
+
+    // Should validate
+    await TarReader.validate(fd, index);
+    await fd.close();
+    await source.close?.();
+    await sourceIndex.close?.();
   });
 });

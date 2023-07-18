@@ -24,6 +24,7 @@
     "@chunkd/fs": "^10.0.6",
     "@chunkd/source-file": "^10.0.3",
     "@cotar/core": "^5.5.0",
+    "@cotar/builder": "^5.5.0",
     "@cotar/tar": "^5.4.1",
     "binparse": "^2.0.1",
     "cmd-ts": "^0.12.0",

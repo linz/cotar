@@ -1,7 +1,7 @@
 import { SourceMemory } from '@chunkd/core';
 import { promises as fs } from 'fs';
-import { CotarIndexBuilder } from '../binary/binary.index.builder.js';
-import { CotarIndexBinary } from '../index.js';
+import { CotarIndexBuilder } from '../binary.index.builder.js';
+import { CotarIndex } from '@cotar/core';
 import { TarReader } from '../tar.js';
 
 /** Crate a binary tar index from a source tar, then validate all files inside the tar exist in the index */
@@ -10,7 +10,7 @@ async function main(): Promise<void> {
   const res = await CotarIndexBuilder.create(fd);
 
   const source = new SourceMemory('Memory', res.buffer);
-  const cotarIndex = new CotarIndexBinary(source, { version: 2, count: res.count, magic: 'COT' });
+  const cotarIndex = new CotarIndex(source, { version: 2, count: res.count, magic: 'COT' });
 
   for (let i = 0; i < 5; i++) {
     await TarReader.validate(fd, cotarIndex);
