@@ -1,6 +1,6 @@
 import o from 'ospec';
 import { writeHeaderFooter } from '../binary.index.builder.js';
-import { CotarMetadataParser } from '../binary.index.js';
+import { readMetadata } from '../binary.index.js';
 
 const Example = {
   v1: {
@@ -32,15 +32,13 @@ o.spec('CotarBinaryHeaderFooter', () => {
   });
 
   o('should parse v1 header', () => {
-    const header = CotarMetadataParser.read(Example.v1.buf);
-    o(header.offset).equals(8);
-    o(header.value).deepEquals(Example.v1.header);
+    const header = readMetadata(Example.v1.buf);
+    o(header).deepEquals(Example.v1.header);
   });
 
   o('should parse v2 header', () => {
-    const header = CotarMetadataParser.read(Example.v2.buf);
-    o(header.offset).equals(8);
-    o(header.value).deepEquals(Example.v2.header);
+    const header = readMetadata(Example.v2.buf);
+    o(header).deepEquals(Example.v2.header);
   });
 
   o('should write a header and a footer', () => {
@@ -52,10 +50,10 @@ o.spec('CotarBinaryHeaderFooter', () => {
     o(buf64.startsWith('Q09UAtIClkk')).equals(true);
     o(buf64.endsWith('Q09UAtIClkk=')).equals(true);
 
-    const headStart = CotarMetadataParser.read(buf);
-    const headEnd = CotarMetadataParser.read(buf, buf.length - 8);
+    const headStart = readMetadata(buf);
+    const headEnd = readMetadata(buf.slice(buf.length - 8));
 
-    o(headStart.value).deepEquals(Example.v2.header);
-    o(headEnd.value).deepEquals(Example.v2.header);
+    o(headStart).deepEquals(Example.v2.header);
+    o(headEnd).deepEquals(Example.v2.header);
   });
 });

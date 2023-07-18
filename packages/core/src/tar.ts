@@ -22,7 +22,7 @@ export enum TarType {
 }
 
 // It takes time to load all the header in, load in only the chunks we care about
-export const TarHeader = bp.object('TarHeader', {
+const TarHeader = bp.static('TarHeader', {
   path: bp.string(100),
   skip1: bp.skip(24),
   // mode: bp.string(8),

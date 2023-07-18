@@ -1,6 +1,5 @@
 import { ChunkSource } from '@chunkd/core';
 import fnv1a from '@sindresorhus/fnv1a';
-import { bp } from 'binparse';
 import { CotarIndexRecord } from '../cotar.js';
 import { IndexHeaderSize, IndexMagic, IndexV1RecordSize, IndexV2RecordSize } from './format.js';
 
@@ -8,11 +7,21 @@ const Big0 = BigInt(0);
 const Big32 = BigInt(32);
 const BigUint32Max = BigInt(2 ** 32 - 1);
 
-export const CotarMetadataParser = bp.object('CotarMetadata', {
-  magic: bp.string(IndexMagic.length),
-  version: bp.u8,
-  count: bp.lu32,
-});
+export function readMetadata(bytes: Uint8Array): CotarMetadata {
+  // Version as uint32
+  const byteA = bytes[4];
+  const byteB = bytes[5] << 8;
+  const byteC = bytes[6] << 16;
+  const byteD = bytes[7] * 0x1000000;
+
+  const meta: CotarMetadata = {
+    magic: String.fromCharCode(bytes[0]) + String.fromCharCode(bytes[1]) + String.fromCharCode(bytes[2]),
+    version: bytes[3],
+    count: (byteA | byteB | byteC) + byteD,
+  };
+
+  return meta;
+}
 
 export type CotarMetadata = {
   /** Magic string "COT" */
@@ -51,13 +60,13 @@ export class CotarIndex {
     if (isHeader) {
       await source.loadBytes(sourceOffset, source.chunkSize);
       const bytes = source.bytes(sourceOffset, IndexHeaderSize);
-      return CotarMetadataParser.read(bytes).value;
+      return readMetadata(bytes);
     }
 
     // TODO ideally this would a file inside the tar
     // however different tar programs seem to have differing suffixes some have "2x512" bytes of 0 others pad them out further
     const bytes = await source.fetchBytes(-IndexHeaderSize);
-    return CotarMetadataParser.read(new Uint8Array(bytes)).value;
+    return readMetadata(new Uint8Array(bytes));
   }
 
   static async getMetadata(source: ChunkSource, sourceOffset: number, isHeader: boolean): Promise<CotarMetadata> {
