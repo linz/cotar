@@ -1,9 +1,8 @@
 import { ChunkSource } from '@chunkd/core';
 import fnv1a from '@sindresorhus/fnv1a';
 import { CotarIndexRecord } from '../cotar.js';
-import { IndexHeaderSize, IndexMagic, IndexV1RecordSize, IndexV2RecordSize } from './format.js';
+import { IndexHeaderSize, IndexMagic, IndexV2RecordSize } from './format.js';
 
-const Big0 = BigInt(0);
 const Big32 = BigInt(32);
 const BigUint32Max = BigInt(2 ** 32 - 1);
 
@@ -77,8 +76,10 @@ export class CotarIndex {
     if (metadata.magic !== IndexMagic) {
       throw new Error(`Invalid source: ${source.uri} invalid magic found: ${metadata.magic}`);
     }
-    if (metadata.version === 1 || metadata.version === 2) return metadata;
-    throw new Error(`Invalid source: ${source.uri} invalid version found: ${metadata.version}`);
+    if (metadata.version !== 2) {
+      throw new Error(`Invalid source: ${source.uri} invalid version found: ${metadata.version}`);
+    }
+    return metadata;
   }
 
   static async create(source: ChunkSource, sourceOffset = 0, isHeader = true): Promise<CotarIndex> {
@@ -92,12 +93,6 @@ export class CotarIndex {
    * @returns the index if found, null otherwise
    */
   async find(fileName: string): Promise<CotarIndexRecord | null> {
-    if (this.metadata.version === 1) return this._findV1(fileName);
-    if (this.metadata.version === 2) return this._findV2(fileName);
-    throw new Error('Invalid metadata version');
-  }
-
-  async _findV2(fileName: string): Promise<CotarIndexRecord | null> {
     const hash = CotarIndex.hash(fileName);
 
     const slotCount = this.metadata.count;
@@ -133,45 +128,4 @@ export class CotarIndex {
       if (index === startIndex) return null;
     }
   }
-
-  // TODO(2022-02) this should be removed once we migrate from v1
-  async _findV1(fileName: string): Promise<CotarIndexRecord | null> {
-    const hash = CotarIndex.hash(fileName);
-
-    const slotCount = this.metadata.count;
-    const startIndex = Number(hash % BigInt(slotCount));
-    let startHash: bigint | null = null;
-
-    let index = startIndex;
-    while (true) {
-      const offset = this.sourceOffset + index * IndexV1RecordSize + IndexHeaderSize;
-      await this.source.loadBytes(offset, IndexV1RecordSize);
-      startHash = this.source.getBigUint64(offset);
-
-      // Found the file
-      if (startHash === hash) {
-        const fileOffset = this.source.getUint64(offset + 8);
-        const fileSize = this.source.getUint64(offset + 16);
-        return { offset: fileOffset, size: fileSize };
-      }
-      // Found a gap in the hash table (file doesnt exist)
-      if (startHash === Big0) return null;
-
-      index++;
-      // Loop around if we hit the end of the hash table
-      if (index >= slotCount) index = 0;
-      if (index === startIndex) return null;
-    }
-  }
-}
-
-/**
- * Attempt to convert a bigint to a number
- * throws if the bigint cannot be converted
- */
-export function toNumber(input: bigint): number {
-  const output = Number(input);
-  const num = BigInt(output.toString());
-  if (num !== input) throw new Error('Failed to convert bigint:' + output + ' to a number');
-  return output;
 }

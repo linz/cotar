@@ -1,6 +1,6 @@
 import { ChunkSource } from '@chunkd/core';
 import { CotarIndex } from './binary/binary.index.js';
-import { IndexV2RecordSize, IndexSize, IndexV1RecordSize } from './binary/format.js';
+import { IndexV2RecordSize, IndexSize } from './binary/format.js';
 
 export interface CotarIndexRecord {
   offset: number;
@@ -25,7 +25,7 @@ export class Cotar {
     const metadata = await CotarIndex.getMetadata(source, 0, false);
     const size = await source.size;
 
-    const metadataSize = metadata.version === 1 ? IndexV1RecordSize : IndexV2RecordSize;
+    const metadataSize = IndexV2RecordSize;
     const startOffset = size - (metadata.count * metadataSize + IndexSize);
     const index = new CotarIndex(source, metadata, startOffset);
 
