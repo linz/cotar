@@ -8,19 +8,22 @@ const Big32 = BigInt(32);
 const BigUint32Max = BigInt(2 ** 32 - 1);
 
 export function readMetadata(bytes: Uint8Array): CotarMetadata {
-  // Version as uint32
+  // Read the first three bytes as magic 'COT' string
+  const magic = String.fromCharCode(bytes[0]) + String.fromCharCode(bytes[1]) + String.fromCharCode(bytes[2]);
+
+  // Version number is a uint8
+  const version = bytes[3];
+
+  // Record count from uint32
   const byteA = bytes[4];
   const byteB = bytes[5] << 8;
   const byteC = bytes[6] << 16;
   const byteD = bytes[7] * 0x1000000;
-
-  const meta: CotarMetadata = {
-    magic: String.fromCharCode(bytes[0]) + String.fromCharCode(bytes[1]) + String.fromCharCode(bytes[2]),
-    version: bytes[3],
+  return {
+    magic,
+    version,
     count: (byteA | byteB | byteC) + byteD,
   };
-
-  return meta;
 }
 
 export type CotarMetadata = {
