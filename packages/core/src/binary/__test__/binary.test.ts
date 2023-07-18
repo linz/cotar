@@ -4,7 +4,8 @@ import fnv1a from '@sindresorhus/fnv1a';
 import * as cp from 'child_process';
 import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
-import o from 'ospec';
+import { describe, it, before, beforeEach, afterEach } from 'node:test';
+import assert from 'node:assert';
 import path from 'path';
 import url from 'url';
 import { Cotar } from '../../cotar.js';
@@ -22,7 +23,7 @@ function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
 const ExpectedRecordV2 =
   'Q09UAgQAAAB0wPmDP22WfQIAAAAIAAAAAAAAAAAAAAAAAAAAAAAAACZjB1u0iLSnAAAAAAEAAAC/I5YiYFMqNwEAAAAEAAAAQ09UAgQAAAA=';
 
-o.spec('CotarBinary.fake', () => {
+describe('CotarBinary.fake', () => {
   const TestFiles = [
     { path: 'tiles/0/0/0.pbf.gz', offset: 0, size: 1 },
     { path: 'tiles/1/1/1.pbf.gz', offset: 512, size: 4 },
@@ -44,60 +45,60 @@ o.spec('CotarBinary.fake', () => {
   }
   writeHeaderFooter(tarIndexV2, TestFileSize);
 
-  o('should load a tile from fake v2 index', async () => {
-    o(tarIndexV2.toString('base64')).equals(ExpectedRecordV2);
+  it('should load a tile from fake v2 index', async () => {
+    assert.equal(tarIndexV2.toString('base64'), ExpectedRecordV2);
 
     const cotar = new Cotar(
       new SourceMemory('Tar', Buffer.from('0123456789')),
       await CotarIndex.create(new SourceMemory('index', tarIndexV2)),
     );
 
-    o(await cotar.index.find('tiles/0/0/0.pbf.gz')).deepEquals({ offset: 0, size: 1 });
-    o(await cotar.index.find('tiles/1/1/1.pbf.gz')).deepEquals({ offset: 512, size: 4 });
-    o(await cotar.index.find('tiles/1/1/2.pbf.gz')).deepEquals({ offset: 1024, size: 8 });
-    o(await cotar.index.find('tiles/1/1/3.pbf.gz')).equals(null);
+    assert.deepEqual(await cotar.index.find('tiles/0/0/0.pbf.gz'), { offset: 0, size: 1 });
+    assert.deepEqual(await cotar.index.find('tiles/1/1/1.pbf.gz'), { offset: 512, size: 4 });
+    assert.deepEqual(await cotar.index.find('tiles/1/1/2.pbf.gz'), { offset: 1024, size: 8 });
+    assert.equal(await cotar.index.find('tiles/1/1/3.pbf.gz'), null);
 
     const tile0 = await cotar.get('tiles/0/0/0.pbf.gz');
-    o(tile0).notEquals(null);
-    o(abToChar(tile0, 0)).equals('0');
+    assert.notEqual(tile0, null);
+    assert.equal(abToChar(tile0, 0), '0');
   });
 
-  o('should load v2 from a combined tar & header', async () => {
+  it('should load v2 from a combined tar & header', async () => {
     const tar = Buffer.concat([Buffer.from('0123456789'), tarIndexV2]);
 
     const cotar = await Cotar.fromTar(new SourceMemory('Combined', tar));
-    o(cotar.index.sourceOffset).equals(10);
-    o(cotar.index.metadata).deepEquals({ magic: 'COT', version: 2, count: 4 });
+    assert.equal(cotar.index.sourceOffset, 10);
+    assert.deepEqual(cotar.index.metadata, { magic: 'COT', version: 2, count: 4 });
 
-    o(await cotar.index.find('tiles/0/0/0.pbf.gz')).deepEquals({ offset: 0, size: 1 });
-    o(await cotar.index.find('tiles/1/1/1.pbf.gz')).deepEquals({ offset: 512, size: 4 });
-    o(await cotar.index.find('tiles/1/1/2.pbf.gz')).deepEquals({ offset: 1024, size: 8 });
-    o(await cotar.index.find('tiles/1/1/3.pbf.gz')).equals(null);
+    assert.deepEqual(await cotar.index.find('tiles/0/0/0.pbf.gz'), { offset: 0, size: 1 });
+    assert.deepEqual(await cotar.index.find('tiles/1/1/1.pbf.gz'), { offset: 512, size: 4 });
+    assert.deepEqual(await cotar.index.find('tiles/1/1/2.pbf.gz'), { offset: 1024, size: 8 });
+    assert.equal(await cotar.index.find('tiles/1/1/3.pbf.gz'), null);
 
     const tile0 = await cotar.get('tiles/0/0/0.pbf.gz');
-    o(tile0).notEquals(null);
-    o(abToChar(tile0, 0)).equals('0');
+    assert.notEqual(tile0, null);
+    assert.equal(abToChar(tile0, 0), '0');
   });
 });
 
-o.spec('CotarBinary', () => {
+describe('CotarBinary', () => {
   // Create a Tar file of the built source
-  o.before(() => {
+  before(() => {
     cp.execSync(`tar cf ${tarFilePath} *.test.*`, { cwd: __dirname });
   });
   const tarFilePath = path.join(__dirname, 'test.tar');
   const tarFileIndexPath = path.join(__dirname, 'test.tar.index');
   let fd: FileHandle | null;
 
-  o.beforeEach(async () => {
+  beforeEach(async () => {
     fd = await fs.open(tarFilePath, 'r');
   });
-  o.afterEach(() => fd?.close());
+  afterEach(() => fd?.close());
 
-  o('should create a binary index from a tar file', async () => {
+  it('should create a binary index from a tar file', async () => {
     const fd = await fs.open(tarFilePath, 'r');
     const res = await CotarIndexBuilder.create(fd);
-    o(res.count > 3).equals(true);
+    assert.equal(res.count > 3, true);
     await fs.writeFile(tarFileIndexPath, res.buffer);
 
     const source = new SourceFile(tarFilePath);
@@ -107,11 +108,11 @@ o.spec('CotarBinary', () => {
     const cotar = new Cotar(source, index);
 
     const fileData = await cotar.get('binary.test.js');
-    o(fileData).notEquals(null);
-    o(Buffer.from(fileData!).toString().startsWith('import {')).equals(true);
+    assert.notEqual(fileData, null);
+    assert.equal(Buffer.from(fileData!).toString().startsWith('import {'), true);
 
     const fakeFile = await cotar.get('fake.file.md');
-    o(fakeFile).equals(null);
+    assert.equal(fakeFile, null);
 
     // Should validate
     await TarReader.validate(fd, index);

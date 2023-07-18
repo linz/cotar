@@ -1,4 +1,5 @@
-import o from 'ospec';
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 import { FileTree } from '../file.tree.js';
 
 function setToList(s?: Set<string>): string[] {
@@ -10,18 +11,18 @@ function list(tree: FileTree, path: string): string[] {
   return setToList(tree.nodes.get(path));
 }
 
-o.spec('FileTree', () => {
-  o('should add a deep path', async () => {
+describe('FileTree', () => {
+  it('should add a deep path', async () => {
     const tree = new FileTree(null as any);
 
     tree.addFile('foo/bar/baz.tiff');
 
-    o(list(tree, '/')).deepEquals(['/foo/']);
-    o(list(tree, '/foo/')).deepEquals(['/foo/bar/']);
-    o(list(tree, '/foo/bar/')).deepEquals(['/foo/bar/baz.tiff']);
+    assert.deepEqual(list(tree, '/'), ['/foo/']);
+    assert.deepEqual(list(tree, '/foo/'), ['/foo/bar/']);
+    assert.deepEqual(list(tree, '/foo/bar/'), ['/foo/bar/baz.tiff']);
   });
 
-  o('should add a multiple paths', async () => {
+  it('should add a multiple paths', async () => {
     const tree = new FileTree(null as any);
 
     tree.addFile('foo/bar/baz.tiff');
@@ -29,23 +30,23 @@ o.spec('FileTree', () => {
     tree.addFile('foo/baz/bar.tiff');
     tree.addFile('foo/baz/barB.tiff');
 
-    o(list(tree, '/')).deepEquals(['/foo/']);
-    o(list(tree, '/foo/')).deepEquals(['/foo/bar/', '/foo/baz/']);
-    o(list(tree, '/foo/bar/')).deepEquals(['/foo/bar/baz.tiff', '/foo/bar/bazB.tiff']);
+    assert.deepEqual(list(tree, '/'), ['/foo/']);
+    assert.deepEqual(list(tree, '/foo/'), ['/foo/bar/', '/foo/baz/']);
+    assert.deepEqual(list(tree, '/foo/bar/'), ['/foo/bar/baz.tiff', '/foo/bar/bazB.tiff']);
   });
 
-  o('should default root paths', () => {
+  it('should default root paths', () => {
     const tree = new FileTree(null as any);
 
     tree.addFile('foo.tiff');
-    o(list(tree, '/')).deepEquals(['/foo.tiff']);
+    assert.deepEqual(list(tree, '/'), ['/foo.tiff']);
   });
 
-  o('should add root paths', () => {
+  it('should add root paths', () => {
     const tree = new FileTree(null as any);
 
     tree.addFile('/foo.tiff');
     tree.addFile('foo.tiff');
-    o(list(tree, '/')).deepEquals(['/foo.tiff']);
+    assert.deepEqual(list(tree, '/'), ['/foo.tiff']);
   });
 });
