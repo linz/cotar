@@ -4,5 +4,5 @@
     "lib": ["es2018", "DOM"],
     "outDir": "build"
   },
-  "include": ["src"],
+  "include": ["src"]
 }

@@ -40,6 +40,7 @@ export class CotarIndex {
     Size: IndexHeaderSize,
     /** Number of bytes used per record */
     Record: IndexV2RecordSize,
+    Magic: IndexMagic,
   };
   source: ChunkSource;
   sourceOffset: number;
