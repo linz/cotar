@@ -1,6 +1,6 @@
 import { ChunkSource } from '@chunkd/core';
 import fnv1a from '@sindresorhus/fnv1a';
-import { CotarIndexRecord } from '../cotar.js';
+import { CotarIndexRecord } from './cotar.js';
 import { IndexHeaderSize, IndexMagic, IndexV2RecordSize } from './format.js';
 
 const Big32 = BigInt(32);
@@ -35,11 +35,12 @@ export type CotarMetadata = {
 };
 
 export class CotarIndex {
-  static HeaderV2 = {
+  static Header = {
     /** Number of bytes used for the Header/Footer */
     Size: IndexHeaderSize,
     /** Number of bytes used per record */
     Record: IndexV2RecordSize,
+    Magic: IndexMagic,
   };
   source: ChunkSource;
   sourceOffset: number;

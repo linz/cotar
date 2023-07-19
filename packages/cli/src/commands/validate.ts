@@ -1,5 +1,6 @@
 import { SourceFile } from '@chunkd/source-file';
-import { Cotar, CotarIndexBinary, TarReader } from '@cotar/core';
+import { Cotar, CotarIndex } from '@cotar/core';
+import { TarReader } from '@cotar/builder';
 import { command, positional } from 'cmd-ts';
 import { promises as fs } from 'fs';
 import { verbose } from '../common.js';
@@ -33,21 +34,21 @@ export const commandValidate = command({
 });
 
 /** Count the hashes found in the hash table */
-async function countHashTable(index: CotarIndexBinary): Promise<number> {
+async function countHashTable(index: CotarIndex): Promise<number> {
   if (index.metadata.version !== 2) throw new Error('Only cotar version >2 can be validated');
   const slotCount = index.metadata.count;
 
   let filled = 0;
   for (let i = 0; i < slotCount; i++) {
-    const offset = index.sourceOffset + i * CotarIndexBinary.HeaderV2.Record + CotarIndexBinary.HeaderV2.Size;
-    await index.source.loadBytes(offset, CotarIndexBinary.HeaderV2.Record);
+    const offset = index.sourceOffset + i * CotarIndex.Header.Record + CotarIndex.Header.Size;
+    await index.source.loadBytes(offset, CotarIndex.Header.Record);
     if (index.source.getUint32(offset) > 0 || index.source.getUint32(offset + 4) > 0) filled++;
   }
 
   return filled;
 }
 
-async function loadIndex(tarFile: string, indexFile?: string): Promise<CotarIndexBinary> {
+async function loadIndex(tarFile: string, indexFile?: string): Promise<CotarIndex> {
   if (indexFile == null) {
     const source = new SourceFile(tarFile);
     const ct = await Cotar.fromTar(source);
@@ -55,5 +56,5 @@ async function loadIndex(tarFile: string, indexFile?: string): Promise<CotarInde
   }
 
   const source = new SourceFile(indexFile);
-  return await CotarIndexBinary.create(source);
+  return await CotarIndex.create(source);
 }

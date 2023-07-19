@@ -6,25 +6,10 @@ For example `@cotar/core` can fetch a 1KB file from a 100GB tar file with only 1
 
 ## Usage
 
-To fetch a single tile, the index has to be loaded into memory then the cotar object provides a `get(fileName)` interface to access any file inside the tar
-
-```typescript
-import { Cotar } from '@cotar/core';
-import { SourceUrl } from '@chunkd/source-url';
-
-const source = new SourceUrl('s3://linz-basemaps/topographic.tar.co');
-const cotar = Cotar.fromTar(source);
-
-// Fetch a gzipped PBF file from  a tar
-const bytes = await cotar.get(`tiles/z10/5/5.pbf.gz`);
-```
-
-### Creating indexes
-
 Indexes can be created using the `@cotar/cli` package or programmatically using the `CotarIndexBuilder`
 
 ```typescript
-import { CotarIndexBuilder } from '@cotar/builder';
+import { CotarIndexBuilder } from '@cotar/core';
 import * as fs from 'fs/promises';
 
 const fd = await fs.open('tarFile.tar', 'r');

@@ -1,29 +1,21 @@
 import { SourceMemory } from '@chunkd/core';
+import { SourceFile } from '@chunkd/source-file';
+import { Cotar, CotarIndex, IndexHeaderSize, IndexV2RecordSize } from '@cotar/core';
 import fnv1a from '@sindresorhus/fnv1a';
+import * as cp from 'child_process';
+import { promises as fs } from 'fs';
+import { FileHandle } from 'fs/promises';
 import assert from 'node:assert';
-import { describe, it } from 'node:test';
-import { CotarIndex } from '../../binary.index.js';
-import { Cotar } from '../../cotar.js';
-import { IndexHeaderSize, IndexMagic, IndexSize, IndexV2RecordSize, IndexVersion } from '../../format.js';
+import { afterEach, before, beforeEach, describe, it } from 'node:test';
+import path from 'path';
+import url from 'url';
+import { CotarIndexBuilder, writeHeaderFooter } from '../binary.index.builder.js';
+import { TarReader } from '../tar.js';
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
   if (buf == null) return null;
   return String.fromCharCode(new Uint8Array(buf)[offset]);
-}
-
-export function writeHeaderFooter(output: Buffer, count: number, version = IndexVersion): void {
-  if (output.length < IndexSize * 2) {
-    throw new Error('Buffer is too small for CotarHeader, minimum size: ' + IndexSize * 2);
-  }
-  // Write the header at the start of the buffer
-  output.write(IndexMagic, 0);
-  output.writeUInt8(version, 3);
-  output.writeUInt32LE(count, 4);
-
-  // Write the header at the end of the buffer
-  output.write(IndexMagic, output.length - 8);
-  output.writeUInt8(version, output.length - 5);
-  output.writeUInt32LE(count, output.length - 4);
 }
 
 const ExpectedRecordV2 =
@@ -49,7 +41,7 @@ describe('CotarBinary.fake', () => {
     tarIndexV2.writeUInt32LE(record.offset / 512, offsetV2 + 8);
     tarIndexV2.writeUInt32LE(record.size, offsetV2 + 12);
   }
-  writeHeaderFooter(tarIndexV2, TestFileSize, 2);
+  writeHeaderFooter(tarIndexV2, TestFileSize);
 
   it('should load a tile from fake v2 index', async () => {
     assert.equal(tarIndexV2.toString('base64'), ExpectedRecordV2);
@@ -73,7 +65,7 @@ describe('CotarBinary.fake', () => {
     const tar = Buffer.concat([Buffer.from('0123456789'), tarIndexV2]);
 
     const cotar = await Cotar.fromTar(new SourceMemory('Combined', tar));
-    // assert.equal(cotar.index.sourceOffset, 10);
+    assert.equal(cotar.index.sourceOffset, 10);
     assert.deepEqual(cotar.index.metadata, { magic: 'COT', version: 2, count: 4 });
 
     assert.deepEqual(await cotar.index.find('tiles/0/0/0.pbf.gz'), { offset: 0, size: 1 });
@@ -84,5 +76,46 @@ describe('CotarBinary.fake', () => {
     const tile0 = await cotar.get('tiles/0/0/0.pbf.gz');
     assert.notEqual(tile0, null);
     assert.equal(abToChar(tile0, 0), '0');
+  });
+});
+
+describe('CotarBinary', () => {
+  // Create a Tar file of the built source
+  before(() => {
+    cp.execSync(`tar cf ${tarFilePath} *.test.*`, { cwd: __dirname });
+  });
+  const tarFilePath = path.join(__dirname, 'test.tar');
+  const tarFileIndexPath = path.join(__dirname, 'test.tar.index');
+  let fd: FileHandle | null;
+
+  beforeEach(async () => {
+    fd = await fs.open(tarFilePath, 'r');
+  });
+  afterEach(() => fd?.close());
+
+  it('should create a binary index from a tar file', async () => {
+    const fd = await fs.open(tarFilePath, 'r');
+    const res = await CotarIndexBuilder.create(fd);
+    assert.equal(res.count > 3, true);
+    await fs.writeFile(tarFileIndexPath, res.buffer);
+
+    const source = new SourceFile(tarFilePath);
+    const sourceIndex = new SourceFile(tarFileIndexPath);
+
+    const index = await CotarIndex.create(sourceIndex);
+    const cotar = new Cotar(source, index);
+
+    const fileData = await cotar.get('binary.test.js');
+    assert.notEqual(fileData, null);
+    assert.equal(Buffer.from(fileData!).toString().startsWith('import {'), true);
+
+    const fakeFile = await cotar.get('fake.file.md');
+    assert.equal(fakeFile, null);
+
+    // Should validate
+    await TarReader.validate(fd, index);
+    await fd.close();
+    await source.close?.();
+    await sourceIndex.close?.();
   });
 });

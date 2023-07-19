@@ -9,9 +9,8 @@ import { describe, before, beforeEach, afterEach, it } from 'node:test';
 import assert from 'node:assert';
 import * as path from 'path';
 import url from 'url';
-import { CotarIndexBuilder } from '../binary/binary.index.builder.js';
-import { CotarIndex } from '../binary/binary.index.js';
-import { Cotar } from '../cotar.js';
+import { CotarIndexBuilder } from '../binary.index.builder.js';
+import { Cotar, CotarIndex } from '@cotar/core';
 import { TarFileHeader, TarReader } from '../tar.js';
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 

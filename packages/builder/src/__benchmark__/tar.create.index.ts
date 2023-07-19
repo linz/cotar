@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs';
-import { CotarIndexBuilder } from '../binary/binary.index.builder.js';
+import { CotarIndexBuilder } from '../binary.index.builder.js';
 
 /** Crate a binary tar index 5 times from a source tar */
 async function main(): Promise<void> {

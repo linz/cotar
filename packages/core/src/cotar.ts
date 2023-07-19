@@ -1,6 +1,6 @@
 import { ChunkSource } from '@chunkd/core';
-import { CotarIndex } from './binary/binary.index.js';
-import { IndexV2RecordSize, IndexSize } from './binary/format.js';
+import { CotarIndex } from './binary.index.js';
+import { IndexV2RecordSize, IndexSize } from './format.js';
 
 export interface CotarIndexRecord {
   offset: number;

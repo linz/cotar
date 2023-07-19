@@ -1,10 +1,10 @@
 [
     {
         "name": "Create 50 tar indexes",
-        "command": "node packages/core/build/src/__benchmark__/tar.create.index.js"
+        "command": "node packages/builder/build/src/__benchmark__/tar.create.index.js"
     },
     {
         "name": "Validate all files from tar index",
-        "command": "node packages/core/build/src/__benchmark__/tar.validate.js"
+        "command": "node packages/builder/build/src/__benchmark__/tar.validate.js"
     }
 ]
