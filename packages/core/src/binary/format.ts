@@ -7,7 +7,5 @@ export const IndexFooterSize = IndexHeaderSize;
 /** Total size used by the header/footer */
 export const IndexSize = IndexHeaderSize + IndexFooterSize;
 
-/** 8 bytes hash, 8 bytes offset, 8 bytes size */
-export const IndexV1RecordSize = 24;
 /** 8 bytes hash, 4 bytes offset, 4 bytes size*/
 export const IndexV2RecordSize = 16;
