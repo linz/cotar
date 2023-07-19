@@ -2,16 +2,10 @@
 
 .tar + .tar.index + AWS S3 = :heart:
 
-## Create cloud optimized
+## Create cloud optimized tar
 
 ```bash
 cotar create sample.tar --verbose --binary
-```
-
-### Load a tar + index
-
-```bash
-cotar info sample.tar
 ```
 
 ### Seve a cotar from a webserver

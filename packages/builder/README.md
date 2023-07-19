@@ -1,4 +1,4 @@
-# Cloud optimised TAR @cotar/core
+# Cloud optimised TAR @cotar/builder
 
 Given a `.tar` with a `.index` using HTTP range requests fetch only the portion of the tar that contains the bytes of the file.
 
@@ -9,7 +9,7 @@ For example `@cotar/core` can fetch a 1KB file from a 100GB tar file with only 1
 Indexes can be created using the `@cotar/cli` package or programmatically using the `CotarIndexBuilder`
 
 ```typescript
-import { CotarIndexBuilder } from '@cotar/core';
+import { CotarIndexBuilder } from '@cotar/builder';
 import * as fs from 'fs/promises';
 
 const fd = await fs.open('tarFile.tar', 'r');

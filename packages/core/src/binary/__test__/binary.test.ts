@@ -37,7 +37,6 @@ describe('CotarBinary.fake', () => {
   ];
   const TestFileSize = TestFiles.length + 1;
 
-  // const tarIndexV1: Buffer = Buffer.alloc(TestFileSize * IndexV1RecordSize + IndexHeaderSize * 2);
   const tarIndexV2: Buffer = Buffer.alloc(TestFileSize * IndexV2RecordSize + IndexHeaderSize * 2);
 
   for (const record of TestFiles) {

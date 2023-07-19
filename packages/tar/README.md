@@ -1,6 +1,6 @@
 # @cotar/tar
 
-Create tars from very large files, using hardlinks to deduplicate files
+Create reproducible tars from very large lists of files, using hardlinks to deduplicate files
 
 ```typescript
 import { TarBuilder } from '@cotar/tar';
