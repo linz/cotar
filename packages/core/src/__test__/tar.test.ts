@@ -1,10 +1,12 @@
 /** Start Header */
+// ^-- this line is used for testing
 import { SourceMemory } from '@chunkd/core';
 import { SourceFile } from '@chunkd/source-file';
 import * as cp from 'child_process';
 import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
-import o from 'ospec';
+import { describe, before, beforeEach, afterEach, it } from 'node:test';
+import assert from 'node:assert';
 import * as path from 'path';
 import url from 'url';
 import { CotarIndexBuilder } from '../binary/binary.index.builder.js';
@@ -13,9 +15,9 @@ import { Cotar } from '../cotar.js';
 import { TarFileHeader, TarReader } from '../tar.js';
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-o.spec('TarReader', () => {
+describe('TarReader', () => {
   // Create a Tar file of the built source
-  o.before(() => {
+  before(() => {
     cp.execSync(`tar cf ${tarFilePath} tar.test.*`, { cwd: __dirname });
   });
   const tarFilePath = path.join(__dirname, '_test.tar');
@@ -28,43 +30,41 @@ o.spec('TarReader', () => {
     if (res.bytesRead < count) return null;
     return headBuffer;
   }
-  o.beforeEach(async () => {
+  beforeEach(async () => {
     fd = await fs.open(tarFilePath, 'r');
   });
-  o.afterEach(() => fd?.close());
+  afterEach(() => fd?.close());
 
-  o('should iterate files', async () => {
+  it('should iterate files', async () => {
     const files: TarFileHeader[] = [];
     for await (const file of TarReader.iterate(readBytes)) files.push(file);
-    o(files.map((c) => c.header.path)).deepEquals([
-      'tar.test.d.ts',
-      'tar.test.d.ts.map',
-      'tar.test.js',
-      'tar.test.js.map',
-    ]);
+    assert.deepEqual(
+      files.map((c) => c.header.path),
+      ['tar.test.d.ts', 'tar.test.d.ts.map', 'tar.test.js', 'tar.test.js.map'],
+    );
   });
 
-  o('should create a index', async () => {
+  it('should create a index', async () => {
     const tarTestStat = await fs.stat(path.join(__dirname, 'tar.test.js'));
     const source = await fs.open(tarFilePath, 'r');
 
     const res = await CotarIndexBuilder.create(source);
 
     const index = await CotarIndex.create(new SourceMemory('index', res.buffer));
-    o(res.count >= 3).equals(true);
+    assert.equal(res.count >= 3, true);
 
     const tarTest = await index.find('tar.test.js');
-    o(tarTest).notEquals(null);
-    o(tarTest?.size).equals(tarTestStat.size);
+    assert.notEqual(tarTest, null);
+    assert.equal(tarTest?.size, tarTestStat.size);
 
     const buf = Buffer.alloc(tarTest?.size ?? 0);
     await source.read(buf, 0, tarTest?.size, tarTest?.offset);
-    o(buf.toString().startsWith(`/** Start Header */`)).equals(true);
+    assert.equal(buf.toString().startsWith(`/** Start Header */`), true);
 
     await source.close();
   });
 
-  o('should work with a .tar.co', async () => {
+  it('should work with a .tar.co', async () => {
     const tarTestStat = await fs.stat(path.join(__dirname, 'tar.test.js'));
 
     const source = await fs.open(tarFilePath, 'r');
@@ -78,13 +78,13 @@ o.spec('TarReader', () => {
 
     const cotar = await Cotar.fromTar(new SourceFile(coTarFilePath));
     const tarTest = await cotar.index.find('tar.test.js');
-    o(tarTest).notEquals(null);
-    o(tarTest?.size).equals(tarTestStat.size);
+    assert.notEqual(tarTest, null);
+    assert.equal(tarTest?.size, tarTestStat.size);
 
     const data = await cotar.get('tar.test.js');
-    o(data).notEquals(null);
+    assert.notEqual(data, null);
     const buf = Buffer.from(data!.slice(0, 100));
-    o(buf.toString().startsWith(`/** Start Header */`)).equals(true);
+    assert.equal(buf.toString().startsWith(`/** Start Header */`), true);
 
     await cotar.source.close?.();
   });

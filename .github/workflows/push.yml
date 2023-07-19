@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: linz/action-typescript@v1
+      - uses: linz/action-typescript@v2
 
       - name: Create test tar
         run: yarn run test-create-data
