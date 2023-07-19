@@ -29,7 +29,7 @@
   "description": "",
   "devDependencies": {
     "@linzjs/style": "^3.7.0",
-    "lerna": "^6.0.3",
+    "lerna": "^7.1.4",
     "rimraf": "^5.0.0"
   },
   "workspaces": {
