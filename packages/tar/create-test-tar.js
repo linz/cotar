@@ -1,7 +1,7 @@
 import { TarBuilder } from './build/src/tar.js';
 
 /** Create a testing archive with a large number of files for benchmarks */
-const TestFileCount = 5_000;
+const TestFileCount = 5000;
 async function main() {
   console.log(`Creating test archive: "./test.tar" with ${TestFileCount} files`);
   const tarFile = new TarBuilder('./test.tar');
