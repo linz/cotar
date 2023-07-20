@@ -1,4 +1,4 @@
-import { SourceMemory } from '@chunkd/core';
+import { SourceMemory } from '@chunkd/source-memory';
 import fnv1a from '@sindresorhus/fnv1a';
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
@@ -54,8 +54,8 @@ describe('CotarBinary.fake', () => {
     assert.equal(tarIndexV2.toString('base64'), ExpectedRecordV2);
 
     const cotar = new Cotar(
-      new SourceMemory('Tar', Buffer.from('0123456789')),
-      await CotarIndex.create(new SourceMemory('index', tarIndexV2)),
+      new SourceMemory(new URL('memory://tar'), Buffer.from('0123456789')),
+      await CotarIndex.create(new SourceMemory(new URL('memory://index'), tarIndexV2)),
     );
 
     assert.deepEqual(await cotar.index.find('tiles/0/0/0.pbf.gz'), { offset: 0, size: 1 });
@@ -70,8 +70,8 @@ describe('CotarBinary.fake', () => {
 
   it('should load v2 from a combined tar & header', async () => {
     const tar = Buffer.concat([Buffer.from('0123456789'), tarIndexV2]);
-
-    const cotar = await Cotar.fromTar(new SourceMemory('Combined', tar));
+    const source = new SourceMemory(new URL('memory://combined'), tar);
+    const cotar = await Cotar.fromTar(source);
     // assert.equal(cotar.index.sourceOffset, 10);
     assert.deepEqual(cotar.index.metadata, { magic: 'COT', version: 2, count: 4 });
 

@@ -1,6 +1,7 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 import { readMetadata } from '../../binary.index.js';
+import { SourceMemory } from '@chunkd/source-memory';
 
 const Example = {
   v1: {
@@ -32,12 +33,12 @@ describe('CotarBinaryHeaderFooter', () => {
   });
 
   it('should parse v1 header', () => {
-    const header = readMetadata(Example.v1.buf);
+    const header = readMetadata(SourceMemory.toArrayBuffer(Example.v1.buf));
     assert.deepEqual(header, Example.v1.header);
   });
 
   it('should parse v2 header', () => {
-    const header = readMetadata(Example.v2.buf);
+    const header = readMetadata(SourceMemory.toArrayBuffer(Example.v2.buf));
     assert.deepEqual(header, Example.v2.header);
   });
 });

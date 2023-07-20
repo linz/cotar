@@ -1,10 +1,11 @@
-import { fsa } from '@chunkd/fs';
+import { fsa, toArray } from '@chunkd/fs';
 import { TarBuilder } from '@cotar/tar';
 import { command, positional, restPositionals } from 'cmd-ts';
 import { existsSync } from 'fs';
 import { performance } from 'perf_hooks';
 import { force, toDuration, verbose } from '../common.js';
 import { logger } from '../log.js';
+import { Url } from '../url.js';
 
 export const commandTar = command({
   name: 'tar',
@@ -13,7 +14,7 @@ export const commandTar = command({
     force,
     verbose,
     output: positional({ displayName: 'Output', description: 'Output tar file location' }),
-    input: restPositionals({ displayName: 'Input', description: 'Input locations' }),
+    input: restPositionals({ displayName: 'Input', description: 'Input locations', type: Url }),
   },
   async handler(args) {
     if (args.verbose) logger.level = 'debug';
@@ -31,9 +32,13 @@ export const commandTar = command({
     const tarBuilder = new TarBuilder(args.output);
 
     for (const input of args.input.sort()) {
-      const files = await fsa.toArray(fsa.list(input));
-      files.sort((a, b) => a.localeCompare(b));
-      for (const file of files) await tarBuilder.write(file, await fsa.read(file));
+      const files = await toArray(fsa.list(input));
+      console.log(
+        input,
+        files.map((f) => f.href),
+      );
+      files.sort((a, b) => a.href.localeCompare(b.href));
+      for (const file of files) await tarBuilder.write(file.href.slice(input.href.length - 1), await fsa.read(file));
     }
 
     await tarBuilder.close();

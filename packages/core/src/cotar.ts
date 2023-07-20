@@ -1,4 +1,4 @@
-import { ChunkSource } from '@chunkd/core';
+import { Source } from '@chunkd/source';
 import { CotarIndex } from './binary.index.js';
 import { IndexV2RecordSize, IndexSize } from './format.js';
 
@@ -8,25 +8,26 @@ export interface CotarIndexRecord {
 }
 
 export class Cotar {
-  source: ChunkSource;
+  source: Source;
   index: CotarIndex;
 
   /**
    * @param source Chunked source of the tar files
    * @param index
    */
-  constructor(source: ChunkSource, index: CotarIndex) {
+  constructor(source: Source, index: CotarIndex) {
     this.source = source;
     this.index = index;
   }
 
-  static async fromTar(source: ChunkSource): Promise<Cotar> {
+  static async fromTar(source: Source): Promise<Cotar> {
     // Load the last file in the tar archive
     const metadata = await CotarIndex.getMetadata(source, 0, false);
-    const size = await source.size;
+    const stat = await source.head();
+    if (stat == null || stat.size == null) throw new Error(`Failed to fetch metadata for ${source.url}`);
 
     const metadataSize = IndexV2RecordSize;
-    const startOffset = size - (metadata.count * metadataSize + IndexSize);
+    const startOffset = stat.size - (metadata.count * metadataSize + IndexSize);
     const index = new CotarIndex(source, metadata, startOffset);
 
     return new Cotar(source, index);
@@ -41,7 +42,6 @@ export class Cotar {
     const index = await this.index.find(fileName);
     if (index == null) return null;
 
-    await this.source.loadBytes(index.offset, index.size);
-    return this.source.bytes(index.offset, index.size);
+    return await this.source.fetch(index.offset, index.size);
   }
 }
