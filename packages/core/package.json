@@ -31,7 +31,7 @@
     "*.png"
   ],
   "devDependencies": {
-    "@chunkd/source-file": "^10.0.3",
+    "@chunkd/source-file": "^11.0.0",
     "@types/node": "^18.11.9"
   }
 }
