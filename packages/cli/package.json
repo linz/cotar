@@ -21,7 +21,7 @@
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
   "dependencies": {
-    "@chunkd/fs": "^10.0.6",
+    "@chunkd/fs": "^11.0.0",
     "@chunkd/source-file": "^10.0.3",
     "@cotar/core": "^5.5.0",
     "@cotar/builder": "^5.5.0",
