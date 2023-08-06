@@ -1,7 +1,7 @@
 import { SourceFile } from '@chunkd/source-file';
-import { Cotar, CotarIndex } from '@cotar/core';
 import { TarReader } from '@cotar/builder';
-import { command, positional } from 'cmd-ts';
+import { Cotar, CotarIndex } from '@cotar/core';
+import { command, optional, positional, string } from 'cmd-ts';
 import { promises as fs } from 'fs';
 import { verbose } from '../common.js';
 import { logger } from '../log.js';
@@ -12,12 +12,13 @@ export const commandValidate = command({
   args: {
     verbose,
     input: positional({ displayName: 'Input', description: 'Input cotar file' }),
+    inputIndex: positional({ displayName: 'Index', description: 'External cotar index', type: optional(string) }),
   },
   async handler(args) {
     if (args.verbose) logger.level = 'debug';
-    logger.info({ fileName: args.input }, 'Cotar:Load');
+    logger.info({ fileName: args.input, index: args.inputIndex }, 'Cotar:Load');
 
-    const index = await loadIndex(args.input);
+    const index = await loadIndex(args.input, args.inputIndex);
     logger.info({ fileName: args.input, metadata: index.metadata }, 'Cotar:Loaded');
 
     const fd = await fs.open(args.input, 'r');
