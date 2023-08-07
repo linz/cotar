@@ -23,14 +23,15 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@chunkd/fs@^11.0.1":
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-11.0.1.tgz#76186f0639b2b0c2b1ac8be756bb68b115f84db4"
-  integrity sha512-hACdgc63MVW99/PzHj06UpzCytd49VdXmnmFze96ZoO2QLAIKppFGFWANI2MwFN99N+3lc0zCH4UZD/KS02LIg==
+"@chunkd/fs@^11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-11.0.2.tgz#fd55ec83c83dc22344db6a2957c12b65883f21c8"
+  integrity sha512-cLby9YyG2k8Qu9xTEdXREwA+bVxChSNhXEHGzkFh0rev1H5C/dQB5Z6dn/AtLMr2H0D5pgqqlCveH0KruS4pyQ==
   dependencies:
     "@chunkd/source" "^11.0.0"
     "@chunkd/source-file" "^11.0.0"
     "@chunkd/source-http" "^11.0.1"
+    "@chunkd/source-memory" "^11.0.1"
 
 "@chunkd/source-file@^11.0.0":
   version "11.0.0"
