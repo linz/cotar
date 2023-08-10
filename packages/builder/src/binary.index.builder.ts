@@ -1,4 +1,4 @@
-import { SourceMemory } from '@chunkd/core';
+import { SourceMemory } from '@chunkd/source-memory';
 import { LogType } from './log.js';
 import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexResult } from './tar.index.js';
 import { TarReader } from './tar.js';
@@ -160,7 +160,7 @@ export const CotarIndexBuilder = {
 
   /** Validate that the index matches the input file */
   async validate(getBytes: AsyncReader, index: Buffer, logger?: LogType): Promise<number> {
-    const binIndex = await CotarIndex.create(new SourceMemory('cotar', index));
+    const binIndex = await CotarIndex.create(new SourceMemory('memory://cotar', index));
     return TarReader.validate(getBytes, binIndex, logger);
   },
 };

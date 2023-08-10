@@ -13,7 +13,7 @@ function rewriteFile(fileName: string, buf: ArrayBuffer, args: { baseUrl: string
     const text = Buffer.from(buf).toString();
     return Buffer.from(text.replace(/template="\//g, `template="${args.baseUrl}/v1/file/`));
   }
-  return buf;
+  return Buffer.from(buf);
 }
 
 export const commandServe = command({
@@ -76,7 +76,7 @@ export const commandServe = command({
       }
 
       res.writeHead(200);
-      res.write(args.disableRewrite ? file : rewriteFile(fileName, file, args));
+      res.write(args.disableRewrite ? Buffer.from(file) : rewriteFile(fileName, file, args));
       res.end();
       logger.info({ action: 'file:get', fileName, status: 200, duration: toDuration(startTime) }, req.url);
     }

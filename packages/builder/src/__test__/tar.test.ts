@@ -1,6 +1,6 @@
 /** Start Header */
 // ^-- this line is used for testing
-import { SourceMemory } from '@chunkd/core';
+import { SourceMemory } from '@chunkd/source-memory';
 import { SourceFile } from '@chunkd/source-file';
 import * as cp from 'child_process';
 import { promises as fs } from 'fs';
@@ -49,7 +49,7 @@ describe('TarReader', () => {
 
     const res = await CotarIndexBuilder.create(source);
 
-    const index = await CotarIndex.create(new SourceMemory('index', res.buffer));
+    const index = await CotarIndex.create(new SourceMemory('memory://index', res.buffer));
     assert.equal(res.count >= 3, true);
 
     const tarTest = await index.find('tar.test.js');

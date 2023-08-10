@@ -42,8 +42,8 @@ async function countHashTable(index: CotarIndex): Promise<number> {
   let filled = 0;
   for (let i = 0; i < slotCount; i++) {
     const offset = index.sourceOffset + i * CotarIndex.Header.Record + CotarIndex.Header.Size;
-    await index.source.loadBytes(offset, CotarIndex.Header.Record);
-    if (index.source.getUint32(offset) > 0 || index.source.getUint32(offset + 4) > 0) filled++;
+    const buffer = Buffer.from(await index.source.fetch(offset, CotarIndex.Header.Record));
+    if (buffer.readUInt32LE(0) > 0 || buffer.readUInt32LE(4) > 0) filled++;
   }
 
   return filled;

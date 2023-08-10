@@ -1,4 +1,4 @@
-import { ChunkSource } from '@chunkd/core';
+import { Source } from '@chunkd/source';
 import { TarReader } from '@cotar/builder';
 import path from 'path';
 
@@ -12,14 +12,13 @@ function toFolderName(f: string): string {
 /** Create a tree from a tar file */
 export class FileTree {
   nodes: Map<string, Set<string>> = new Map();
-  source: ChunkSource;
-  constructor(source: ChunkSource) {
+  source: Source;
+  constructor(source: Source) {
     this.source = source;
   }
 
   getBytes = async (offset: number, count: number): Promise<Buffer> => {
-    await this.source.loadBytes(offset, count);
-    const bytes = await this.source.bytes(offset, count);
+    const bytes = await this.source.fetch(offset, count);
     return Buffer.from(bytes);
   };
 
