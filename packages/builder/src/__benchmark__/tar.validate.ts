@@ -9,7 +9,7 @@ async function main(): Promise<void> {
   const fd = await fs.open('test.tar', 'r');
   const res = await CotarIndexBuilder.create(fd);
 
-  const source = new SourceMemory(new URL('memory://memory'), res.buffer);
+  const source = new SourceMemory('memory://memory', res.buffer);
   const cotarIndex = new CotarIndex(source, { version: 2, count: res.count, magic: 'COT' });
 
   for (let i = 0; i < 5; i++) {

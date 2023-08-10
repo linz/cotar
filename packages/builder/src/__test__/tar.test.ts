@@ -49,7 +49,7 @@ describe('TarReader', () => {
 
     const res = await CotarIndexBuilder.create(source);
 
-    const index = await CotarIndex.create(new SourceMemory(new URL('memory://index'), res.buffer));
+    const index = await CotarIndex.create(new SourceMemory('memory://index', res.buffer));
     assert.equal(res.count >= 3, true);
 
     const tarTest = await index.find('tar.test.js');

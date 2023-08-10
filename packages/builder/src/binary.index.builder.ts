@@ -160,7 +160,7 @@ export const CotarIndexBuilder = {
 
   /** Validate that the index matches the input file */
   async validate(getBytes: AsyncReader, index: Buffer, logger?: LogType): Promise<number> {
-    const binIndex = await CotarIndex.create(new SourceMemory(new URL('memory://cotar'), index));
+    const binIndex = await CotarIndex.create(new SourceMemory('memory://cotar', index));
     return TarReader.validate(getBytes, binIndex, logger);
   },
 };
