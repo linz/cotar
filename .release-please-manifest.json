@@ -1,6 +1,6 @@
 {
-    "packages/cli": "5.6.0",
-    "packages/builder": "5.5.0",
-    "packages/core": "5.5.0",
-    "packages/tar": "5.4.1"
+    "packages/cli": "6.0.0",
+    "packages/builder": "6.0.0",
+    "packages/core": "6.0.0",
+    "packages/tar": "6.0.0"
 }
