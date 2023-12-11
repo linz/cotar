@@ -1,6 +1,6 @@
 {
   "name": "@cotar/cli",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "main": "index.js",
   "license": "MIT",
   "repository": {
@@ -26,9 +26,9 @@
   "dependencies": {
     "@chunkd/fs": "^11.0.2",
     "@chunkd/source-file": "^11.0.0",
-    "@cotar/core": "^6.0.0",
-    "@cotar/builder": "^6.0.0",
-    "@cotar/tar": "^6.0.0",
+    "@cotar/core": "^6.0.1",
+    "@cotar/builder": "^6.0.1",
+    "@cotar/tar": "^6.0.1",
     "binparse": "^2.0.1",
     "cmd-ts": "^0.13.0",
     "pino": "^8.1.0",

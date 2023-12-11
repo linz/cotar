@@ -1,6 +1,6 @@
 {
   "name": "@cotar/tar",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "repository": {
