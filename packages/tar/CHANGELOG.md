@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.0](https://github.com/linz/cotar/compare/tar-v5.4.1...tar-v6.0.0) (2023-12-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* split cotar builder from @cotar/core ([#481](https://github.com/linz/cotar/issues/481))
+
+### Features
+
+* split cotar builder from @cotar/core ([#481](https://github.com/linz/cotar/issues/481)) ([b8b801d](https://github.com/linz/cotar/commit/b8b801dd360e4a3ec7a9964f0f63f2066a49403d))
+
 ## [5.4.1](https://github.com/linz/cotar/compare/v5.4.0...v5.4.1) (2022-07-07)
 
 

@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.0](https://github.com/linz/cotar/compare/cli-v5.6.0...cli-v6.0.0) (2023-12-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* split cotar builder from @cotar/core ([#481](https://github.com/linz/cotar/issues/481))
+
+### Features
+
+* **cli:** allow validating external indexes ([#489](https://github.com/linz/cotar/issues/489)) ([46b7305](https://github.com/linz/cotar/commit/46b73054a7339e9651448623a46a6f3dcf545e7c))
+* split cotar builder from @cotar/core ([#481](https://github.com/linz/cotar/issues/481)) ([b8b801d](https://github.com/linz/cotar/commit/b8b801dd360e4a3ec7a9964f0f63f2066a49403d))
+* switch to node-next modules to catch missing ".js" extensions ([#428](https://github.com/linz/cotar/issues/428)) ([e598397](https://github.com/linz/cotar/commit/e598397742064eb539c9e73b43cefc6c925713fd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cotar/core bumped from ^5.5.0 to ^6.0.0
+    * @cotar/builder bumped from ^5.5.0 to ^6.0.0
+    * @cotar/tar bumped from ^5.4.1 to ^6.0.0
+
 ## [5.6.0](https://github.com/linz/cotar/compare/cli-v5.5.0...cli-v5.6.0) (2022-11-16)
 
 

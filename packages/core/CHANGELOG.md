@@ -44,6 +44,26 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [6.0.0](https://github.com/linz/cotar/compare/core-v5.5.0...core-v6.0.0) (2023-12-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* split cotar builder from @cotar/core ([#481](https://github.com/linz/cotar/issues/481))
+* remove v1 index logic  ([#479](https://github.com/linz/cotar/issues/479))
+
+### Features
+
+* **core:** increase the default packing factor from 115% to 120% to reduce hash searches ([#367](https://github.com/linz/cotar/issues/367)) ([e34c9c3](https://github.com/linz/cotar/commit/e34c9c3464b0e4e46bbe5ef95ef5e12185b66d20))
+* remove v1 index logic  ([#479](https://github.com/linz/cotar/issues/479)) ([fbd3980](https://github.com/linz/cotar/commit/fbd39805f98f856c8b290370511558ba6cfe458d))
+* split cotar builder from @cotar/core ([#481](https://github.com/linz/cotar/issues/481)) ([b8b801d](https://github.com/linz/cotar/commit/b8b801dd360e4a3ec7a9964f0f63f2066a49403d))
+* switch to node-next modules to catch missing ".js" extensions ([#428](https://github.com/linz/cotar/issues/428)) ([e598397](https://github.com/linz/cotar/commit/e598397742064eb539c9e73b43cefc6c925713fd))
+
+
+### Bug Fixes
+
+* **core:** remove binparse from cotar reader  ([#478](https://github.com/linz/cotar/issues/478)) ([822f646](https://github.com/linz/cotar/commit/822f64664d91d3a6f9e548f72d8c99e5e05ceee1))
+
 ## [5.5.0](https://github.com/linz/cotar/compare/core-v5.4.0...core-v5.5.0) (2022-11-15)
 
 
