@@ -8,6 +8,9 @@
     "url": "https://github.com/linz/cotar.git",
     "directory": "packages/cli"
   },
+  "scripts": {
+    "test": "node --test"
+  },
   "author": {
     "name": "Land Information New Zealand",
     "url": "https://linz.govt.nz",

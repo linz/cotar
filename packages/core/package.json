@@ -3,6 +3,9 @@
   "version": "6.0.0",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
+  "scripts": {
+    "test": "node --test"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/linz/cotar.git",

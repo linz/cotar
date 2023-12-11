@@ -4,10 +4,8 @@
   "scripts": {
     "clean": "tsc -b --clean && rimraf 'packages/*/build'",
     "build": "tsc -b --pretty",
-    "build-watch": "tsc -b --pretty --watch",
-    "version": "lerna version --conventional-commits --no-push --sign-git-commit --sign-git-tag",
     "lint": "eslint packages/ --quiet --fix --ignore-path .gitignore",
-    "test": "node --test",
+    "test": "lerna run test",
     "test-create-data": "node packages/tar/create-test-tar.js"
   },
   "repository": {
@@ -23,7 +21,7 @@
   "keywords": [],
   "type": "module",
   "engines": {
-    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+    "node": ">=16.0.0"
   },
   "license": "MIT",
   "description": "",
