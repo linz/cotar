@@ -1,16 +1,18 @@
 /** Start Header */
 // ^-- this line is used for testing
-import { SourceMemory } from '@chunkd/source-memory';
+import assert from 'node:assert';
+import { afterEach, before, beforeEach, describe, it } from 'node:test';
+
 import { SourceFile } from '@chunkd/source-file';
+import { SourceMemory } from '@chunkd/source-memory';
+import { Cotar, CotarIndex } from '@cotar/core';
 import * as cp from 'child_process';
 import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
-import { describe, before, beforeEach, afterEach, it } from 'node:test';
-import assert from 'node:assert';
 import * as path from 'path';
 import url from 'url';
+
 import { CotarIndexBuilder } from '../binary.index.builder.js';
-import { Cotar, CotarIndex } from '@cotar/core';
 import { TarFileHeader, TarReader } from '../tar.js';
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 

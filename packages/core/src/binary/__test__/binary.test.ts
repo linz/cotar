@@ -1,14 +1,16 @@
-import { SourceMemory } from '@chunkd/source-memory';
-import fnv1a from '@sindresorhus/fnv1a';
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
+
+import { SourceMemory } from '@chunkd/source-memory';
+import fnv1a from '@sindresorhus/fnv1a';
+
 import { CotarIndex } from '../../binary.index.js';
 import { Cotar } from '../../cotar.js';
 import { IndexHeaderSize, IndexMagic, IndexSize, IndexV2RecordSize, IndexVersion } from '../../format.js';
 
 function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
   if (buf == null) return null;
-  return String.fromCharCode(new Uint8Array(buf)[offset]);
+  return String.fromCharCode(new Uint8Array(buf)[offset] ?? 0);
 }
 
 export function writeHeaderFooter(output: Buffer, count: number, version = IndexVersion): void {

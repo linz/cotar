@@ -1,5 +1,6 @@
-import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import { describe, it } from 'node:test';
+
 import { FileTree } from '../file.tree.js';
 
 function setToList(s?: Set<string>): string[] {

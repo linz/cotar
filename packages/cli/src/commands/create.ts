@@ -4,6 +4,7 @@ import { CotarIndex } from '@cotar/core';
 import { command, number, option, positional } from 'cmd-ts';
 import { existsSync, promises as fs } from 'fs';
 import pino from 'pino';
+
 import { force, verbose } from '../common.js';
 import { logger } from '../log.js';
 

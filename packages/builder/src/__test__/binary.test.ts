@@ -1,21 +1,23 @@
-import { SourceMemory } from '@chunkd/source-memory';
+import assert from 'node:assert';
+import { afterEach, before, beforeEach, describe, it } from 'node:test';
+
 import { SourceFile } from '@chunkd/source-file';
+import { SourceMemory } from '@chunkd/source-memory';
 import { Cotar, CotarIndex, IndexHeaderSize, IndexV2RecordSize } from '@cotar/core';
 import fnv1a from '@sindresorhus/fnv1a';
 import * as cp from 'child_process';
 import { promises as fs } from 'fs';
 import { FileHandle } from 'fs/promises';
-import assert from 'node:assert';
-import { afterEach, before, beforeEach, describe, it } from 'node:test';
 import path from 'path';
 import url from 'url';
+
 import { CotarIndexBuilder, writeHeaderFooter } from '../binary.index.builder.js';
 import { TarReader } from '../tar.js';
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 function abToChar(buf: ArrayBuffer | null, offset: number): string | null {
   if (buf == null) return null;
-  return String.fromCharCode(new Uint8Array(buf)[offset]);
+  return String.fromCharCode(new Uint8Array(buf)[offset] ?? 0);
 }
 
 const ExpectedRecordV2 =
@@ -107,7 +109,7 @@ describe('CotarBinary', () => {
 
     const fileData = await cotar.get('binary.test.js');
     assert.notEqual(fileData, null);
-    assert.equal(Buffer.from(fileData!).toString().startsWith('import {'), true);
+    assert.equal(Buffer.from(fileData!).toString().startsWith('import '), true);
 
     const fakeFile = await cotar.get('fake.file.md');
     assert.equal(fakeFile, null);

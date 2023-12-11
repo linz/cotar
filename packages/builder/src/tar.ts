@@ -1,5 +1,6 @@
-import { bp, StrutInfer, toHex } from 'binparse';
 import { CotarIndex } from '@cotar/core';
+import { bp, StrutInfer, toHex } from 'binparse';
+
 import { LogType } from './log.js';
 import { AsyncFileDescriptor, AsyncFileRead, AsyncReader } from './tar.index.js';
 

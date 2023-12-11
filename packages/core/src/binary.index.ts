@@ -1,5 +1,6 @@
 import { Source } from '@chunkd/source';
 import fnv1a from '@sindresorhus/fnv1a';
+
 import { CotarIndexRecord } from './cotar.js';
 import { IndexHeaderSize, IndexMagic, IndexV2RecordSize } from './format.js';
 
@@ -99,8 +100,8 @@ export class CotarIndex {
     // working with u64 is sometimes hard, split into two u32s
     const hashHigh = Number(hash >> Big32);
     const hashLow = Number(hash & BigUint32Max);
-    let startHashHigh: number | null = null;
-    let startHashLow: number | null = null;
+    let startHashHigh: number | null | undefined = null;
+    let startHashLow: number | null | undefined = null;
 
     let index = startIndex;
     while (true) {
@@ -114,9 +115,9 @@ export class CotarIndex {
       // Found the file
       if (startHashHigh === hashHigh && startHashLow === hashLow) {
         // Tar offsets are block aligned to 512byte blocks
-        const fileOffset = view[2] * 512;
+        const fileOffset = (view[2] as number) * 512;
         const fileSize = view[3];
-        return { offset: fileOffset, size: fileSize };
+        return { offset: fileOffset, size: fileSize as number };
       }
       // Found a gap in the hash table (file doesn't exist)
       if (startHashHigh === 0 && startHashLow === 0) return null;

@@ -1,13 +1,15 @@
+import { pathToFileURL } from 'node:url';
+
 import { fsa, toArray } from '@chunkd/fs';
 import { TarBuilder } from '@cotar/tar';
 import { command, positional, restPositionals } from 'cmd-ts';
 import { existsSync } from 'fs';
 import { performance } from 'perf_hooks';
+import { cwd } from 'process';
+
 import { force, toDuration, verbose } from '../common.js';
 import { logger } from '../log.js';
 import { Url } from '../url.js';
-import { cwd } from 'process';
-import { pathToFileURL } from 'node:url';
 
 function toRelative(url: URL, baseUrl: URL): string {
   if (!url.href.startsWith(baseUrl.href)) throw new Error('File is not relative: ' + url + ' vs ' + baseUrl);

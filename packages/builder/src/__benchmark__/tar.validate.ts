@@ -1,7 +1,8 @@
 import { SourceMemory } from '@chunkd/source-memory';
-import { promises as fs } from 'fs';
-import { CotarIndexBuilder } from '../binary.index.builder.js';
 import { CotarIndex } from '@cotar/core';
+import { promises as fs } from 'fs';
+
+import { CotarIndexBuilder } from '../binary.index.builder.js';
 import { TarReader } from '../tar.js';
 
 /** Crate a binary tar index from a source tar, then validate all files inside the tar exist in the index */

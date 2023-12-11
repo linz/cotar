@@ -4,6 +4,7 @@ import { command, flag, number, option, positional, string } from 'cmd-ts';
 import http from 'http';
 import { performance } from 'perf_hooks';
 import { URL } from 'url';
+
 import { toDuration, verbose } from '../common.js';
 import { logger } from '../log.js';
 import { FileTree } from '../util/file.tree.js';
