@@ -1360,10 +1360,10 @@ cmd-shim@6.0.1:
   resolved "https://registry.yarnpkg.com/cmd-shim/-/cmd-shim-6.0.1.tgz#a65878080548e1dca760b3aea1e21ed05194da9d"
   integrity sha512-S9iI9y0nKR4hwEQsVWpyxld/6kRfGepGfzff83FcaiEBpmvlbA2nnGe7Cylgrx2f/p1P5S5wpRm9oL8z1PbS3Q==
 
-cmd-ts@^0.12.0:
-  version "0.12.1"
-  resolved "https://registry.npmjs.org/cmd-ts/-/cmd-ts-0.12.1.tgz"
-  integrity sha512-k93f6LgFEzx7/vBy5qV+tu1VI8YuH0DZmwNXPvRaDR4Qp7Fl9+pUSylX/CKHrWoKqHMJjNOLb1NeYTvHOjQ2Kw==
+cmd-ts@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/cmd-ts/-/cmd-ts-0.13.0.tgz#57bdbc5dc95eb5a3503ab3ac9591c91427a79fa1"
+  integrity sha512-nsnxf6wNIM/JAS7T/x/1JmbEsjH0a8tezXqqpaL0O6+eV0/aDEnRxwjxpu0VzDdRcaC1ixGSbRlUuf/IU59I4g==
   dependencies:
     chalk "^4.0.0"
     debug "^4.3.4"

@@ -27,7 +27,7 @@
     "@cotar/builder": "^5.5.0",
     "@cotar/tar": "^5.4.1",
     "binparse": "^2.0.1",
-    "cmd-ts": "^0.12.0",
+    "cmd-ts": "^0.13.0",
     "pino": "^8.1.0",
     "pretty-json-log": "^1.4.0"
   },
