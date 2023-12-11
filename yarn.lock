@@ -623,9 +623,9 @@
   integrity sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==
 
 "@sindresorhus/fnv1a@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/@sindresorhus/fnv1a/-/fnv1a-3.0.0.tgz"
-  integrity sha512-M6pmbdZqAryzjZ4ELAzrdCMoMZk5lH/fshKrapfSeXdf2W+GDqZvPmfXaNTZp43//FVbSwkTPwpEMnehSyskkQ==
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@sindresorhus/fnv1a/-/fnv1a-3.1.0.tgz#f8e46597298f6fd4c12dc901cdd4e73beb4d24fa"
+  integrity sha512-KV321z5m/0nuAg83W1dPLy85HpHDk7Sdi4fJbwvacWsEhAh+rZUW4ZfGcXmUIvjZg4ss2bcwNlRhJ7GBEUG08w==
 
 "@tootallnate/once@2":
   version "2.0.0"
