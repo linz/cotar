@@ -41,7 +41,7 @@ describe('TarReader', () => {
     for await (const file of TarReader.iterate(readBytes)) files.push(file);
     assert.deepEqual(
       files.map((c) => c.header.path),
-      ['tar.test.d.ts', 'tar.test.d.ts.map', 'tar.test.js', 'tar.test.js.map'],
+      ['tar.test.d.ts', 'tar.test.js', 'tar.test.js.map'],
     );
   });
 
