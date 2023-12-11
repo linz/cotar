@@ -1,9 +1,10 @@
 import { SourceMemory } from '@chunkd/source-memory';
+import { CotarIndex } from '@cotar/core';
+import { IndexHeaderSize, IndexMagic, IndexSize, IndexV2RecordSize, IndexVersion } from '@cotar/core';
+
 import { LogType } from './log.js';
 import { AsyncFileDescriptor, AsyncFileRead, AsyncReader, TarIndexResult } from './tar.index.js';
 import { TarReader } from './tar.js';
-import { CotarIndex } from '@cotar/core';
-import { IndexHeaderSize, IndexMagic, IndexV2RecordSize, IndexSize, IndexVersion } from '@cotar/core';
 
 /** Write the header/footer into the buffer */
 export function writeHeaderFooter(output: Buffer, count: number, version = IndexVersion): void {

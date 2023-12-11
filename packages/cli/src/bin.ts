@@ -2,6 +2,7 @@
 process.env['AWS_NODEJS_CONNECTION_REUSE_ENABLED'] = '1';
 
 import { run } from 'cmd-ts';
+
 import { cmd } from './index.js';
 import { logger } from './log.js';
 

@@ -1,5 +1,8 @@
-import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import { describe, it } from 'node:test';
+
+import { SourceMemory } from '@chunkd/source-memory';
+
 import { FileTree } from '../file.tree.js';
 
 function setToList(s?: Set<string>): string[] {
@@ -12,8 +15,10 @@ function list(tree: FileTree, path: string): string[] {
 }
 
 describe('FileTree', () => {
+  const source = new SourceMemory('memory://empty', Buffer.from(''));
+
   it('should add a deep path', async () => {
-    const tree = new FileTree(null as any);
+    const tree = new FileTree(source);
 
     tree.addFile('foo/bar/baz.tiff');
 
@@ -23,7 +28,7 @@ describe('FileTree', () => {
   });
 
   it('should add a multiple paths', async () => {
-    const tree = new FileTree(null as any);
+    const tree = new FileTree(source);
 
     tree.addFile('foo/bar/baz.tiff');
     tree.addFile('foo/bar/bazB.tiff');
@@ -36,14 +41,14 @@ describe('FileTree', () => {
   });
 
   it('should default root paths', () => {
-    const tree = new FileTree(null as any);
+    const tree = new FileTree(source);
 
     tree.addFile('foo.tiff');
     assert.deepEqual(list(tree, '/'), ['/foo.tiff']);
   });
 
   it('should add root paths', () => {
-    const tree = new FileTree(null as any);
+    const tree = new FileTree(source);
 
     tree.addFile('/foo.tiff');
     tree.addFile('foo.tiff');

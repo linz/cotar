@@ -1,6 +1,7 @@
 import { Source } from '@chunkd/source';
+
 import { CotarIndex } from './binary.index.js';
-import { IndexV2RecordSize, IndexSize } from './format.js';
+import { IndexSize, IndexV2RecordSize } from './format.js';
 
 export interface CotarIndexRecord {
   offset: number;

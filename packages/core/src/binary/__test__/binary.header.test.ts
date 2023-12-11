@@ -1,7 +1,9 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { readMetadata } from '../../binary.index.js';
+
 import { SourceMemory } from '@chunkd/source-memory';
+
+import { readMetadata } from '../../binary.index.js';
 
 const Example = {
   v1: {

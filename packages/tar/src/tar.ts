@@ -21,8 +21,8 @@ export class TarBuilder {
 
   async write(fileName: string, data: Buffer): Promise<void> {
     const hash = createHash('sha256').update(data).digest('hex');
-    const hashIndex = parseInt(hash[0], 16);
-    const dupeFile = this.fileHashes[hashIndex].get(hash);
+    const hashIndex = parseInt(hash[0] ?? '0', 16);
+    const dupeFile = this.fileHashes[hashIndex]?.get(hash);
 
     if (dupeFile) {
       // Duplicate file contents create hard link
@@ -30,7 +30,7 @@ export class TarBuilder {
       await new Promise((r) => this.packer.entry({ name: fileName, type: 'link', linkname: dupeFile, mtime }, r));
     } else {
       await new Promise((r) => this.packer.entry({ name: fileName, mtime }, data, r));
-      this.fileHashes[hashIndex].set(hash, fileName);
+      this.fileHashes[hashIndex]?.set(hash, fileName);
     }
     this.stats.total++;
   }

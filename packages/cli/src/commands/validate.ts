@@ -3,6 +3,7 @@ import { TarReader } from '@cotar/builder';
 import { Cotar, CotarIndex } from '@cotar/core';
 import { command, optional, positional, string } from 'cmd-ts';
 import { promises as fs } from 'fs';
+
 import { verbose } from '../common.js';
 import { logger } from '../log.js';
 
