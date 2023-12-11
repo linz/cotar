@@ -10,5 +10,4 @@ updates:
   groups:
     chunkd:
       patterns:
-        - "@cogeotiff/*"
         - "@chunkd/*"
