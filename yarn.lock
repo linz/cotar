@@ -29,40 +29,40 @@
     js-tokens "^4.0.0"
 
 "@chunkd/fs@^11.0.2":
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/fs/-/fs-11.2.0.tgz#296cf1ced3d2f5dd1be8f5d3bb739f59197d4142"
+  integrity sha512-fwAkytCw8QnDgwZb/Sb6HlZ4n9EeKL3lV6KwkqFAxO2KtPDIyNcbyJ3H/6RjfWSHeyTA3+lHXEgT+XfyHpQfng==
+  dependencies:
+    "@chunkd/source" "^11.1.0"
+    "@chunkd/source-file" "^11.0.1"
+    "@chunkd/source-http" "^11.1.0"
+    "@chunkd/source-memory" "^11.0.2"
+
+"@chunkd/source-file@^11.0.0", "@chunkd/source-file@^11.0.1":
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-file/-/source-file-11.0.1.tgz#40110263b18c5b687978b6a565699d7318f86237"
+  integrity sha512-9DoA1djozuDpUklg0CRj/GBEJzvZeqwr1EIOTcEr3igDAf+UZ3y3lOgUaIWuNeATbwQ7Pdml2S6SLLAdAe45wQ==
+  dependencies:
+    "@chunkd/source" "^11.1.0"
+
+"@chunkd/source-http@^11.1.0":
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source-http/-/source-http-11.1.0.tgz#c79f89f537ef851438acec1135e294644cb8b050"
+  integrity sha512-vKCR/MwFuj7fAglym3BiSYromIFR65K9cIY3Z459B7HQR7aLATxQiQcxTfXNwFy+1/Xooe/6UXHrGs4EKcg6Vw==
+  dependencies:
+    "@chunkd/source" "^11.1.0"
+
+"@chunkd/source-memory@^11.0.1", "@chunkd/source-memory@^11.0.2":
   version "11.0.2"
-  resolved "https://registry.npmjs.org/@chunkd/fs/-/fs-11.0.2.tgz"
-  integrity sha512-cLby9YyG2k8Qu9xTEdXREwA+bVxChSNhXEHGzkFh0rev1H5C/dQB5Z6dn/AtLMr2H0D5pgqqlCveH0KruS4pyQ==
+  resolved "https://registry.yarnpkg.com/@chunkd/source-memory/-/source-memory-11.0.2.tgz#04ad90ea288cab04436fa2133c4c44ba83a350df"
+  integrity sha512-K2yJTvLv+Z49YKGz43Gb2Q1/6ARtnUUh9EgVgqKZS/Ce9ND9IXkgmfyrYShY2/d9iJ4B7Nq1LZIJubDBhoYtww==
   dependencies:
-    "@chunkd/source" "^11.0.0"
-    "@chunkd/source-file" "^11.0.0"
-    "@chunkd/source-http" "^11.0.1"
-    "@chunkd/source-memory" "^11.0.1"
+    "@chunkd/source" "^11.1.0"
 
-"@chunkd/source-file@^11.0.0":
-  version "11.0.0"
-  resolved "https://registry.npmjs.org/@chunkd/source-file/-/source-file-11.0.0.tgz"
-  integrity sha512-i1yzhLsOXRJRVpuISpdgfKwuHSlKV67dbSm8hO8xQ4kOUJujT1D2vmiZo570QoeA4E1K9q/XdubGRU38HaVcKg==
-  dependencies:
-    "@chunkd/source" "^11.0.0"
-
-"@chunkd/source-http@^11.0.1":
-  version "11.0.1"
-  resolved "https://registry.npmjs.org/@chunkd/source-http/-/source-http-11.0.1.tgz"
-  integrity sha512-DUDOKmnCubN+mAMxWIqUxdnyVg8FNM4O6+CnlblyT8KOln85A52/hxpFvp41zzkzsTGJTyyMd3pYvpQglthRYg==
-  dependencies:
-    "@chunkd/source" "^11.0.0"
-
-"@chunkd/source-memory@^11.0.1":
-  version "11.0.1"
-  resolved "https://registry.npmjs.org/@chunkd/source-memory/-/source-memory-11.0.1.tgz"
-  integrity sha512-GbLG3OkTmzk2XKmjZM7tRh2K6OhPC0rzQUJaJdzdXaqZ/0SmN4itER8NTFw0ZxAQYQjilk/3ucKof6Q+gpAtkw==
-  dependencies:
-    "@chunkd/source" "^11.0.0"
-
-"@chunkd/source@^11.0.0":
-  version "11.0.0"
-  resolved "https://registry.npmjs.org/@chunkd/source/-/source-11.0.0.tgz"
-  integrity sha512-cDdANEMB6J4JEbN5+qDoiiy0CxGtiS3Td+X+A/7R8TW0b2XoKHoqX1/LwTrcdtVRNTOU5QHd83mhau/SbpJb2Q==
+"@chunkd/source@^11.0.0", "@chunkd/source@^11.1.0":
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/@chunkd/source/-/source-11.1.0.tgz#8c163e4f0e87821c175b2aa5447100ee9091e0e2"
+  integrity sha512-3BcrHK4XDm3t4vDx1OisgcOZ05+EarEqwaGVIL7IMHUmkXwN/Aprlnr7aVP3BYcltgcCcfMd1pXQicbSrP563g==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
