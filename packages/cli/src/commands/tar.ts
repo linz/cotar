@@ -44,20 +44,20 @@ export const commandTar = command({
     const startTime = performance.now();
     const tarBuilder = new TarBuilder(args.output);
 
-    for (const input of args.input) {
+    await Promise.all(args.input.map(async (input) => {
       const stat = await fsa.head(input);
       if (stat != null && !stat.isDirectory) {
         // Found a file add the file directly
-        await tarBuilder.write(toRelative(input, workingDir), await fsa.read(input));
+        return tarBuilder.write(toRelative(input, workingDir), await fsa.read(input));
       } else {
         const files = await toArray(fsa.list(input));
 
         files.sort((a, b) => a.href.localeCompare(b.href));
-        for (const file of files) {
-          await tarBuilder.write(toRelative(file, workingDir), await fsa.read(file));
-        }
+        return Promise.all(files.map(async (file) => {
+          return tarBuilder.write(toRelative(file, workingDir), await fsa.read(file));
+        }));
       }
-    }
+    }));
 
     await tarBuilder.close();
     logger.info({ output: args.output, stats: tarBuilder.stats, duration: toDuration(startTime) }, 'Tar:Create:Done');
