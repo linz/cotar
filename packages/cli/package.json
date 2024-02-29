@@ -35,7 +35,7 @@
     "pretty-json-log": "^1.4.0"
   },
   "devDependencies": {
-    "@types/node": "^18.11.9",
+    "@types/node": "^20.11.24",
     "@types/pino": "^7.0.5"
   },
   "publishConfig": {
