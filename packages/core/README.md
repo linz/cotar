@@ -10,9 +10,9 @@ To fetch a single tile, the index has to be loaded into memory then the cotar ob
 
 ```typescript
 import { Cotar } from '@cotar/core';
-import { SourceUrl } from '@chunkd/source-url';
+import { SourceHttp } from '@chunkd/source-http';
 
-const source = new SourceUrl('s3://linz-basemaps/topographic.tar.co');
+const source = new SourceHttp('s3://linz-basemaps/topographic.tar.co');
 const cotar = await Cotar.fromTar(source);
 
 // Fetch a gzipped PBF file from  a tar
@@ -23,10 +23,10 @@ Index files can also be stored as separate files
 
 ```typescript
 import { Cotar } from '@cotar/core';
-import { SourceUrl } from '@chunkd/source-url';
+import { SourceHttp } from '@chunkd/source-http';
 
-const source = new SourceUrl('s3://linz-basemaps/topographic.tar]');
-const sourceIndex = new SourceUrl('s3://linz-basemaps/topographic.tar.index');
+const source = new SourceHttp('s3://linz-basemaps/topographic.tar]');
+const sourceIndex = new SourceHttp('s3://linz-basemaps/topographic.tar.index');
 
 const cotar = await Cotar.fromTarIndex(source, index);
 
