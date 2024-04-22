@@ -1,5 +1,35 @@
 [
   {
+    "hash": "f0db02cfd6a854fbd5791244e4c51344ca6c7c2d",
+    "createdAt": "2024-04-22T23:23:15.034Z",
+    "results": [
+      {
+        "name": "Create 50 tar indexes",
+        "count": 10,
+        "command": "node packages/builder/build/src/__benchmark__/tar.create.index.js",
+        "mean": 1.0334918525299999,
+        "stddev": 0.03073755430523335,
+        "median": 1.0439820164299998,
+        "user": 0.74033038,
+        "system": 0.46631085,
+        "min": 0.98570918643,
+        "max": 1.06852682743
+      },
+      {
+        "name": "Validate all files from tar index",
+        "count": 10,
+        "command": "node packages/builder/build/src/__benchmark__/tar.validate.js",
+        "mean": 1.4599543635649999,
+        "stddev": 0.04959494189270468,
+        "median": 1.468058129865,
+        "user": 1.1068035450000002,
+        "system": 0.5336204149999999,
+        "min": 1.3711116963649999,
+        "max": 1.532567466365
+      }
+    ]
+  },
+  {
     "hash": "89139c2e80dd9ba47d7fc08ca58014e9889a9d9a",
     "createdAt": "2023-12-11T22:27:48.942Z",
     "results": [
