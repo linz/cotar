@@ -1,6 +1,6 @@
 {
   "name": "@cotar/builder",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@cotar/core": "^6.0.1",
+    "@cotar/core": "^6.1.0",
     "@sindresorhus/fnv1a": "^3.0.0",
     "binparse": "^2.0.1"
   },
