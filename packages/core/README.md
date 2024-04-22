@@ -13,7 +13,22 @@ import { Cotar } from '@cotar/core';
 import { SourceUrl } from '@chunkd/source-url';
 
 const source = new SourceUrl('s3://linz-basemaps/topographic.tar.co');
-const cotar = Cotar.fromTar(source);
+const cotar = await Cotar.fromTar(source);
+
+// Fetch a gzipped PBF file from  a tar
+const bytes = await cotar.get(`tiles/z10/5/5.pbf.gz`);
+```
+
+Index files can also be stored as separate files
+
+```typescript
+import { Cotar } from '@cotar/core';
+import { SourceUrl } from '@chunkd/source-url';
+
+const source = new SourceUrl('s3://linz-basemaps/topographic.tar]');
+const sourceIndex = new SourceUrl('s3://linz-basemaps/topographic.tar.index');
+
+const cotar = await Cotar.fromTarIndex(source, index);
 
 // Fetch a gzipped PBF file from  a tar
 const bytes = await cotar.get(`tiles/z10/5/5.pbf.gz`);

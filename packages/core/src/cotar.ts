@@ -21,6 +21,27 @@ export class Cotar {
     this.index = index;
   }
 
+  /**
+   * Create a cotar using two sources, one for the tar, one for the index
+   *
+   * @param source the tar asset file generally a file ending with ".tar"
+   * @param index the tar index generally a file ending with ".tar.index"
+   *
+   * @returns a Cotar instance
+   *
+   */
+  static async fromTarIndex(source: Source, index: Source): Promise<Cotar> {
+    const metadata = await CotarIndex.create(index);
+    return new Cotar(source, metadata);
+  }
+
+  /**
+   * Create a cotar from a single archive, generally a ".tar.co"
+   *
+   * @param source asset containing both the tar and the tar index.
+   *
+   * @returns a Cotar instance
+   */
   static async fromTar(source: Source): Promise<Cotar> {
     // Load the last file in the tar archive
     const metadata = await CotarIndex.getMetadata(source, 0, false);
