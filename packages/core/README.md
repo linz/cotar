@@ -15,7 +15,7 @@ import { SourceHttp } from '@chunkd/source-http';
 const source = new SourceHttp('s3://linz-basemaps/topographic.tar.co');
 const cotar = await Cotar.fromTar(source);
 
-// Fetch a gzipped PBF file from  a tar
+// Fetch a gzipped PBF file from a tar
 const bytes = await cotar.get(`tiles/10/5/5.pbf.gz`);
 ```
 
@@ -30,7 +30,7 @@ const sourceIndex = new SourceHttp('s3://linz-basemaps/topographic.tar.index');
 
 const cotar = await Cotar.fromTarIndex(source, index);
 
-// Fetch a gzipped PBF file from  a tar
+// Fetch a gzipped PBF file from a tar
 const bytes = await cotar.get(`tiles/10/5/5.pbf.gz`);
 ```
 
