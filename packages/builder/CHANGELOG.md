@@ -1,5 +1,11 @@
 # Changelog
 
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cotar/core bumped from ^6.0.1 to ^6.1.0
+
 ## [6.0.1](https://github.com/linz/cotar/compare/builder-v6.0.0...builder-v6.0.1) (2023-12-11)
 
 

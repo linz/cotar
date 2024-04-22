@@ -44,6 +44,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [6.1.0](https://github.com/linz/cotar/compare/core-v6.0.1...core-v6.1.0) (2024-04-22)
+
+
+### Features
+
+* **core:** make it easier to create a cotar from tar and tar index ([#542](https://github.com/linz/cotar/issues/542)) ([f0db02c](https://github.com/linz/cotar/commit/f0db02cfd6a854fbd5791244e4c51344ca6c7c2d))
+
 ## [6.0.1](https://github.com/linz/cotar/compare/core-v6.0.0...core-v6.0.1) (2023-12-11)
 
 
