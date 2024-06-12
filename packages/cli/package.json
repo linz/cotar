@@ -31,7 +31,7 @@
     "@cotar/tar": "^6.0.1",
     "binparse": "^2.0.1",
     "cmd-ts": "^0.13.0",
-    "pino": "^8.1.0",
+    "pino": "^9.2.0",
     "pretty-json-log": "^1.4.0"
   },
   "devDependencies": {
