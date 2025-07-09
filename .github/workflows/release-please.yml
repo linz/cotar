@@ -7,6 +7,8 @@ name: release-please
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    environment:
+      name: prod
     outputs:
       releases_created: ${{ steps.release.outputs.releases_created }}
     steps:
@@ -20,10 +22,8 @@ jobs:
   publish-release:
     needs: release-please
     runs-on: ubuntu-latest
-
     environment:
       name: prod
-      
     if: ${{ needs.release-please.outputs.releases_created }}
     steps:
       - name: Build and test
