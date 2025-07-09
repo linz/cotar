@@ -13,5 +13,3 @@ jobs:
 
       - name: Create test tar
         run: yarn run test-create-data
-
-      - uses: blacha/hyperfine-action@v1
