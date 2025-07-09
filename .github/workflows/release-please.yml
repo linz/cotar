@@ -20,6 +20,10 @@ jobs:
   publish-release:
     needs: release-please
     runs-on: ubuntu-latest
+
+    environment:
+      name: prod
+      
     if: ${{ needs.release-please.outputs.releases_created }}
     steps:
       - name: Build and test
