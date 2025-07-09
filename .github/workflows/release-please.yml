@@ -15,7 +15,7 @@ jobs:
         with:
           command: manifest
           release-type: node
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.LI_GITHUB_ACTION_TOKEN }}
 
   publish-release:
     needs: release-please
