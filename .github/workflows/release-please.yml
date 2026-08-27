@@ -17,7 +17,7 @@ jobs:
         with:
           command: manifest
           release-type: node
-          token: ${{ secrets.LI_GITHUB_ACTION_TOKEN }}
+          token: ${{ secrets.LINZ_GITHUB_AUTOMATION }}
 
   publish-release:
     needs: release-please
