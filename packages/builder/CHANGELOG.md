@@ -1,5 +1,19 @@
 # Changelog
 
+## [6.0.2](https://github.com/linz/cotar/compare/builder-v6.0.1...builder-v6.0.2) (2026-08-30)
+
+
+### Bug Fixes
+
+* scope node --test to compiled build output ([#592](https://github.com/linz/cotar/issues/592)) ([5f8295e](https://github.com/linz/cotar/commit/5f8295e103080b09683cb20d81f0b09b70bbf94b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cotar/core bumped from ^6.0.1 to ^6.1.0
+
 ## [6.0.1](https://github.com/linz/cotar/compare/builder-v6.0.0...builder-v6.0.1) (2023-12-11)
 
 
