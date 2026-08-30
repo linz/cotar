@@ -4,7 +4,7 @@
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test \"build/**/*.test.js\""
   },
   "repository": {
     "type": "git",
