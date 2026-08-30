@@ -9,7 +9,7 @@
     "directory": "packages/tar"
   },
   "scripts": {
-    "test": "node --test"
+    "test": "node --test \"build/**/*.test.js\""
   },
   "author": {
     "name": "Land Information New Zealand",
